@@ -1,0 +1,26 @@
+#+TITLE: gitcha-ci for about-corwin
+# SPDX-License-Identifier: GPL-3.0-or-later
+# gitcha turns every named step-* sh block into a step, in order (server/src/compute/formats.js).
+# The image carries node and Chromium; the first step adds python3. To publish the build as a
+# gitcha site, uncomment GITCHA_DEPLOY with the site's name: only a person who may manage that site
+# can start a deploying build, and agent sandbox runs never deploy.
+#+GITCHA_IMAGE: mcr.microsoft.com/playwright:v1.63.0-noble
+#+GITCHA_TIMEOUT: 20m
+#+GITCHA_ARTIFACTS: public
+# #+GITCHA_DEPLOY: aboutcorwin
+
+#+NAME: step-tools
+#+begin_src sh
+  apt-get update && apt-get install -y --no-install-recommends python3 make
+  npm install --no-audit --no-fund
+#+end_src
+
+#+NAME: step-check
+#+begin_src sh
+  make check
+#+end_src
+
+#+NAME: step-prove-red
+#+begin_src sh
+  make prove-red
+#+end_src

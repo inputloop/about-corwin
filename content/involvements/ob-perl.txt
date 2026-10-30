@@ -1,0 +1,27 @@
+title: Org Babel for Perl
+role: I maintain ob-perl.el, the part of Org mode that runs Perl code blocks.
+order: 3
+window: buffer
+logo: org
+do: read
+bring: an-emacs
+whose: community
+state: upstream
+tags: emacs, org-mode, perl, gnu, freedom
+link: ob-perl.el in the Emacs sources | https://github.com/emacs-mirror/emacs/blob/master/lisp/org/ob-perl.el
+link: Org mode | https://orgmode.org/
+stat: File | lisp/org/ob-perl.el
+stat: Maintainer since | December 2020
+stat: Ships in | GNU Emacs, as part of Org
+
+== summary ==
+Org mode lets you keep runnable code blocks inside a plain text document, and each language has a small file that knows how to run it. I look after the one for Perl.
+
+== function ==
+Maintaining it means answering bug reports, reviewing patches, and keeping its behaviour in step with the rest of Babel. I took it on in December 2020 when the Org maintainers asked for a volunteer.
+
+== practice ==
+It is a small job on purpose. Free software keeps going when a lot of people each hold one piece they understand well.
+
+== presentation ==
+The window shows an Org buffer with a Perl source block and its result appearing underneath.

@@ -1,0 +1,131 @@
+<!doctype html>
+<!--
+SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+SPDX-License-Identifier: CC-BY-SA-4.0
+This page is built: build.py fills the {{...}} slots from content/. Edit the content files, not
+public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicense.html.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<meta name="description" content="{{DESCRIPTION}}">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/filters.css">
+<script src="js/chamber.model.js" defer></script>
+<script src="js/taxonomy.js" defer></script>
+<script src="js/windows.js" defer></script>
+<script src="js/site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the content</a>
+
+<header class="masthead" id="top">
+  <div class="wrap">
+    <h1>{{TITLE}}</h1>
+    <p class="say"><span class="visually-hidden">Pronounced </span><span aria-hidden="true">/</span>{{PRONOUNCE}}<span aria-hidden="true">/</span> · {{PRONOUNS}}</p>
+    <p class="tagline">{{TAGLINE}}</p>
+    <nav class="contents" aria-label="On this page">
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#involvements">Where I put my time</a></li>
+        <li><a href="#portfolio">inputloop</a></li>
+        <li><a href="#ideas">Ideas</a></li>
+        <li><a href="#how">How this page works</a></li>
+        <li><a href="#minibuffer">The prompt</a></li>
+      </ul>
+    </nav>
+    <p class="hint">The bar along the bottom is a mode-line, as in Emacs. <span class="js-only">Click it, or press <kbd>/</kbd>, to ask the page for something.</span><span class="nojs-only">It takes you to the quick filters at the end.</span></p>
+    <p class="motion-control"><button type="button" id="motion" class="js-only" aria-pressed="true">Motion</button></p>
+  </div>
+</header>
+
+<main id="main">
+  <section id="about" class="wrap prose" aria-labelledby="about-h">
+    <h2 id="about-h">About</h2>
+    {{ABOUT}}
+    <!-- TODO(Corwin): a line or two in your own words, if you want one here; and your GPG fingerprint in content/site.txt, copied from your own key (it is not guessed here). -->
+    <h3>Find me</h3>
+    <ul class="findme">{{FINDME}}</ul>
+  </section>
+
+  <section id="involvements" class="wrap" aria-labelledby="involvements-h">
+    <h2 id="involvements-h">Where I put my time</h2>
+    <p class="lede">Each card is a business card: a name, one line, and a window. The window has a picture in it; the rest of the card opens into a short introduction.</p>
+    <div class="deck">{{INVOLVEMENTS}}</div>
+  </section>
+
+  <section id="portfolio" class="portfolio" aria-labelledby="portfolio-h">
+    <div class="px" aria-hidden="true">
+      <p class="px-layer px-far">{{PX1}}</p>
+      <p class="px-layer px-mid">{{PX2}}</p>
+      <p class="px-layer px-near">{{PX3}}</p>
+    </div>
+    <div class="wrap portfolio-inner">
+      <h2 id="portfolio-h">inputloop</h2>
+      <p class="lede">The last of the places I put my time, and the one the rest of this page is about. It has the same short form as the others.</p>
+      <div class="deck deck-one">{{INPUTLOOP}}</div>
+
+      <h3 id="work">What you can pick up today</h3>
+      <p class="lede">Only what is public. Each card says whose work it is; not all of it is mine.</p>
+      <div class="deck">{{PROJECTS}}</div>
+
+      <h3 id="ideas">Ideas we keep coming back to</h3>
+      <p class="lede">These are not products. They are the habits behind the products, written down so you can hold us to them.</p>
+      <div class="deck">{{CONCEPTS}}</div>
+    </div>
+  </section>
+
+  <section id="how" class="wrap prose" aria-labelledby="how-h">
+    <h2 id="how-h">How this page works</h2>
+    <p>It is one page of HTML and CSS that reads well with scripts turned off. The scripts add the moving windows, the parallax, the cards that grow, and the prompt; GNU LibreJS can check their <a href="jslicense.html" rel="jslicense">licence labels</a>. Nothing is fetched after the page loads and nothing is stored about you, except whether you turned motion off, which stays in your own browser.</p>
+    <h3>Views of a card</h3>
+    <dl class="legend">{{LEGEND_VIEWS}}</dl>
+    <h3>Windows</h3>
+    <dl class="legend">{{LEGEND_WINDOWS}}</dl>
+    <h3>Keys</h3>
+    <ul class="keys js-only-block">
+      <li><kbd>/</kbd> or <kbd>Alt</kbd>+<kbd>x</kbd>: go to the prompt.</li>
+      <li><kbd>Escape</kbd>: close the open card. In the prompt, <kbd>Escape</kbd> or <kbd>Ctrl</kbd>+<kbd>g</kbd> clears it.</li>
+      <li><kbd>↑</kbd> and <kbd>↓</kbd> in the prompt: earlier and later questions.</li>
+    </ul>
+    <p class="nojs-only">With scripts off, every card's introduction, back and scoreboard open under <q>Read about</q>, and the quick filters below still work.</p>
+    <p>The site is free: words under CC-BY-SA-4.0, code under the GPL, version 3 or later. It is built from plain text files by a small Python program; the source and the instructions to build it yourself travel with it. {{COUNT_CARDS}} cards, {{COUNT_TAGS}} tags.</p>
+  </section>
+
+  <section id="stage" class="stage" aria-labelledby="stage-h">
+    <div class="wrap">
+      <h2 id="stage-h">Display</h2>
+      <fieldset class="filters">
+        <legend>Show only what you would…</legend>
+        {{FILTERS}}
+      </fieldset>
+      <div id="results" class="results"></div>
+      <p class="back"><a href="#portfolio">Back up to the cards</a></p>
+    </div>
+  </section>
+</main>
+
+<div class="modeline" id="modeline">
+  <a class="ml-link" href="#minibuffer" aria-label="Mode line: go to the prompt at the bottom of the page">
+    <span class="ml-flags" aria-hidden="true">-:%%-</span>
+    <span class="ml-buf">aboutcorwin.com</span>
+    <span class="ml-pos" aria-hidden="true"></span>
+    <span class="ml-sec" aria-hidden="true"></span>
+    <span class="ml-modes" aria-hidden="true">(HTML LibreJS)</span>
+  </a>
+</div>
+<footer class="minibuffer-wrap" id="minibuffer">
+  <form class="minibuffer js-only-flex" id="mb-form" role="search" autocomplete="off">
+    <label for="prompt" class="mb-prompt">Ask the page:</label>
+    <input id="prompt" name="q" type="search" spellcheck="false" aria-describedby="echo" placeholder="games, emacs on windows, numbers for php…">
+  </form>
+  <p id="echo" class="echo" role="status">End of buffer. <span class="nojs-only">The prompt needs JavaScript; the quick filters in the display area work without it.</span></p>
+  <p class="colophon">© 2026 Corwin Brust and Contributors. Words CC-BY-SA-4.0; code GPL-3.0-or-later. Drafted with Mentat, Claude models working for inputloop.</p>
+</footer>
+<script type="application/json" id="taxonomy-index">{{INDEX_JSON}}</script>
+</body>
+</html>

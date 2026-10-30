@@ -1,0 +1,27 @@
+title: Quantum 3D5
+role: A 3D particle, atom and molecule simulator for learning chemistry and physics in the browser, offline.
+order: 12
+window: atom
+do: learn
+bring: a-browser
+whose: bryant
+state: today
+tags: education, chemistry, physics, simulation, offline, honesty
+link: Repository | https://github.com/inputloop/quantum3d5
+stat: Whose | Bryant's
+stat: Needs | a browser; no account, no server, no network
+stat: Builds | any element, isotope, ion, and common molecules
+stat: Says plainly | which parts are real physics, simplified, or faked
+score: Network connections it makes | 0 | 2026-10-29
+
+== summary ==
+Drop protons, neutrons and electrons into a 3D space and watch what they do. Build any element, make water or methane, heat a salt crystal until it shakes apart, or follow a guided lesson that waits for you to try each step. It is Bryant's.
+
+== function ==
+You can set the temperature, gravity, and electric and magnetic fields; bonds form and break, nuclei decay, and electrons are excited by light and fall back. There are live graphs, a glossary, a study journal, and a double-slit demonstration. Scenes save to a file you can share.
+
+== practice ==
+The simulator is honest about itself: a Realism page lists which parts are real physics, which are simplified, and which are faked so that it looks right. Everything runs on your own computer.
+
+== presentation ==
+The window shows a nucleus with electrons on tilted orbits.

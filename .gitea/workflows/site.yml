@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Gitea Actions (act_runner), and Forgejo Actions, which also reads .gitea/workflows when there is
+# no .forgejo/workflows folder (true of current Forgejo; check yours). The job runs inside
+# Playwright's image, so it needs no setup-* actions and no network beyond the image and apt:
+# it works on runners that cannot reach github.com for actions, except for checkout, which most
+# instances mirror. Change runs-on to a label your runner has (for Forgejo often "docker").
+name: site
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+    steps:
+      - uses: actions/checkout@v4
+      - run: apt-get update && apt-get install -y --no-install-recommends python3 make rsync
+      - run: npm install --no-audit --no-fund
+      - run: make check
+      - run: make prove-red
+      - uses: actions/upload-artifact@v3
+        with: { name: public, path: public/ }

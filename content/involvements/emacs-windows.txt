@@ -1,0 +1,30 @@
+title: GNU Emacs for Windows
+role: I build the Windows binaries of GNU Emacs that the GNU project publishes.
+order: 1
+window: buffer
+logo: emacs
+do: build
+bring: nothing
+whose: community
+state: upstream
+tags: emacs, windows, gnu, packaging, build-automation, freedom, outreach
+link: Windows downloads on GNU FTP | https://ftp.gnu.org/gnu/emacs/windows/
+link: Emacs download page, Windows section (my signing key is listed there) | https://www.gnu.org/software/emacs/download.html#windows
+link: Talk: Windows into Freedom (EmacsConf 2023) | https://emacsconf.org/2023/talks/windows/
+stat: Role | volunteer release builder
+stat: Platform | Microsoft Windows (x86-64)
+stat: Ships with | the complete sources, as the GPL asks
+stat: Talk | Windows into Freedom, EmacsConf 2023
+score: EmacsConf 2023 talk, minutes | 58 | 2023-12
+
+== summary ==
+When a new Emacs release comes out, someone has to turn the source tarball into an installer and zip files that a Windows user can download from the GNU mirrors. For the past several years that has been me, as a volunteer.
+
+== function ==
+The work is mostly careful repetition: build the release tarball and the development branch with the same toolchain, make the self-installer with the NSIS script that lives in the Emacs tree, and publish the binaries together with the sources they came from so that anyone who gets one can get the other.
+
+== practice ==
+I gave a talk about it at EmacsConf 2023, Windows into Freedom: a short history of the Windows port, how to get the binaries, how a Windows build differs from other platforms, how to make the installer, what the GPL asks of anyone who shares binaries, and the scripts that let a build track a branch. The point of the talk was that none of this needs to be one person's secret.
+
+== presentation ==
+The window shows an Emacs frame typing a build log, with a mode-line at the bottom. The same mode-line runs along the bottom of this page.

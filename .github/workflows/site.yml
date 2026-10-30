@@ -1,0 +1,45 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# GitHub Actions: build, every check (browsers included), prove-red, and the built site as an
+# artifact. Deploying to Dreamhost is a separate job that only runs when the repository variable
+# DEPLOY_DREAMHOST is "yes" and the secrets below exist; a person turns it on.
+name: site
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - run: npm install --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - run: make check
+      - run: make prove-red
+      - uses: actions/upload-artifact@v4
+        with: { name: public, path: public/, include-hidden-files: true }
+  deploy:
+    needs: check
+    if: github.ref == 'refs/heads/main' && vars.DEPLOY_DREAMHOST == 'yes'
+    runs-on: ubuntu-latest
+    environment: dreamhost
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { name: public, path: public/ }
+      - name: SSH key and known host (secrets DH_SSH_KEY, DH_KNOWN_HOSTS)
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.DH_SSH_KEY }}" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "${{ secrets.DH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+      - run: sh scripts/deploy-dreamhost.sh
+        env:
+          DH_USER: ${{ vars.DH_USER }}
+          DH_HOST: ${{ vars.DH_HOST }}
+          DEPLOY: "yes"

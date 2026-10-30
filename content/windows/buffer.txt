@@ -1,0 +1,5 @@
+title: Emacs buffer
+window: buffer
+tags: emacs, plain-files, motion
+== presentation ==
+An Emacs frame types text, a log or a source block, with a mode-line along the bottom. Typing, terminal, editor, text, mode-line.

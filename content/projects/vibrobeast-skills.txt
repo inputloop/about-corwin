@@ -1,0 +1,27 @@
+title: vibrobeast-skills
+role: Written ways of working that Claude reads when a task calls for them; each skill is also a slash command.
+order: 15
+window: shells
+do: run
+bring: claude
+whose: shared
+state: today
+tags: ai-assistant, skills, writing, prove-red, consent, honesty
+link: Repository | https://github.com/inputloop/vibrobeast-skills
+link: The skills | https://github.com/inputloop/vibrobeast-skills/tree/HEAD/skills
+stat: Whose | made together
+stat: Installs into | Claude Desktop or Claude Code, as a plugin
+stat: Writing license | CC-BY-SA-4.0; scripts GPL-3.0-or-later
+score: Skills | 78 | 2026-10-30
+
+== summary ==
+A skill is a short written method: how to hand work back carefully, how to check a claim in plain words, how to show that a test can fail. Claude reads one when the task in front of it needs it.
+
+== function ==
+Each skill says when it applies, what it does, how it can fail, and how to switch it off. Several carry their own checks, and those checks are shown able to fail before anyone trusts them.
+
+== practice ==
+Most of the ideas further down this page live here in written form, so anyone can read exactly what we ask of our agents and hold us to it.
+
+== presentation ==
+The window places skills on rings around one in focus: the closer the ring, the fewer steps between them.

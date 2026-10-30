@@ -1,0 +1,20 @@
+{
+  "name": "about-corwin",
+  "version": "1.0.0",
+  "private": true,
+  "description": "aboutcorwin.com: built by build.py (Python); node is only for the checks.",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "build": "python3 build.py",
+    "test": "sh tests/run.sh",
+    "test:js": "node --test tests/js/*.test.mjs",
+    "test:browser": "node --test --test-concurrency=1 tests/browser/*.test.mjs",
+    "prove-red": "sh tests/run.sh --prove-red"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

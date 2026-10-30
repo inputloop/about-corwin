@@ -1,0 +1,5 @@
+title: Tension field
+window: field
+tags: taxonomy, motion
+== presentation ==
+Every tag on the page held in tension, pulling and pushing until it settles. Graph, chamber, balance, force, cloud of words.

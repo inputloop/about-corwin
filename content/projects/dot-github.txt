@@ -1,0 +1,26 @@
+title: The shop's front page
+role: inputloop's public page, and the community files every repository inherits: conduct, support, security, accessibility.
+order: 16
+window: strata
+do: read
+bring: nothing
+whose: shared
+state: inside
+tags: community-files, accessibility, transparency, plain-files, outreach
+link: The page | https://github.com/inputloop
+link: Repository | https://github.com/inputloop/.github
+stat: Whose | made together
+stat: Built from | one catalog file, one line per repository
+stat: Checked by | a reader written in another language
+
+== summary ==
+The front page of the organization and the files every repository falls back on: a code of conduct, where to get support, how to report a security problem, and what we promise about accessibility.
+
+== function ==
+The page is built from a catalog with one line per repository and the words you can browse by: what you would do, what you bring, whose work it is, and where it stands. A check written in another language reads the page back and refuses a word the vocabulary lacks.
+
+== practice ==
+This site borrows those four words. They are the first four facets of the taxonomy that the prompt at the bottom of the page searches.
+
+== presentation ==
+The window is a cross-section of layers, one per community file, with no motion at all.

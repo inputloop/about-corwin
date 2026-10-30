@@ -1,0 +1,25 @@
+title: The rights are the point
+role: You may run it for any purpose, read how it works, change it, and give copies away with the same rights attached.
+order: 26
+window: strata
+do: read
+bring: nothing
+whose: shared
+state: today
+tags: freedom, gnu, community, transparency
+link: What is free software | https://www.gnu.org/philosophy/free-sw.html
+stat: Code | GPL-3.0-or-later (or LGPL on the same terms)
+stat: Writing | CC-BY-SA-4.0
+stat: Order of reasons | people first, then the four freedoms, then the wider community
+
+== summary ==
+Everything we publish is free software. The four freedoms are not a licensing detail for us; they are why we publish.
+
+== function ==
+When a technical choice is close, we decide it by the four freedoms first, then by what the wider free software movement needs, then by what the technical community has learned.
+
+== practice ==
+This page is free too: the JavaScript carries licence labels that GNU LibreJS reads, and the whole site works with scripts turned off.
+
+== presentation ==
+The window is a still cross-section of layers: freedom to run, to study, to change, to share.

@@ -1,0 +1,5 @@
+title: Ring
+window: ring
+tags: community, two-readers, motion
+== presentation ==
+People sit on a ring and a token passes from one to the next. Turn taking, circle, handing over, conference, agreement.

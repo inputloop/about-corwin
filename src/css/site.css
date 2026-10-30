@@ -1,0 +1,358 @@
+/* SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+   SPDX-License-Identifier: GPL-3.0-or-later
+
+   aboutcorwin.com. One stylesheet; no framework, no web fonts. Read from the top:
+   tokens, base, the masthead, cards, the parallax portfolio, the display area, the mode-line and
+   minibuffer, then the no-script, reduced-motion and forced-colours rules. Everything that moves
+   is inside a prefers-reduced-motion: no-preference block or is driven by site.js, which checks
+   the same setting. */
+
+/* ---- tokens --------------------------------------------------------------------------------- */
+:root {
+  --bg: #f4efe4;
+  --surface: #fffdf7;
+  --ink: #1f1d1a;
+  --muted: #59544b;
+  --accent: #5b2f91;
+  --accent-ink: #ffffff;
+  --rule: #d8d0bf;
+  --card-rule: #c9dcef;
+  --card-margin: #e2a3a3;
+  --ml-bg: #cfc7b6;
+  --ml-ink: #1a1815;
+  --ml-active: #b9ae97;
+  --mb-bg: #fbf8f1;
+  --focus: #0a64c2;
+  --shadow: 0 1px 2px rgb(40 30 10 / 0.12), 0 6px 18px rgb(40 30 10 / 0.08);
+  --px-ink: rgb(91 47 145 / 0.10);
+  --w1: #0072b2; --w2: #e69f00; --w3: #009e73; --w4: #cc79a7; --w5: #56b4e9; --w6: #d55e00;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Charter, "Bitstream Charter", Georgia, serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "DejaVu Sans", sans-serif;
+  --mono: ui-monospace, "DejaVu Sans Mono", "Cascadia Mono", Consolas, Menlo, monospace;
+  --measure: 66ch;
+  --gutter: 16px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121316;
+    --surface: #1c1e23;
+    --ink: #ebe8e1;
+    --muted: #b0aaa0;
+    --accent: #c8adff;
+    --accent-ink: #1a1030;
+    --rule: #33363d;
+    --card-rule: #263345;
+    --card-margin: #5a3434;
+    --ml-bg: #34373f;
+    --ml-ink: #f0ede6;
+    --ml-active: #4a4e58;
+    --mb-bg: #17181c;
+    --focus: #7fb8ff;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.5), 0 8px 22px rgb(0 0 0 / 0.35);
+    --px-ink: rgb(200 173 255 / 0.09);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121316; --surface: #1c1e23; --ink: #ebe8e1; --muted: #b0aaa0; --accent: #c8adff;
+  --accent-ink: #1a1030; --rule: #33363d; --card-rule: #263345; --card-margin: #5a3434;
+  --ml-bg: #34373f; --ml-ink: #f0ede6; --ml-active: #4a4e58; --mb-bg: #17181c; --focus: #7fb8ff;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.5), 0 8px 22px rgb(0 0 0 / 0.35);
+  --px-ink: rgb(200 173 255 / 0.09);
+  color-scheme: dark;
+}
+
+/* ---- base ----------------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-padding-bottom: 3rem; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 1.0625rem/1.6 var(--serif);
+  overflow-x: hidden;
+}
+a { color: var(--accent); text-underline-offset: 0.18em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+h1, h2, h3, h4, h5 { font-family: var(--sans); line-height: 1.2; letter-spacing: -0.01em; }
+h2 { font-size: 1.6rem; margin: 0 0 0.6rem; }
+h3 { font-size: 1.2rem; margin: 2.2rem 0 0.4rem; }
+kbd { font: 0.85em var(--mono); border: 1px solid var(--rule); border-bottom-width: 2px; border-radius: 4px; padding: 0 0.3em; background: var(--surface); }
+.wrap { max-width: 72rem; margin: 0 auto; padding: 0 var(--gutter); }
+.prose > p, .prose > ul, .prose > dl, .lede { max-width: var(--measure); }
+.lede { color: var(--muted); margin-top: 0; }
+.visually-hidden {
+  position: absolute !important; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+.skip { position: absolute; left: var(--gutter); top: -4rem; z-index: 50; background: var(--accent); color: var(--accent-ink); padding: 0.5rem 0.9rem; border-radius: 6px; }
+.skip:focus { top: 0.6rem; }
+main > section { padding-top: 3.5rem; }
+
+/* What shows depends on whether site.js ran; it puts class "js" on <html>. */
+.js-only, .js-only-flex, .js-only-block { display: none; }
+.js .js-only { display: inline-block; }
+.js .js-only-flex { display: flex; }
+.js .js-only-block { display: block; }
+.js .nojs-only { display: none; }
+
+/* ---- masthead ------------------------------------------------------------------------------- */
+.masthead { padding: 4.5rem 0 1rem; border-bottom: 1px solid var(--rule); }
+.masthead h1 { font-size: clamp(2.4rem, 7vw, 4.2rem); margin: 0; letter-spacing: -0.03em; }
+.say { font-family: var(--mono); color: var(--muted); margin: 0.3rem 0 1rem; font-size: 0.95rem; }
+.tagline { font-size: 1.3rem; max-width: 40ch; margin: 0 0 1.5rem; }
+.contents ul { display: flex; flex-wrap: wrap; gap: 0.3rem 1.2rem; padding: 0; margin: 0; list-style: none; font-family: var(--sans); font-size: 0.95rem; }
+.motion-control { margin: 1rem 0 0; }
+.hint { margin: 1rem 0 0; font: 0.9rem/1.5 var(--sans); color: var(--muted); max-width: var(--measure); }
+button { font: inherit; }
+#motion, .viewbar button, .card-close {
+  font: 0.85rem var(--sans); color: var(--ink); background: var(--surface);
+  border: 1px solid var(--rule); border-radius: 999px; padding: 0.3rem 0.85rem; min-height: 2rem; cursor: pointer;
+}
+#motion[aria-pressed="true"], .viewbar button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.findme { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.3rem 1.4rem; font-family: var(--sans); font-size: 0.95rem; }
+
+/* ---- cards ---------------------------------------------------------------------------------- */
+.deck {
+  display: grid; gap: 1.4rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  grid-auto-flow: dense;
+  margin: 1.2rem 0 1rem;
+}
+.deck-one { grid-template-columns: minmax(0, 34rem); }
+.card { --tilt: 0deg; position: relative; }
+.card:nth-child(4n+1) { --tilt: -0.7deg; }
+.card:nth-child(4n+2) { --tilt: 0.5deg; }
+.card:nth-child(4n+3) { --tilt: -0.3deg; }
+.card:nth-child(4n) { --tilt: 0.8deg; }
+.face {
+  position: relative; display: grid; gap: 0.15rem 0.9rem;
+  grid-template-columns: 1fr auto; grid-template-rows: auto 1fr auto;
+  grid-template-areas: "title window" "role window" "meta meta";
+  min-height: 11rem; padding: 1rem 1.1rem 0.8rem;
+  background: var(--surface); border: 1px solid var(--rule); border-radius: 6px 6px 0 0;
+  box-shadow: var(--shadow);
+}
+.face .title { grid-area: title; font-size: 1.1rem; margin: 0; }
+.face .role { grid-area: role; margin: 0.2rem 0 0; font-size: 0.95rem; color: var(--muted); }
+.face .meta { grid-area: meta; margin: 0.6rem 0 0; font: 0.75rem/1.4 var(--mono); color: var(--muted); }
+.window {
+  grid-area: window; position: relative; display: block; width: 8.5rem; aspect-ratio: 16 / 11;
+  border-radius: 4px; overflow: hidden; background: #0f1218; border: 3px solid var(--ink);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+  padding: 0; cursor: zoom-in; color: inherit;
+}
+.window canvas, .window .still { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.window .logo {
+  position: absolute; inset: 0; margin: auto; width: 56%; height: auto; opacity: 0;
+  filter: drop-shadow(0 2px 4px rgb(0 0 0 / 0.6)); pointer-events: none;
+}
+.window:hover .logo, .window:focus-visible .logo { opacity: 1; }
+.more { background: var(--surface); border: 1px solid var(--rule); border-top: 0; border-radius: 0 0 6px 6px; box-shadow: var(--shadow); }
+.more > summary { padding: 0.45rem 1.1rem; font: 0.9rem var(--sans); color: var(--accent); cursor: pointer; }
+.views { padding: 0 1.1rem 1rem; }
+.view h4, .view h5 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 1rem 0 0.4rem; }
+.view p { margin: 0 0 0.7rem; }
+.view .how { color: var(--muted); font-size: 0.95rem; border-left: 3px solid var(--rule); padding-left: 0.7rem; }
+.links { padding-left: 1.1rem; margin: 0.4rem 0 0; font-family: var(--sans); font-size: 0.92rem; }
+.stats { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1rem; margin: 0; font-size: 0.95rem; }
+.stats div { display: contents; }
+.stats dt { font: 600 0.8rem/1.6 var(--sans); text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.stats dd { margin: 0; }
+.scoreboard { border-collapse: collapse; width: 100%; font-family: var(--mono); font-size: 0.9rem; background: #10131a; color: #f2e9c9; border-radius: 4px; overflow: hidden; }
+.scoreboard th, .scoreboard td { padding: 0.4rem 0.6rem; text-align: left; border-bottom: 1px solid #262b36; }
+.scoreboard thead th { color: #9aa3b5; font-weight: normal; font-size: 0.75rem; text-transform: uppercase; }
+.scoreboard .num { font-size: 1.5rem; color: #ffd166; font-variant-numeric: tabular-nums; }
+.feature-slot { position: relative; width: 100%; aspect-ratio: 16 / 10; background: #0f1218; border-radius: 4px; overflow: hidden; margin-bottom: 0.7rem; }
+.feature-slot canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.js .v-featured .feature-slot:empty::after { content: ""; }
+html:not(.js) .v-featured { display: none; }
+
+/* With scripts: cards are business cards until opened, then index cards. */
+.js .card { cursor: pointer; }
+.js .card .face { transform: rotate(var(--tilt)); transition: transform 0.25s ease, box-shadow 0.25s ease; border-radius: 6px; }
+.js .card .more { border: 0; box-shadow: none; background: transparent; }
+.js .card .more > summary { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.js .card .more > summary:focus-visible { position: static; width: auto; height: auto; clip-path: none; display: inline-block; margin: 0.4rem 0 0; }
+.js .card:not(.is-open) .views { display: none; }
+.js .card:hover:not(.is-open) .face { transform: rotate(0deg) translateY(-2px); }
+.js .card.is-open {
+  grid-column: 1 / -1; cursor: default; z-index: 2;
+}
+.js .card.is-open .face, .js .card.is-open .views {
+  background-color: var(--surface);
+  background-image:
+    linear-gradient(var(--card-margin), var(--card-margin)),
+    repeating-linear-gradient(to bottom, transparent 0 1.55rem, var(--card-rule) 1.55rem calc(1.55rem + 1px));
+  background-size: 100% 2px, 100% 100%;
+  background-repeat: no-repeat, repeat;
+  background-position: 0 2.6rem, 0 0;
+}
+.js .card.is-open .face { border-radius: 6px 6px 0 0; transform: rotate(calc(var(--tilt) * -1.5)); grid-template-columns: 1fr minmax(10rem, 18rem); }
+.js .card.is-open .window { width: 100%; }
+.js .card.is-open .views { border: 1px solid var(--rule); border-top: 0; border-radius: 0 0 6px 6px; box-shadow: var(--shadow); transform: rotate(calc(var(--tilt) * -1.5)); max-width: 100%; }
+.js .card.is-open .view { display: none; max-width: var(--measure); }
+.js .card.is-open .view.is-current { display: block; }
+.js .card.is-open .view.v-featured { max-width: none; }
+.viewbar { display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0.7rem 0 0; }
+.viewbar .card-close { margin-left: auto; }
+.card.is-hidden { display: none; }
+.card.is-match .face { box-shadow: 0 0 0 2px var(--accent), var(--shadow); }
+
+/* ---- the parallax portfolio ----------------------------------------------------------------- */
+.portfolio { position: relative; overflow: clip; isolation: isolate; padding-bottom: 3rem; }
+.px { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.px-layer {
+  position: absolute; left: -5%; right: -5%; margin: 0;
+  font: 700 3rem/1.5 var(--mono); color: var(--px-ink); word-spacing: 0.6em;
+  text-align: justify; user-select: none; will-change: transform;
+  transform: translate3d(var(--px-x, 0), var(--px-y, 0), 0);
+}
+.px-far { top: 0; font-size: 1.5rem; opacity: 0.8; filter: blur(0.6px); }
+.px-mid { top: 18%; font-size: 2.6rem; }
+.px-near { top: 42%; font-size: 4.6rem; opacity: 0.7; }
+.portfolio-inner { position: relative; }
+.portfolio h2 { font-size: clamp(2rem, 6vw, 3.4rem); letter-spacing: -0.03em; }
+
+/* Where the browser can tie animation to scrolling, CSS does the parallax by itself, scripts or
+   not. site.js checks the same thing and only steps in where this is unsupported. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    html:not(.still) .px-layer { animation: px linear both; animation-timeline: view(); animation-range: cover; }
+    html:not(.still) .px-far { --d: 12vh; --dx: -2vw; }
+    html:not(.still) .px-mid { --d: 34vh; --dx: 3vw; }
+    html:not(.still) .px-near { --d: 70vh; --dx: -6vw; }
+    @keyframes px {
+      from { transform: translate3d(calc(var(--dx) * -1), calc(var(--d) * -1), 0); }
+      to { transform: translate3d(var(--dx), var(--d), 0); }
+    }
+    html:not(.still) .portfolio .card .face { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% entry 60%; }
+    @keyframes rise { from { translate: 0 2.5rem; opacity: 0.3; } to { translate: 0 0; opacity: 1; } }
+  }
+}
+/* While the mode-line flies the page down, cards lean with the speed. */
+.flying .card .face { transform: rotate(calc(var(--tilt) + var(--vel, 0) * 1deg)) scale(calc(1 - var(--vel-abs, 0) * 0.02)); transition: none; }
+
+/* ---- the display area ----------------------------------------------------------------------- */
+.stage { border-top: 1px solid var(--rule); padding-bottom: 1.5rem; }
+.stage h2 { font: 600 0.8rem var(--mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+.js .stage .wrap { resize: vertical; overflow: auto; min-height: 9rem; max-height: 80vh; }
+.filters { border: 0; padding: 0; margin: 0 0 1rem; display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; font-family: var(--sans); font-size: 0.9rem; }
+.filters legend { padding: 0; margin-bottom: 0.4rem; color: var(--muted); width: 100%; }
+.filters input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.filters label { border: 1px solid var(--rule); border-radius: 999px; padding: 0.3rem 0.85rem; min-height: 2rem; display: inline-flex; align-items: center; cursor: pointer; background: var(--surface); }
+.filters input:checked + label { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.filters input:focus-visible + label { outline: 3px solid var(--focus); outline-offset: 2px; }
+.results { font-family: var(--mono); font-size: 0.9rem; }
+.results ol { padding-left: 1.6rem; margin: 0.3rem 0; }
+.results .why { color: var(--muted); }
+.results button { font: inherit; color: var(--accent); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }
+.back { font-family: var(--sans); font-size: 0.9rem; }
+.legend { display: grid; grid-template-columns: max-content 1fr; gap: 0.3rem 1.2rem; }
+.legend div { display: contents; }
+.legend dt { font-family: var(--sans); font-weight: 600; }
+.legend dd { margin: 0; color: var(--muted); }
+
+/* ---- mode-line and minibuffer --------------------------------------------------------------- */
+/* The mode-line is the last thing in the page's flow before the footer, and sticky at the bottom
+   of the window, so it shows the whole way down. The minibuffer sits after it in the flow, so it
+   only appears once you reach the end: the mode-line seems to grow a second line. No script needed. */
+.modeline {
+  position: sticky; bottom: 0; z-index: 20;
+  background: var(--ml-bg); color: var(--ml-ink);
+  border-top: 1px solid var(--rule);
+  font: 0.85rem/1.9 var(--mono);
+}
+.ml-link { display: flex; gap: 1.6ch; align-items: baseline; padding: 0 var(--gutter); color: inherit; text-decoration: none; white-space: nowrap; overflow: hidden; }
+.ml-link:hover { background: var(--ml-active); }
+.ml-buf { font-weight: 700; }
+.ml-pos::after { content: "--"; }
+.js .ml-pos::after { content: none; }
+.ml-sec { overflow: hidden; text-overflow: ellipsis; }
+.ml-modes { margin-left: auto; }
+@supports (animation-timeline: scroll()) {
+  @property --pos { syntax: "<integer>"; inherits: false; initial-value: 0; }
+  html:not(.js) .ml-pos::after {
+    counter-reset: pos var(--pos);
+    content: counter(pos) "%";
+    animation: pos linear both;
+    animation-timeline: scroll(root);
+  }
+  @keyframes pos { from { --pos: 0; } to { --pos: 100; } }
+}
+.minibuffer-wrap { background: var(--mb-bg); color: var(--ink); font: 0.9rem/1.6 var(--mono); padding: 0.35rem var(--gutter) 1.2rem; }
+.minibuffer { align-items: baseline; gap: 1ch; }
+.mb-prompt { color: var(--accent); font-weight: 700; white-space: nowrap; }
+.minibuffer input {
+  flex: 1; min-width: 0; font: inherit; color: var(--ink); background: transparent;
+  border: 0; border-bottom: 1px dashed var(--rule); padding: 0.15rem 0; caret-color: var(--accent);
+}
+.minibuffer input:focus-visible { outline: none; border-bottom: 2px solid var(--focus); }
+.echo { margin: 0.2rem 0 0; color: var(--muted); }
+.colophon { margin: 0.8rem 0 0; font-size: 0.75rem; color: var(--muted); }
+.at-bottom .modeline { background: var(--ml-active); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .js .minibuffer-wrap { transition: background-color 0.4s ease; }
+  .js.at-bottom .minibuffer-wrap { animation: grow 0.35s ease-out; }
+  @keyframes grow { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0); } }
+}
+
+/* ---- small screens -------------------------------------------------------------------------- */
+@media (max-width: 34rem) {
+  .face { grid-template-columns: 1fr; grid-template-areas: "title" "role" "window" "meta"; }
+  .window, .js .card.is-open .window { width: 100%; }
+  .js .card.is-open .face { grid-template-columns: 1fr; }
+  .ml-flags, .ml-modes { display: none; }
+  .legend, .stats { grid-template-columns: 1fr; }
+  .legend dd { margin-bottom: 0.5rem; }
+}
+
+/* ---- still: reduced motion, or Motion turned off --------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.still) { scroll-behavior: smooth; }
+}
+
+/* ---- forced colours (Windows high contrast) ------------------------------------------------- */
+@media (forced-colors: active) {
+  .window { border-color: CanvasText; forced-color-adjust: none; }
+  .modeline { border-top: 2px solid CanvasText; }
+  .filters input:checked + label, .viewbar button[aria-pressed="true"], #motion[aria-pressed="true"] { outline: 2px solid Highlight; }
+  .px { display: none; }
+}
+
+/* ---- print ---------------------------------------------------------------------------------- */
+@media print {
+  .modeline, .minibuffer, .stage, .px, .skip, .motion-control { display: none !important; }
+  details.more > .views { display: block !important; }
+}
+
+/* ---- still frames for the windows, drawn by CSS alone (seen without scripts) ----------------- */
+.still { background: #0f1218; }
+.w-buffer .still { background:
+  linear-gradient(#cfc7b6, #cfc7b6) 0 calc(100% - 10%) / 100% 10% no-repeat,
+  repeating-linear-gradient(to bottom, transparent 0 9%, #8fd18f 9% 11%, transparent 11% 16%) 8% 12% / 70% 70% no-repeat,
+  #10131a; }
+.w-ring .still { background: radial-gradient(circle at 50% 50%, transparent 0 30%, var(--w2) 30% 32%, transparent 32%), #10131a; }
+.w-fog .still { background:
+  radial-gradient(circle at 40% 55%, transparent 0 18%, #0b0c10 34%),
+  repeating-linear-gradient(90deg, #3b3f4a 0 2px, transparent 2px 14%),
+  repeating-linear-gradient(0deg, #3b3f4a 0 2px, transparent 2px 18%), #1b1e26; }
+.w-coop .still { background:
+  radial-gradient(circle at 30% 40%, var(--w1) 0 6%, transparent 7%),
+  radial-gradient(circle at 45% 60%, var(--w2) 0 6%, transparent 7%),
+  radial-gradient(circle at 60% 35%, var(--w3) 0 6%, transparent 7%),
+  radial-gradient(circle at 70% 62%, var(--w4) 0 6%, transparent 7%), #17321f; }
+.w-ledger .still { background: repeating-linear-gradient(to bottom, #f2e9c9 0 1px, transparent 1px 14%), #10131a; }
+.w-atom .still { background: radial-gradient(circle, var(--w6) 0 9%, transparent 10%), radial-gradient(ellipse 45% 20% at 50% 50%, transparent 90%, var(--w5) 92% 96%, transparent 97%), #0d1020; }
+.w-pipeline .still { background: linear-gradient(90deg, var(--w3) 0 22%, transparent 22% 26%, var(--w3) 26% 48%, transparent 48% 52%, #39404d 52% 74%, transparent 74% 78%, #39404d 78%) 50% 50% / 90% 22% no-repeat, #10131a; }
+.w-planes .still { background: linear-gradient(135deg, transparent 30%, rgb(86 180 233 / 0.5) 30% 60%, transparent 60%), linear-gradient(135deg, transparent 40%, rgb(204 121 167 / 0.4) 40% 70%, transparent 70%), #10131a; }
+.w-shells .still { background: repeating-radial-gradient(circle, transparent 0 14%, rgb(240 228 66 / 0.5) 14% 15%), #10131a; }
+.w-strata .still { background: linear-gradient(to bottom, var(--w1) 0 20%, var(--w2) 20% 40%, var(--w3) 40% 60%, var(--w4) 60% 80%, var(--w5) 80%); }
+.w-field .still { background: radial-gradient(circle at 30% 40%, #c8adff 0 3%, transparent 4%), radial-gradient(circle at 60% 55%, #f0e442 0 4%, transparent 5%), radial-gradient(circle at 48% 30%, #56b4e9 0 3%, transparent 4%), radial-gradient(circle at 70% 30%, #ffffff 0 2%, transparent 3%), #0b0d14; }
+.w-orb .still { background: radial-gradient(circle at 42% 40%, #a98bf0 0 10%, #5b2f91 30%, #1a1030 46%, transparent 47%), #0b0d14; }

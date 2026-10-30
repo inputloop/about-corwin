@@ -1,0 +1,24 @@
+title: Two readers, two languages
+role: Every check that matters is written twice, in two languages, so a green run means two readers agreed.
+order: 22
+window: ring
+do: check
+bring: nothing
+whose: shared
+state: today
+tags: two-readers, prove-red, honesty, transparency
+link: The seams skill | https://github.com/inputloop/vibrobeast-skills/tree/HEAD/skills/seams
+stat: Why | one reader can agree with itself about anything
+stat: Here | the taxonomy is computed in JavaScript and checked again in Python
+
+== summary ==
+When two representations of one truth can split silently, one reader is not evidence. A second reader, written in a different language by a different route, catches what the first one shares with its own mistakes.
+
+== function ==
+The shop's page is written by one tool and read back by another. On this site, the browser code computes how tags relate, and a Python test recomputes the same numbers from scratch and compares.
+
+== practice ==
+It costs a little more to write. It costs much less than trusting a green light that could never have been red.
+
+== presentation ==
+The window shows two figures on a ring passing the same token back and forth until they agree.

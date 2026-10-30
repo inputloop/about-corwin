@@ -1,0 +1,21 @@
+title: Corwin Brust
+pronounce: Core-win Brew-st
+pronouns: he/him
+tagline: I build Emacs for Windows, help run EmacsConf, and keep a small free software shop called inputloop with Bryant Frankford.
+description: Corwin Brust: volunteer builder of GNU Emacs for Windows, EmacsConf organizer, Org Babel Perl maintainer, and co-owner of inputloop.
+contact: corwin@bru.st
+link: Mastodon | https://hostux.social/@corwin | rel=me
+link: inputloop on GitHub | https://github.com/inputloop
+link: inputloop mail (Bryant and me) | mailto:BryantAndCorwin@inputloop.com
+link: My signing key: see the Windows section of the Emacs download page | https://www.gnu.org/software/emacs/download.html#windows
+link: Init files on GitLab | https://gitlab.com/mplscorwin/dotfiles
+link: IRC nick | corwin
+
+== about ==
+I have written software for a living for about twenty-five years, most of it in Emacs. These days most of what I do is help other people get the same tools working on machines they keep.
+
+I come from a family of writers, organizers and fans. My dad is the writer [Steven Brust](https://dreamcafe.com/). My grandparents, [Bill Brust](https://www.wsws.org/en/special/library/fi-19-1/15.html) and [Jean Brust](https://mehring.com/product/defending-principles-the-political-legacy-of-bill-brust/), organized for socialism in Minnesota for most of their lives. I am married to [Dee Brust](https://www.twinpropjane.com/), a folk musician and a retired ELL/ESL teacher of children from kindergarten through high school. I have been a science fiction fan all my life, and I have run a [Minicon](https://mnstf.org/minicon/), the Minneapolis science fiction convention. Some of that rubbed off: I like tools that people can share, and I like to show my work.
+
+My work covers a few things that look different from the outside. I build the Windows release of GNU Emacs. I help organize EmacsConf. I look after one small corner of Org mode. I co-founded a game engine for tabletop dungeon crawls that runs inside Emacs. The common thread is a habit of asking what a newcomer needs, writing that down, and then checking the written thing against what really happens.
+
+Below are the places I put my time, each in the same short form: what it is, what I do there, and where to look. inputloop comes last because it opens into the rest of the page.

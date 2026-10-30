@@ -1,0 +1,29 @@
+title: NextTime
+role: Community time banking for Nextcloud: post a request, volunteer, earn hours, and every movement lands in a public ledger.
+order: 11
+window: ledger
+do: run
+bring: nextcloud
+whose: brigidt
+state: today
+tags: mutual-aid, time-banking, ledger, transparency, community, governance
+link: Repository | https://github.com/inputloop/NextTime-Dev
+link: Browser demo | https://github.com/inputloop/NextTime-Dev/blob/HEAD/demo/index.html
+stat: Whose | Brigidt's
+stat: Runs in | Nextcloud 29 to 35
+stat: Hours approved by | an admin, or a three-vote community process
+stat: Ledger | public, every movement of hours
+score: Nextcloud versions tested | 7 | 2026-10-29
+score: Votes that settle a claim | 3 | 2026-10-29
+
+== summary ==
+NextTime is a Nextcloud app for time banking and mutual aid, and it is Brigidt's. Members post what they need, others volunteer, and an hour of help is worth an hour whoever gives it.
+
+== function ==
+Hours are approved by an admin or by three votes from the community, and nobody decides on their own claim. Every movement of hours is written to a public ledger, and every change an admin makes is logged where members can read it.
+
+== practice ==
+It is built as infrastructure against hierarchy: transparency and community oversight are preferred over admin-only power, and changes that would concentrate control are flagged in review. Where a request is posted, the exact location is shown only to the people who need it.
+
+== presentation ==
+The window is a ledger: hours move from one member to another, each line written once and never edited.

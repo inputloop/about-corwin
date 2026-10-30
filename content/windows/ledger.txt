@@ -1,0 +1,5 @@
+title: Ledger
+window: ledger
+tags: ledger, transparency, numbers
+== presentation ==
+Lines are written to a ledger one at a time and never edited. Hours, accounts, list, scroll, records, log.

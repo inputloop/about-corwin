@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="EmacsConf"><!-- SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors; SPDX-License-Identifier: CC-BY-SA-4.0. A plain monogram drawn for this site, not the project's own mark. -->
+<circle cx="32" cy="32" r="30" fill="#0072b2"/>
+<g fill="#fff"><circle cx="32" cy="12" r="5"/><circle cx="50" cy="26" r="5"/><circle cx="43" cy="48" r="5"/><circle cx="21" cy="48" r="5"/><circle cx="14" cy="26" r="5"/></g>
+<circle cx="32" cy="32" r="7" fill="#f0e442"/></svg>

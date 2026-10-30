@@ -1,0 +1,5 @@
+title: Co-op walkers
+window: coop
+tags: game, co-op, motion
+== presentation ==
+Four coloured walkers roam and a camera keeps all four in frame. Players, multiplayer, together, camera, colours.

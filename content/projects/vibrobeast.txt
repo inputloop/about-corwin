@@ -1,0 +1,27 @@
+title: vibrobeast
+role: A memory Claude keeps on your own computer in plain files, with the skills, persona sheets and shared rooms built around it.
+order: 14
+window: planes
+do: run
+bring: claude
+whose: shared
+state: careful
+tags: ai-assistant, memory, plain-files, local-first, consent, transparency
+link: Repository | https://github.com/inputloop/vibrobeast
+stat: Whose | made together
+stat: State | works for its makers, not yet reviewed by anyone else
+stat: Memory kept in | plain files under your home folder
+stat: Doors | all off at first; you open each one
+score: Skills included | 78 | 2026-10-27
+
+== summary ==
+vibrobeast gives Claude a memory that lives on your computer, in files you can open and read. It comes with the written ways of working we use every day, named voices called persona sheets, and a few rooms you can choose to open.
+
+== function ==
+Nothing is edited in place: a change is a new generation beside the old one, so you can always see what was there. The extra rooms, a common room for people and agents, a bridge to a local model, and others, are all off until you turn them on. A privacy record is rebuilt for every release from claims the build checks against the code, and the build stops if one no longer holds.
+
+== practice ==
+We use it daily. Nobody outside the two of us has reviewed it yet, and its own page says that first.
+
+== presentation ==
+The window shows layered planes, one per generation of a note, stacked in depth so you can see through to the older ones.

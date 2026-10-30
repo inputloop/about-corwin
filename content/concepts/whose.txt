@@ -1,0 +1,23 @@
+title: Say whose it is
+role: Every piece of work says who made it, including the parts an AI wrote.
+order: 24
+window: ledger
+do: read
+bring: nothing
+whose: shared
+state: today
+tags: credit, honesty, transparency, ai-assistant, community
+stat: Credit words | Corwin's, Bryant's, Brigidt's, made together, not yet written
+stat: Bylines | say when Mentat did the work, and for whom
+
+== summary ==
+On the shop page each thing says whose it is, and when we do not know yet, it says that instead of guessing. NextTime is Brigidt's, Quantum 3D5 is Bryant's, and the credit for fourSwordsFromThePast is not yet written in its README.
+
+== function ==
+Much of our code and writing is done by Claude models working as Mentat. The bylines say so, and usually which model, so a reader can weigh the work knowing what made it.
+
+== practice ==
+This page was drafted that way too: its commits are Corwin's, with a Mentat byline.
+
+== presentation ==
+The window is a ledger of names and the work beside each one.

@@ -1,0 +1,27 @@
+title: Dungeon
+role: I co-founded Dungeon, an engine for tabletop-style dungeon crawls that runs inside GNU Emacs.
+order: 4
+window: fog
+logo: dungeon
+do: play
+bring: an-emacs
+whose: community
+state: upstream
+tags: emacs, game, tabletop, org-mode, map, freedom
+link: Source on Savannah | https://git.savannah.nongnu.org/cgit/dungeon.git
+link: Talk: Dungeon Mode (EmacsConf 2020) | https://emacsconf.org/2020/talks/28/
+stat: Started | December 2019
+stat: Written in | Emacs Lisp and Org
+stat: Hosted on | Savannah (nongnu)
+
+== summary ==
+In December 2019 some friends who grew up drawing and playing each other's dungeons decided to build an engine for those games in Emacs Lisp and Org mode. I am one of the founders.
+
+== function ==
+Maps, rooms and rules are written as Org documents, so a game is something you can read, change and share like any other text. The engine draws the map and keeps the fog of war, so the players only see what they have explored.
+
+== practice ==
+The game it comes from was always free to play and free to make more of. Building it on Emacs keeps it that way.
+
+== presentation ==
+The window is a small map under fog: a lantern walks the corridors and the walls appear as it passes.

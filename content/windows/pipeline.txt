@@ -1,0 +1,5 @@
+title: Pipeline
+window: pipeline
+tags: build-automation, prove-red, motion
+== presentation ==
+Steps light up left to right, each only after the one before passes. Build, steps, CI, stages, checks, green, red.

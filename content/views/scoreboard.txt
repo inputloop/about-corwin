@@ -1,0 +1,7 @@
+title: Scoreboard
+view: scoreboard
+tags: numbers
+== summary ==
+The numbers that can be counted, each with the date it was counted. Only cards that have such numbers offer this view.
+== presentation ==
+Numbers, counts, score, how many, metrics, totals.

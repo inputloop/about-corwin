@@ -1,0 +1,5 @@
+title: Strata
+window: strata
+tags: still, community-files
+== presentation ==
+A still cross-section of coloured layers with labels. Static, calm, no motion, layers, stack.

@@ -1,0 +1,23 @@
+title: Plain files over clever formats
+role: If a person cannot open it in a text editor and read it, we think twice before keeping it that way.
+order: 20
+window: buffer
+do: read
+bring: nothing
+whose: shared
+state: today
+tags: plain-files, local-first, transparency, freedom, emacs
+stat: Seen in | vibrobeast's memory, the catalog behind the shop page, this site's content folder
+stat: Opposite of | a database you need our program to read
+
+== summary ==
+Memory, catalogs, ways of working and this page's content are all text files. You can read them, diff them, keep them in git, and carry them to another program without asking us.
+
+== function ==
+A plain file is the cheapest way to keep the right to leave. If our tool goes away, the notes do not go with it.
+
+== practice ==
+This site is built from one text file per card. The build turns them into the page and into the index the prompt searches; nothing else holds the content.
+
+== presentation ==
+The window types a plain text file into an Emacs buffer.

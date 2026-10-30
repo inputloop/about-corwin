@@ -1,0 +1,5 @@
+title: Fog of war
+window: fog
+tags: map, game, motion
+== presentation ==
+A lantern walks a grid map and the walls appear as it passes. Fog, map, explore, dungeon, maze, reveal.

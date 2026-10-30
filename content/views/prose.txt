@@ -1,0 +1,7 @@
+title: Short introduction
+view: prose
+tags: story, read
+== summary ==
+The written introduction: what the thing is, what it does, how we practise it, and how its card works. Click the card anywhere except the window to read it.
+== presentation ==
+Read the story, the words, the text, explain it, tell me about it.

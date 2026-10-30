@@ -1,0 +1,7 @@
+title: Business card
+view: card
+tags: card, summary
+== summary ==
+The small card: a name, one line, and a window. It is the default way every card is shown.
+== presentation ==
+A short glance, a summary, the card as it sits in the deck.

@@ -1,0 +1,7 @@
+title: Baseball card
+view: baseball
+tags: stats, card
+== summary ==
+The back of the card: facts in a short table, who made it, what it needs, how it is licensed.
+== presentation ==
+Facts, details, specs, who, license, the stats on the back.

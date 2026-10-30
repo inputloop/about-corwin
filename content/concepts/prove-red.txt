@@ -1,0 +1,23 @@
+title: Shown able to fail
+role: A test only counts once someone has watched it go red for the fault it claims to catch.
+order: 23
+window: pipeline
+do: check
+bring: nothing
+whose: shared
+state: today
+tags: prove-red, honesty, build-automation, transparency
+link: The prove-a-promise skill | https://github.com/inputloop/vibrobeast-skills/tree/HEAD/skills/prove-a-promise
+stat: Here | make prove-red plants one fault per promise and expects each check to fail
+
+== summary ==
+A check that cannot fail tells you nothing. So for each promise a test makes, we plant the fault it is meant to catch and make sure it goes red.
+
+== function ==
+This site has a prove-red run. It copies the project, breaks it on purpose in several ways, a missing licence label, an image without words, a broken taxonomy, and expects each matching test to fail.
+
+== practice ==
+When a prove-red run passes, a green run means something.
+
+== presentation ==
+The window is a pipeline where one step turns red on purpose, and the line stops there.

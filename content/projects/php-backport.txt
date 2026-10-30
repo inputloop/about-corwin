@@ -1,0 +1,29 @@
+title: Patched PHP for SuiteCRM
+role: Builds patched end-of-life PHP for SuiteCRM from the PHP project's own mitigation commits, and proves it installs.
+order: 13
+window: pipeline
+do: build
+bring: a-host
+whose: corwin
+state: today
+tags: security, php, legacy, build-automation, prove-red, transparency
+link: Repository | https://github.com/inputloop/suit-crm-6-5-php-sec-backport
+link: Runbook | https://github.com/inputloop/suit-crm-6-5-php-sec-backport/blob/HEAD/RUNBOOK.md
+stat: Whose | Corwin's
+stat: PHP branches | 7.4, 8.0, 8.1
+stat: Advisories | CVE-2026-109618 and CVE-2026-109619 (CVSS 9.2)
+stat: Contains | no exploit and no vulnerable code of its own
+score: PHP branches built | 3 | 2026-10-29
+score: Advisories covered | 2 | 2026-10-29
+
+== summary ==
+In October 2026 the PHP project published minimal mitigation commits for two critical issues on branches that no longer get releases. A lot of SuiteCRM installs still run on those branches. This repository builds PHP from those commits and checks that SuiteCRM installs and logs in on each build.
+
+== function ==
+The commits are pinned by full hash, and the build refuses to go on if a branch head moves. The binaries are published together with the complete sources they were built from. The build's php.ini sets the interim setting the advisories recommend for SuiteCRM.
+
+== practice ==
+It is a build-and-prove apparatus, not a fork: the patches are the PHP project's, unchanged, and updating PHP is still the only complete fix. The repository says so on its first page.
+
+== presentation ==
+The window is a pipeline: patch, build, install, log in. Each step lights up only after the one before it passes.

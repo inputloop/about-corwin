@@ -1,0 +1,23 @@
+title: The lens
+role: Before something leaves our hands, hold four views apart and look through each one.
+order: 25
+window: orb
+do: check
+bring: nothing
+whose: shared
+state: today
+tags: lens, honesty, care, outreach
+link: The lens skill | https://github.com/inputloop/vibrobeast-skills/tree/HEAD/skills/lens
+stat: Four views | yours, theirs as you imagine it, their pull on yours, yours on theirs
+
+== summary ==
+The lens is a thought experiment we run before handing work to someone: what do I think, what do I imagine they think, how are they shaping my view, and how am I shaping theirs.
+
+== function ==
+Holding the four apart catches the moments when we have quietly decided for someone else what they want.
+
+== practice ==
+It is slow on purpose. It is most useful exactly when we are in a hurry.
+
+== presentation ==
+The window is an orb seen from one side, then the other.

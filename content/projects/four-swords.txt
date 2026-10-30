@@ -1,0 +1,28 @@
+title: fourSwordsFromThePast
+role: A Link to the Past as a native PC game with four-player drop-in co-op, from your own cartridge.
+order: 10
+window: coop
+do: play
+bring: your-rom
+whose: unstated
+state: today
+tags: game, co-op, netplay, snes, reverse-engineering, accessibility
+link: Repository | https://github.com/inputloop/fourSwordsFromThePast
+stat: Players | up to 4, same PC, LAN or internet
+stat: Built on | snesrev/zelda3 (MIT), vendored at 45a149d8
+stat: You bring | your own US ROM; none of the game is in the repository
+stat: Credit | not yet written in its README
+score: Players at once | 4 | 2026-10-29
+score: Ways to join | 3 (same PC, LAN, internet) | 2026-10-29
+
+== summary ==
+The Legend of Zelda: A Link to the Past, rebuilt as a native PC program, with up to four players who can drop in and out. It is built on the zelda3 reimplementation in C, and it needs your own copy of the game to extract the art and sound.
+
+== function ==
+Each Link has its own colour. The camera keeps the group in view and splits the screen when couch players wander apart. Players can lift and throw each other over pits, lift heavy rocks together, and hold floor switches for each other. Online play uses room codes instead of addresses, rollback netcode, and a seat that waits two minutes for someone whose connection dropped.
+
+== practice ==
+The care goes into the small things that make playing together kind: colour-blind friendly colours, arrows that point to teammates off screen, a ping for help, spectating while you are down, sending a teammate hearts, and friendly fire you can turn off.
+
+== presentation ==
+The window shows four coloured walkers roaming a map, with a camera that keeps all four in frame.

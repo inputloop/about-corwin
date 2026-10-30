@@ -1,0 +1,93 @@
+# The words the prompt understands. One tag per line:  FACET TAG: synonym, synonym, ...
+# The four header facets (do, bring, whose, state) are the shop page's own words; their tags are
+# written FACET:TAG in the index. Every other tag is plain. The build scans each card's prose for a
+# tag's name and synonyms (whole words, a trailing s allowed) and weights a hit by the layer it is in.
+# A tag a card names that is not here stops the build.
+
+do play: play, game you play, playing
+do build: build, compile, make, builds
+do run: run, install, host, self-host
+do read: read, reading, look at
+do learn: learn, study, teach, lesson
+do check: check, verify, review, test, tests, audit
+
+bring nothing: nothing to bring, just a browser tab
+bring your-rom: rom, cartridge, cartridge dump, your own copy
+bring nextcloud: nextcloud
+bring claude: claude, claude code, claude desktop
+bring a-host: a machine you run, server, host
+bring a-browser: browser, web browser
+bring an-emacs: an emacs, emacs installed, with emacs
+
+whose corwin: corwin, corwin's
+whose bryant: bryant, bryant's, frankford
+whose brigidt: brigidt, brigidt's
+whose shared: made together, together, both of us
+whose unstated: not yet written, unstated, unknown credit
+whose community: volunteers, volunteer, upstream project
+
+state today: use it today, today, ready, works
+state careful: not yet reviewed, careful, experimental
+state inside: the shop's own, internal, notes
+state upstream: upstream, gnu project, part of emacs
+
+domain emacs: emacs, gnu emacs, elisp, emacs lisp, init.el, mode-line
+domain windows: windows, microsoft windows, win64, installer
+domain gnu: gnu, gpl, free software foundation, savannah
+domain conference: conference, speaker, speakers, schedule, emacsconf
+domain org-mode: org mode, org-mode, org, babel, source block
+domain perl: perl
+domain game: game, games, gaming, zelda, link to the past, dungeon crawl
+domain co-op: co-op, coop, cooperative, multiplayer, four-player, players
+domain netplay: netplay, netcode, online play, rollback, room codes, lan
+domain snes: snes, super nintendo, cartridge
+domain tabletop: tabletop, dungeons, rpg, role-playing
+domain map: map, maps, fog, fog of war, explore, lantern, maze
+domain mutual-aid: mutual aid, mutual-aid, help each other, an hour of help
+domain time-banking: time banking, time bank, hours, timebank
+domain chemistry: chemistry, molecule, molecules, element, elements, atoms
+domain physics: physics, particle, particles, electron, electrons, nuclei, wave
+domain education: education, learning, lesson, lessons, glossary, students
+domain security: security, cve, advisory, advisories, vulnerability, patch, patched
+domain php: php
+domain legacy: end-of-life, eol, legacy, old business software, suitecrm
+domain ai-assistant: ai, assistant, agent, agents, llm, model, mentat
+domain memory: memory, remember, notes, generation, generations
+domain skills: skill, skills, slash command, ways of working
+domain community-files: code of conduct, conduct, support, community files
+domain inputloop: inputloop, the shop
+domain governance: governance, vote, votes, admin, oversight, hierarchy
+domain writing: writing, written, docs, documentation, prose
+domain accessibility: accessibility, accessible, colour-blind, color-blind, screen reader
+
+technique packaging: packaging, package, binaries, release, distribution
+technique build-automation: ci, pipeline, automation, scripts, runner, build log
+technique reverse-engineering: reverse engineering, reimplementation, decompilation, recompiled
+technique simulation: simulation, simulator, simulate
+technique ledger: ledger, ledgers, record, log
+technique plain-files: plain files, plain text, text file, text files, plain file
+technique local-first: local-first, your own computer, on your machine, machines you keep, your machines
+technique offline: offline, no network, no server, without a network
+technique consent: consent, door, doors, permission, opt in, switched off
+technique prove-red: prove-red, shown able to fail, go red, fault, faults
+technique two-readers: two readers, second reader, two languages, seams
+technique taxonomy: taxonomy, tags, facets, tension, chamber, balance
+technique lens: lens, four views, thought experiment
+
+value freedom: freedom, freedoms, free software, four freedoms, rights
+value transparency: transparency, public, open, visible, transparent
+value credit: credit, byline, bylines, whose
+value honesty: honest, honesty, plainly, faked, says so
+value care: care, kind, gentle, gently, careful
+value outreach: newcomer, newcomers, outreach, reach out, share, sharing
+value community: community, friends, people, members
+
+presentation card: card, business card, glance
+presentation summary: summary, overview, short
+presentation story: story, introduction, intro, explain, tell me
+presentation read: words, text, prose
+presentation stats: stats, facts, details, specs, back of the card
+presentation numbers: numbers, counts, count, score, scoreboard, how many, metrics, totals
+presentation animate: animate, animation, show me, watch, picture, visual
+presentation motion: motion, moving, moves, spin, typing, walk, walks
+presentation still: still, static, calm, no motion

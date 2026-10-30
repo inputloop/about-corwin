@@ -1,0 +1,25 @@
+title: How the prompt finds things
+role: The prompt at the bottom guesses what you mean from a taxonomy built out of the words on every card.
+order: 27
+window: field
+do: learn
+bring: nothing
+whose: shared
+state: today
+tags: taxonomy, offline, transparency, local-first
+stat: Facets | do, bring, whose, state, domain, technique, value, presentation
+stat: Association | normalized pointwise mutual information between tags
+stat: Layout | a tension field that settles toward balance
+stat: Network | none; it runs in your browser
+
+== summary ==
+Each card is written in layers: what it is, what it does, how we practise it, and how it is shown. The build reads those layers for words it knows and turns them into tags, and the tags into a taxonomy.
+
+== function ==
+Tags that turn up on the same cards pull together; the rest push apart, and the whole field settles toward balance, the way our chamber demo does. When you type, your words are matched to tags, even misspelled ones, the match spreads to related tags, and the cards nearest the result come forward. The views and the windows are described the same way, so asking for numbers or for something that moves changes how a card opens.
+
+== practice ==
+There is no server behind it, so it cannot go down and it does not need your network. It tells you which tags it matched, so you can see why.
+
+== presentation ==
+The window is the taxonomy itself: every tag on this page, held in tension, settling.

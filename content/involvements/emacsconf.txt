@@ -1,0 +1,29 @@
+title: EmacsConf
+role: I am one of the volunteers who organize EmacsConf, a free conference about Emacs run on free software.
+order: 2
+window: ring
+logo: emacsconf
+do: learn
+bring: nothing
+whose: community
+state: upstream
+tags: emacs, conference, community, outreach, freedom, accessibility
+link: EmacsConf | https://emacsconf.org/
+link: Talk: Trivial Emacs Kits (2020) | https://emacsconf.org/2020/talks/06/
+link: Talk: Dungeon Mode (2020, with Erik Elmshauser) | https://emacsconf.org/2020/talks/28/
+stat: Role | core organizer, volunteer
+stat: Talks given | 2020 (two), 2023 (one)
+stat: Runs on | free software, end to end
+score: Talks I have given there | 3 | 2023-12
+
+== summary ==
+EmacsConf is a yearly online conference about Emacs and the people who use it. It is put together by volunteers and streamed with free software. I am one of the core organizers.
+
+== function ==
+Organizing means the unglamorous middle: helping speakers get recordings in, keeping the schedule honest, hosting sessions, and fixing whatever broke five minutes before it airs.
+
+== practice ==
+I have also spoken there. In 2020, Trivial Emacs Kits was about giving a newcomer a short init.el they can read, one small file at a time, and about letting a group of friends share defaults so the first hour with Emacs is gentler. The same year, Erik Elmshauser and I presented Dungeon Mode. In 2023 I gave Windows into Freedom, about the Windows port.
+
+== presentation ==
+The window is a ring of people taking turns: one speaks, the ring passes the turn along. It is a picture of a conference that runs by handing things to each other.

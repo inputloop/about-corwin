@@ -1,0 +1,7 @@
+title: Featured window
+view: featured
+tags: animate, motion
+== summary ==
+The window grown large and moving. Activate the window on any card to see it.
+== presentation ==
+Show me, animate, play, picture, moving, visual, watch.
