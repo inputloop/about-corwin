@@ -38,7 +38,7 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
         <li><a href="#minibuffer">The prompt</a></li>
       </ul>
     </nav>
-    <p class="hint">The bar along the bottom is a mode-line, as in Emacs. <span class="js-only">Click it, or press <kbd>/</kbd>, to ask the page for something.</span><span class="nojs-only">It takes you to the quick filters at the end.</span></p>
+    <p class="hint">The bar along the bottom is a mode-line, as in Emacs. <span class="js-only-inline">Click it, or press <kbd>Alt</kbd>+<kbd>x</kbd>, to ask the page for something.</span><span class="nojs-only">It takes you to the quick filters at the end.</span></p>
     <p class="motion-control"><button type="button" id="motion" class="js-only" aria-pressed="true">Motion</button></p>
   </div>
 </header>
@@ -47,7 +47,6 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
   <section id="about" class="wrap prose" aria-labelledby="about-h">
     <h2 id="about-h">About</h2>
     {{ABOUT}}
-    <!-- TODO(Corwin): a line or two in your own words, if you want one here; and your GPG fingerprint in content/site.txt, copied from your own key (it is not guessed here). -->
     <h3>Find me</h3>
     <ul class="findme">{{FINDME}}</ul>
   </section>
@@ -88,7 +87,7 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
     <dl class="legend">{{LEGEND_WINDOWS}}</dl>
     <h3>Keys</h3>
     <ul class="keys js-only-block">
-      <li><kbd>/</kbd> or <kbd>Alt</kbd>+<kbd>x</kbd>: go to the prompt.</li>
+      <li><kbd>Alt</kbd>+<kbd>x</kbd> (as <kbd>M-x</kbd> in Emacs): go to the prompt. There are no single-key shortcuts.</li>
       <li><kbd>Escape</kbd>: close the open card. In the prompt, <kbd>Escape</kbd> or <kbd>Ctrl</kbd>+<kbd>g</kbd> clears it.</li>
       <li><kbd>↑</kbd> and <kbd>↓</kbd> in the prompt: earlier and later questions.</li>
     </ul>
@@ -103,14 +102,14 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
         <legend>Show only what you would…</legend>
         {{FILTERS}}
       </fieldset>
-      <div id="results" class="results"></div>
+      <p class="shown"></p>
       <p class="back"><a href="#portfolio">Back up to the cards</a></p>
     </div>
   </section>
 </main>
 
 <div class="modeline" id="modeline">
-  <a class="ml-link" href="#minibuffer" aria-label="Mode line: go to the prompt at the bottom of the page">
+  <a class="ml-link" href="#minibuffer" aria-label="aboutcorwin.com mode line: go to the prompt at the bottom of the page">
     <span class="ml-flags" aria-hidden="true">-:%%-</span>
     <span class="ml-buf">aboutcorwin.com</span>
     <span class="ml-pos" aria-hidden="true"></span>
@@ -123,6 +122,7 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
     <label for="prompt" class="mb-prompt">Ask the page:</label>
     <input id="prompt" name="q" type="search" spellcheck="false" aria-describedby="echo" placeholder="games, emacs on windows, numbers for php…">
   </form>
+  <div id="results" class="results"></div>
   <p id="echo" class="echo" role="status">End of buffer. <span class="nojs-only">The prompt needs JavaScript; the quick filters in the display area work without it.</span></p>
   <p class="colophon">© 2026 Corwin Brust and Contributors. Words CC-BY-SA-4.0; code GPL-3.0-or-later. Drafted with Mentat, Claude models working for inputloop.</p>
 </footer>

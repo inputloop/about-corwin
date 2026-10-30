@@ -33,7 +33,8 @@
   var motion = stored() ? stored() === 'on' : !reduce.matches;
   var motionBtn = $('#motion');
   function applyMotion() {
-    html.classList.toggle('still', !motion);
+    html.classList.toggle('motion-on', motion);
+    html.classList.toggle('motion-off', !motion);
     if (motionBtn) motionBtn.setAttribute('aria-pressed', motion ? 'true' : 'false');
     if (window.Windows) window.Windows.setMotion(motion);
   }
@@ -65,8 +66,9 @@
     btn.className = span.className;
     btn.setAttribute('data-window', span.getAttribute('data-window'));
     btn.title = 'More about ' + title;
-    btn.setAttribute('aria-label', 'More about ' + title + ': open the window');
+    btn.setAttribute('aria-label', 'More about ' + title);
     btn.setAttribute('aria-controls', card.id + '-more');
+    btn.setAttribute('aria-expanded', 'false');
     while (span.firstChild) btn.appendChild(span.firstChild);
     span.parentNode.replaceChild(btn, span);
     if (window.Windows) card._win = window.Windows.mount(btn, btn.getAttribute('data-window'), { slug: card.dataset.slug });
@@ -123,6 +125,7 @@
     var was = card.classList.contains('is-open');
     card.classList.add('is-open');
     $('.more', card).open = true;
+    $('.face > .window', card).setAttribute('aria-expanded', 'true');
     setView(card, view);
     open = card;
     if (!was) {
@@ -145,6 +148,7 @@
   function closeCard(card, returnFocus) {
     card.classList.remove('is-open');
     $('.more', card).open = false;
+    $('.face > .window', card).setAttribute('aria-expanded', 'false');
     if (card._feature) { window.Windows.unmount(card._feature); card._feature = null; }
     if (open === card) open = null;
     if (returnFocus) { var w = $('.face > .window', card); if (w) w.focus(); }
@@ -179,7 +183,8 @@
     var inField = ev.target.closest && ev.target.closest('input, textarea, select');
     if (ev.key === 'Escape' && open && !inField) { closeCard(open, true); return; }
     if (inField || ev.ctrlKey || ev.metaKey) return;
-    if (ev.key === '/' || (ev.altKey && (ev.key === 'x' || ev.code === 'KeyX'))) { ev.preventDefault(); toPrompt(); }
+    // Alt+x, as M-x. No single-key shortcuts (WCAG 2.1.4): a stray key never moves the page.
+    if (ev.altKey && (ev.key === 'x' || ev.key === '\u2248' || ev.code === 'KeyX')) { ev.preventDefault(); toPrompt(); }
   });
 
   // ---- the mode-line ------------------------------------------------------------------------------
@@ -230,22 +235,31 @@
     if (flying) return;
     flying = true;
     var dist = end - start, ms = Math.min(2400, 700 + Math.abs(dist) * 0.25), t0 = performance.now(), prev = start;
+    var cancelled = false;
+    // A wheel, a touch or a key takes the page back from the animation at once.
+    function cancel() { cancelled = true; }
+    var stops = ['wheel', 'touchstart', 'keydown', 'mousedown'];
+    // Armed a tick later, so the key that started the flight does not also stop it.
+    window.setTimeout(function () {
+      if (flying) stops.forEach(function (t) { window.addEventListener(t, cancel, { passive: true, once: true }); });
+    }, 0);
     html.style.scrollBehavior = 'auto';
     body.classList.add('flying');
     function ease(x) { return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
     function step(now) {
-      var f = Math.min(1, (now - t0) / ms), y = start + dist * ease(f);
+      var f = cancelled ? 1 : Math.min(1, (now - t0) / ms), y = cancelled ? window.scrollY : start + dist * ease(f);
       window.scrollTo(0, y);
       var vel = Math.max(-6, Math.min(6, (y - prev) / 12));
       prev = y;
       body.style.setProperty('--vel', vel.toFixed(2));
       body.style.setProperty('--vel-abs', Math.abs(vel).toFixed(2));
       if (f < 1) { window.requestAnimationFrame(step); return; }
+      stops.forEach(function (t) { window.removeEventListener(t, cancel); });
       body.classList.remove('flying');
       body.style.removeProperty('--vel'); body.style.removeProperty('--vel-abs');
       html.style.scrollBehavior = '';
       flying = false;
-      done();
+      if (!cancelled) done();
     }
     window.requestAnimationFrame(step);
   }
@@ -278,9 +292,15 @@
     onScroll();
   }
 
+  // The quick filters and the prompt are two ways to narrow the same deck; using one clears the
+  // other, so what the echo counts is what you see.
+  var allFilter = $('#f-all');
+  function clearFilters() { if (allFilter && !allFilter.checked) allFilter.checked = true; }
+
   function runQuery(text, announce) {
     text = text.trim();
     if (!text) { reset(); if (announce) say('Showing all ' + cards.length + ' cards.'); return; }
+    if (text !== '?' && !/^help$/i.test(text)) clearFilters();
     if (text === '?' || /^help$/i.test(text)) { say(HELP); return; }
     if (!model) { say('The search could not start, so every card stays shown.'); return; }
     var res = window.Taxonomy.query(model, text);
@@ -344,7 +364,10 @@
 
   $$('.filters input').forEach(function (r) {
     r.addEventListener('change', function () {
-      say(r.value ? 'Showing the cards you would ' + r.value.split(':')[1] + '.' : 'Showing every card.');
+      if (prompt && prompt.value) prompt.value = '';
+      reset();
+      var n = cards.filter(function (c) { return c.offsetParent !== null; }).length;
+      say(r.value ? n + ' cards you would ' + r.value.split(':')[1] + '.' : 'Showing all ' + n + ' cards.');
     });
   });
 

@@ -9,9 +9,9 @@
 // second, and none that are off screen. With motion off (the person's setting, or the Motion
 // button), every window draws one still frame instead and the loop stops.
 //
-// Ideas borrowed from C4's showroom and h/ demos: the orb (LAB orb), shells (Spell Ball), the
-// tension field (chamber), fog of war (DUNGEON-play), planes in depth (LENS viz), the Emacs look
-// (front-door), and the Okabe-Ito colours they all use, always paired with a shape.
+// The ideas come from Corwin's earlier visual experiments: a cloudy orb, rings around a focus, a
+// tension field, fog of war, planes in depth, the Emacs look, and the Okabe-Ito colours they all
+// use, always paired with a shape.
 (function (root) {
   'use strict';
 

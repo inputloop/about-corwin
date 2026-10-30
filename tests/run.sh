@@ -69,15 +69,19 @@ prove_red() {
   plant "a card's prose hidden from no-JS"   build.py           's/for layer in ("summary", "function", "practice")$/for layer in ("summary",)/' "$pyc"
   plant "low-contrast muted text"            src/css/site.css   's/--muted: #59544b;/--muted: #a8a397;/'   "$pyc"
   plant "the CSP allows inline script"       src/.htaccess      "s/script-src 'self'/script-src 'self' 'unsafe-inline'/" "$pyc"
+  plant "a private name in a served script"  src/js/windows.js  's#^  .use strict.;#  "use strict"; // from inputloop/c4#' "$pyc"
   plant "heading levels skip"                build.py           's/render_card(c, windows, 4) for c in projects/render_card(c, windows, 5) for c in projects/' "$pyc"
   if command -v "$node" >/dev/null 2>&1; then
     plant "associations computed wrongly"    src/js/taxonomy.js 's/-Math.log(pab);/-Math.log(pab) * 0.9;/' "$nodec"
     plant "fuzzy matching too loose"         src/js/taxonomy.js 's/ && q\[0\] === term\[0\]//'          "$nodec"
     plant "the browser code phones home"     src/js/site.js     's#^  html.classList.add(.js.);#  html.classList.add("js"); fetch("/x");#' "$nodec"
+    plant "the hub card teaches associations" src/js/taxonomy.js 's/var HUB = 1.5;/var HUB = 99;/' "$nodec"
+    plant "spreading admits cards"           src/js/taxonomy.js 's/      if (!direct) score = 0;//' "$nodec"
     plant "presentation words pick subjects" src/js/taxonomy.js 's/var PRESENTATION_ON_CARDS = 0.3;/var PRESENTATION_ON_CARDS = 1;/' "$nodec"
     if [ "${SKIP_BROWSER:-}" != 1 ]; then
       plant "the minibuffer is not after the mode-line" src/css/site.css 's/^  position: sticky; bottom: 0; z-index: 20;$/  position: static; z-index: 20;/' "$brc"
       plant "the mode-line never says Bot"   src/js/site.js     "s/: y >= max - 2 ? 'Bot' :/: false ? 'Bot' :/" "$brc"
+      plant "a single-key shortcut"          src/js/site.js     "s/if (ev.altKey \&\& (ev.key === 'x'/if ((ev.key === '\/' || ev.altKey) \&\& (ev.key === '\/' || ev.key === 'x'/" "$brc"
       plant "reduced motion ignored"         src/js/site.js     "s/: !reduce.matches;/: true;/" "$brc"
     fi
   fi

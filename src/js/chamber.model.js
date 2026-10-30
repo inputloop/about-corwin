@@ -1,18 +1,10 @@
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-3.0-or-later
-// PROVENANCE: copied unchanged (below this block) from inputloop/c4 showroom/views/chamber/chamber.model.js
-// at commit 925ce5895bd05c277b303f049368b3f5f1e4571f. Only these three lines and the closing
-// @license-end were added, for GNU LibreJS. See PROVENANCE.md at the top of this repository.
-// chamber.model.js -- the reusable tension-field MODEL (surface-agnostic).
+// chamber.model.js: a tension-field model. Points held in balanced tension; "the middle" is the
+// state where every tension resolves at once, and residual force is a health reading.
+// No DOM here: one model, and any surface can render it. This site uses it to lay out its tags.
+// The code is Corwin Brust's, unchanged; only this header comment was shortened for publication.
 //
-// C4 research/prototype (2026-08-05), built under the conceit research-lives-in-c4-by-default.
-// This file is the HARVESTABLE asset: no DOM, no canvas, no surface. One model; the web/emacs/tool
-// surfaces each RENDER it. That separation is the C4-as-bridge test (c4-as-design-bridge-hzpa).
-//
-// The idea (Corwin's): points held in balanced tension. "The middle" is the state where every
-// tension resolves at once. Imbalance shows as SOME-but-not-all resolving -- so residual force and
-// its spread are a HEALTH readout, not decoration.
-//
-// Free software: GPLv3-or-later (matches the C4 tree). Copyright 2026 Corwin Brust.
+// Free software: GPLv3-or-later. Copyright 2026 Corwin Brust.
 (function (root) {
   'use strict';
 

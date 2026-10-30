@@ -9,7 +9,7 @@
 // tag, read from the item's layered prose. From that we make:
 //
 //   1. association: normalized pointwise mutual information between tags that share items;
-//   2. a layout: the tags as a tension field (ChamberModel, from C4's chamber demo), stepped until it
+//   2. a layout: the tags as a tension field (ChamberModel, Corwin's tension-field model), stepped until it
 //      settles, so related tags sit near each other and the field's balance can be read;
 //   3. a query: words matched to tags (exact, prefix, or near misspellings), spread one step along
 //      the associations, balanced across facets so one facet cannot drown the rest, then nudged by
@@ -35,6 +35,8 @@
   var NEAR = 0.25;         // how much closeness in the field adds to a score
   var KEEP = 0.3;          // show items scoring at least this share of the best
   var STEPS = 400;
+  var SPREAD_SCORE = 0.3;   // what a tag reached only by spreading counts for, against 1 for a direct hit
+  var HUB = 1.5;            // a card naming more than this times the median number of tags is a hub
   var PRESENTATION_ON_CARDS = 0.3;   // words about how to see a thing choose views, not subjects
 
   // A small seeded generator, so the field settles the same way every time and on every machine.
@@ -111,6 +113,19 @@
 
   function present(w) { return w >= PRESENT; }
 
+  // Which items teach association. Views and windows describe how to see a thing, not what it is,
+  // so they stay out. So does a hub: a card that names far more tags than the rest (the shop's own
+  // card mentions every field it works in) would tie unrelated tags together.
+  function teachers(items) {
+    var cards = items.filter(function (it) { return CARD_KINDS[it.kind] || !it.kind; });
+    var counts = cards.map(function (it) { return Object.keys(it.w).filter(function (t) { return present(it.w[t]); }).length; })
+      .sort(function (a, b) { return a - b; });
+    var median = counts.length ? counts[Math.floor(counts.length / 2)] : 0;
+    return cards.filter(function (it) {
+      return Object.keys(it.w).filter(function (t) { return present(it.w[t]); }).length <= HUB * median;
+    });
+  }
+
   // Normalized PMI over items, for every pair of tags that share at least one item. In (0, 1].
   function associations(tags, items) {
     var n = items.length, df = {}, co = {}, i, j, a, b, key;
@@ -137,7 +152,9 @@
     var tags = index.tags, items = index.items;
     var byId = {};
     tags.forEach(function (t, i) { byId[t.id] = { tag: t, i: i }; });
-    var assoc = associations(tags, items);
+    var assoc = associations(tags, teachers(items));
+    // Tags only views, windows or hubs carry still get a place in the field.
+    items.forEach(function (it) { Object.keys(it.w).forEach(function (t) { if (present(it.w[t]) && !assoc.df[t]) assoc.df[t] = 0; }); });
     var nb = {};
     assoc.edges.forEach(function (e) {
       (nb[e.a] = nb[e.a] || []).push({ t: e.b, w: e.w });
@@ -145,7 +162,7 @@
     });
 
     // The field: only tags that some item carries take part.
-    var live = tags.filter(function (t) { return assoc.df[t.id]; });
+    var live = tags.filter(function (t) { return t.id in assoc.df; });
     var nodes = live.map(function (t) { return { id: t.id, label: t.label, facet: t.facet, df: assoc.df[t.id] }; });
     var at = {};
     nodes.forEach(function (n, i) { at[n.id] = i; });
@@ -181,11 +198,11 @@
     return s ? { x: x / s, y: y / s, z: z / s } : null;
   }
 
-  // Which tags the prompt names, and how surely. Phrases of up to three words are tried first, so
+  // Which tags the prompt names, and how surely. Phrases of up to four words are tried first, so
   // "emacs on windows" and "how many" match the synonyms they spell.
   function match(model, text) {
     var words = tokenize(text), grams = [], hits = {}, i, n;
-    for (n = 3; n >= 1; n--) for (i = 0; i + n <= words.length; i++) {
+    for (n = 4; n >= 1; n--) for (i = 0; i + n <= words.length; i++) {
       var g = words.slice(i, i + n);
       if (n === 1 && isStop(g[0])) continue;
       grams.push(g.join(' '));
@@ -227,7 +244,7 @@
 
   // Score one item: per facet, the item's weight times the activation, summed, then damped by the
   // number of tags active in that facet, so a query that lights up many tags in one facet cannot
-  // drown the others. Direct hits count in full; spread activation counts at half.
+  // drown the others. Direct hits count in full; spread activation counts for SPREAD_SCORE.
   function scoreItem(model, it, act, perFacet) {
     var byFacet = {}, why = [];
     Object.keys(act.spread).forEach(function (t) {
@@ -235,7 +252,7 @@
       if (!w) return;
       var d = act.direct[t] || 0, s = act.spread[t];
       var f = facetOf(model, t);
-      var v = w * Math.max(d, 0.5 * s) * (f === 'presentation' && CARD_KINDS[it.kind] ? PRESENTATION_ON_CARDS : 1);
+      var v = w * Math.max(d, SPREAD_SCORE * s) * (f === 'presentation' && CARD_KINDS[it.kind] ? PRESENTATION_ON_CARDS : 1);
       byFacet[f] = (byFacet[f] || 0) + v;
       if (v > 0.05) why.push({ t: t, v: v, direct: d > 0 });
     });
@@ -259,6 +276,13 @@
     words.push(norm(it.title).replace(/[^a-z0-9]/g, ''), norm(it.slug).replace(/[^a-z0-9]/g, ''));
     return words.filter(function (w) { return w.length >= 4 && !isStop(w); });
   }
+  // A prefix names a card only when it is most of the name: "quantum" names quantum3d5, but "back"
+  // does not name backport and "read" does not name two readers.
+  function nameSimilarity(w, n) {
+    var s = similarity(w, n);
+    if (s === 0.8 && w.length < 0.6 * n.length) return 0;
+    return s;
+  }
   function nameHits(model, words) {
     var hits = {};
     model.items.forEach(function (it) {
@@ -266,7 +290,7 @@
       var names = it._names || (it._names = nameWords(it)), best = 0;
       words.forEach(function (w) {
         if (w.length < 4 || isStop(w)) return;
-        names.forEach(function (n) { var s = similarity(w, n); if (s >= 0.7 && s > best) best = s; });
+        names.forEach(function (n) { var s = nameSimilarity(w, n); if (s >= 0.7 && s > best) best = s; });
       });
       if (best) hits[it.slug] = best;
     });
@@ -303,6 +327,9 @@
       var why = r.why.slice(0, 3).map(function (x) { return label(model, x.t); });
       var score = r.score > 0 ? r.score + near : 0;
       if (named[it.slug]) { score += 2 * named[it.slug]; why.unshift('name'); out.named.push(it.title); }
+      // A card is shown only for something it says itself, or its name; spreading only ranks.
+      var direct = named[it.slug] || r.why.some(function (x) { return x.direct && facetOf(model, x.t) !== 'presentation'; });
+      if (!direct) score = 0;
       cards.push({ slug: it.slug, title: it.title, window: it.window, views: it.views,
                    score: score, base: r.score, near: near, why: why.slice(0, 3) });
     });
@@ -319,6 +346,7 @@
     var onlyPresentation = out.matched.length && !out.named.length && out.matched.every(function (x) { return facetOf(model, x.tag) === 'presentation'; });
     if (onlyPresentation && out.view) {
       out.items = cards.filter(function (c) { return c.views.indexOf(out.view) >= 0; });
+      out.items.forEach(function (c) { c.why = ['has ' + VIEW_WORDS[out.view]]; });
       out.items.sort(function (a, b) { return b.score - a.score || (a.slug < b.slug ? -1 : 1); });
     } else {
       out.items = cards.filter(function (c) { return c.score > 0.05 && c.score >= KEEP * top; });
@@ -326,20 +354,24 @@
     return out;
   }
 
+  var VIEW_WORDS = { prose: 'the introduction', baseball: 'the back of the card', scoreboard: 'the scoreboard',
+                     featured: 'the window, grown large' };
+
   // One line for the echo area: what matched and why. Plain words.
   function describe(res, total) {
     if (res.empty) return 'Showing all ' + total + ' cards.';
     if (!res.matched.length && !(res.named && res.named.length)) return 'No tag matches “' + res.text + '”. Showing all ' + total + ' cards.';
+    var seen = {};
     var tags = (res.named || []).concat(res.matched.slice(0, 4).map(function (x) {
       return x.by === x.label || x.by === x.label.replace(/-/g, ' ') ? x.label : x.by + '→' + x.label;
-    })).join(', ');
+    })).filter(function (x) { if (seen[x]) return false; seen[x] = 1; return true; }).join(', ');
     var s = res.items.length + ' of ' + total + ' cards for ' + tags + '.';
-    if (res.view) s += ' Windows open to the ' + res.view + ' view.';
+    if (res.view) s += ' Windows open to ' + VIEW_WORDS[res.view] + '.';
     return s;
   }
 
   return { tokenize: tokenize, dice: dice, editDistance: editDistance, similarity: similarity,
            associations: associations, build: build, match: match, query: query, describe: describe,
-           mulberry32: mulberry32, centroid: centroid };
+           mulberry32: mulberry32, centroid: centroid, teachers: teachers, VIEW_WORDS: VIEW_WORDS };
 });
 // @license-end

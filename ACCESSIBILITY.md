@@ -15,15 +15,16 @@ Spell Ball's accessibility note in C4's showroom. Where a test holds a promise, 
 - **Structure.** Banner, navigation, main and contentinfo landmarks; a skip link first; one `h1` and
   no skipped heading levels; unique ids and references that resolve. (1.3.1, 2.4.1, 2.4.6;
   `test_landmarks`, `test_one_h1_and_no_skipped_heading_levels`, `test_ids_unique_and_references_resolve`)
-- **Names.** Every window is a button named "More about X: open the window", matching its tooltip;
+- **Names.** Every window is a button named "More about X", the same words as its tooltip, and says
+  whether its card is open (`aria-expanded`); the mode-line's name begins with the words it shows;
   every link, button and summary has a name; every form control has a label; logos are decorative
   inside a named button. (4.1.2; `test_links_and_buttons_have_names`, browser: "windows become
   labelled buttons")
 - **Keyboard.** Everything that opens with a click opens from the keyboard: the summary opens the
   introduction and puts focus on the view buttons; the window button opens the featured view;
-  Escape closes the card and returns focus to its window; `/` or Alt+x goes to the prompt; Escape
-  or Ctrl+g clears it; ↑ and ↓ walk its history. Single-key shortcuts are ignored while typing.
-  (2.1.1, 2.1.4, 2.4.3; browser: "keyboard")
+  Escape closes the card and returns focus to its window; Alt+x goes to the prompt; Escape or
+  Ctrl+g clears it; ↑ and ↓ walk its history; Tab goes on from the prompt to its results. There are
+  no single-key shortcuts. (2.1.1, 2.1.4, 2.4.3, 2.5.3; browser: "keyboard")
 - **Focus.** A 3px focus ring in both themes, at least 3:1 against the page. (2.4.7, 2.4.11; `Colour`)
 - **Contrast.** Text 7:1 for body copy and 4.5:1 for the rest, measured in the light theme and both
   dark blocks; the scoreboard's colours too. (1.4.3, 1.4.11; `test_contrast_meets_wcag`)
@@ -31,10 +32,12 @@ Spell Ball's accessibility note in C4's showroom. Where a test holds a promise, 
   (1.4.1)
 - **Motion.** With reduced motion on, the page starts still: every window shows one still frame, the
   parallax and the fly-down do not run, and transitions are cut. The Motion button in the masthead
-  turns motion on or off either way and is remembered only in your browser. (2.2.2, 2.3.3; browser:
-  "reduced motion")
-- **Status.** The prompt's answer is a polite status line that names the matched tags and the count,
-  cleared and re-set so a repeat is read again. (4.1.3)
+  turns motion on or off either way (on brings back the parallax too) and is remembered only in
+  your browser. The fly-down stops at once if you scroll, touch or press a key. (2.2.2, 2.3.3;
+  browser: "reduced motion", "Motion on wins")
+- **Status.** The prompt's answer is a polite status line that names the matched tags and the count
+  of cards you can see, cleared and re-set so a repeat is read again. Without scripts, the filters'
+  count is printed under them. (4.1.3)
 - **Reflow.** Nothing scrolls sideways at 360px wide, scripts on or off. (1.4.10; browser: "phone width")
 - **Forced colours.** In Windows high contrast the decorative parallax is removed and selected
   controls get a system outline.

@@ -124,6 +124,44 @@ test('"numbers" is not a misspelling of "members" (exact matches win)', () => {
   assert.ok(!r.matched.some((m) => m.tag === 'community'), JSON.stringify(r.matched));
 });
 
+test('precision: a subject shows only the cards that say it', () => {
+  assert.deepEqual(top('php', 9).sort(), ['inputloop', 'php-backport'].sort());
+  assert.ok(!top('chemistry', 9).includes('dot-github'));
+  assert.ok(T.query(model, 'emacs').items.length <= 6);
+});
+
+test('a prefix names a card only when it is most of the name', () => {
+  assert.equal(T.query(model, 'back of the card').view, 'baseball');
+  assert.ok(!T.query(model, 'back of the card').named.length, 'back is not backport');
+  assert.notEqual(top('read')[0], 'two-readers');
+  assert.equal(top('quantum')[0], 'quantum3d5');
+});
+
+test('spreading ranks but never admits: every card shown says a word of the prompt itself', () => {
+  assert.deepEqual(top('conference', 9), ['emacsconf', 'emacs-windows']);
+  assert.deepEqual(top('show me games', 9).sort(), ['dungeon', 'four-swords', 'inputloop']);
+  assert.ok(!top('memory', 9).includes('doors'));
+});
+
+test('words about how to see do not reorder what to see', () => {
+  const plain = top('emacs', 9);
+  assert.deepEqual(top('typing emacs', 9), plain);
+  assert.deepEqual(top('something moving emacs', 9), plain);
+  assert.equal(top('emacs numbers')[0], plain[0]);
+});
+
+test('the hub card does not teach associations', () => {
+  const t = T.teachers(index.items).map((i) => i.slug);
+  assert.ok(!t.includes('inputloop'));
+  assert.ok(t.includes('dungeon'));
+  assert.ok(!t.some((s) => s.startsWith('view:') || s.startsWith('window:')));
+});
+
+test('describe never repeats a label', () => {
+  const s = T.describe(T.query(model, 'read'), 20);
+  assert.ok(!/read, read/.test(s), s);
+});
+
 test('a window word leans toward cards with that window', () => {
   const r = T.query(model, 'show me the fog');
   assert.equal(r.items[0].slug, 'dungeon');
@@ -145,7 +183,7 @@ test('results always say why', () => {
 test('describe names the matched tags and the view', () => {
   const s = T.describe(T.query(model, 'emcas numbers'), 20);
   assert.match(s, /emcas→emacs/);
-  assert.match(s, /scoreboard view/);
+  assert.match(s, /the scoreboard/);
 });
 
 test('the browser code never reaches the network or stores more than Motion', () => {

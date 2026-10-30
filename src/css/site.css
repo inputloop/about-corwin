@@ -4,8 +4,8 @@
    aboutcorwin.com. One stylesheet; no framework, no web fonts. Read from the top:
    tokens, base, the masthead, cards, the parallax portfolio, the display area, the mode-line and
    minibuffer, then the no-script, reduced-motion and forced-colours rules. Everything that moves
-   is inside a prefers-reduced-motion: no-preference block or is driven by site.js, which checks
-   the same setting. */
+   is inside a prefers-reduced-motion: no-preference block (when scripts are off) or behind
+   html.motion-on (when they run; the Motion button starts from the same setting). */
 
 /* ---- tokens --------------------------------------------------------------------------------- */
 :root {
@@ -96,6 +96,8 @@ main > section { padding-top: 3.5rem; }
 .js .js-only { display: inline-block; }
 .js .js-only-flex { display: flex; }
 .js .js-only-block { display: block; }
+.js-only-inline { display: none; }
+.js .js-only-inline { display: inline; }
 .js .nojs-only { display: none; }
 
 /* ---- masthead ------------------------------------------------------------------------------- */
@@ -217,20 +219,25 @@ html:not(.js) .v-featured { display: none; }
 .portfolio h2 { font-size: clamp(2rem, 6vw, 3.4rem); letter-spacing: -0.03em; }
 
 /* Where the browser can tie animation to scrolling, CSS does the parallax by itself, scripts or
-   not. site.js checks the same thing and only steps in where this is unsupported. */
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    html:not(.still) .px-layer { animation: px linear both; animation-timeline: view(); animation-range: cover; }
-    html:not(.still) .px-far { --d: 12vh; --dx: -2vw; }
-    html:not(.still) .px-mid { --d: 34vh; --dx: 3vw; }
-    html:not(.still) .px-near { --d: 70vh; --dx: -6vw; }
-    @keyframes px {
-      from { transform: translate3d(calc(var(--dx) * -1), calc(var(--d) * -1), 0); }
-      to { transform: translate3d(var(--dx), var(--d), 0); }
-    }
-    html:not(.still) .portfolio .card .face { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% entry 60%; }
-    @keyframes rise { from { translate: 0 2.5rem; opacity: 0.3; } to { translate: 0 0; opacity: 1; } }
+   not. site.js checks the same thing and only steps in where this is unsupported.
+   Who decides whether things move: without scripts, the system's reduced-motion setting; with
+   scripts, the Motion button (which starts from that setting), through motion-on or motion-off
+   on <html>. */
+.px-far { --d: 12vh; --dx: -2vw; }
+.px-mid { --d: 34vh; --dx: 3vw; }
+.px-near { --d: 70vh; --dx: -6vw; }
+@keyframes px {
+  from { transform: translate3d(calc(var(--dx) * -1), calc(var(--d) * -1), 0); }
+  to { transform: translate3d(var(--dx), var(--d), 0); }
+}
+@keyframes rise { from { translate: 0 2.5rem; opacity: 0.3; } to { translate: 0 0; opacity: 1; } }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    html:not(.js) .px-layer { animation: px linear both; animation-timeline: view(); animation-range: cover; }
+    html:not(.js) .portfolio .card .face { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% entry 60%; }
   }
+  html.motion-on .px-layer { animation: px linear both; animation-timeline: view(); animation-range: cover; }
+  html.motion-on .portfolio .card .face { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% entry 60%; }
 }
 /* While the mode-line flies the page down, cards lean with the speed. */
 .flying .card .face { transform: rotate(calc(var(--tilt) + var(--vel, 0) * 1deg)) scale(calc(1 - var(--vel-abs, 0) * 0.02)); transition: none; }
@@ -250,6 +257,11 @@ html:not(.js) .v-featured { display: none; }
 .results .why { color: var(--muted); }
 .results button { font: inherit; color: var(--accent); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }
 .back { font-family: var(--sans); font-size: 0.9rem; }
+/* How many cards the filters leave, counted by CSS: hidden cards make no box, so they add nothing. */
+body { counter-reset: shown; }
+.card { counter-increment: shown; }
+.shown { font-family: var(--sans); font-size: 0.9rem; color: var(--muted); margin: 0 0 0.6rem; }
+.shown::before { content: counter(shown) " cards shown above."; }
 .legend { display: grid; grid-template-columns: max-content 1fr; gap: 0.3rem 1.2rem; }
 .legend div { display: contents; }
 .legend dt { font-family: var(--sans); font-weight: 600; }
@@ -284,6 +296,7 @@ html:not(.js) .v-featured { display: none; }
 }
 .minibuffer-wrap { background: var(--mb-bg); color: var(--ink); font: 0.9rem/1.6 var(--mono); padding: 0.35rem var(--gutter) 1.2rem; }
 .minibuffer { align-items: baseline; gap: 1ch; }
+.minibuffer-wrap .results:not(:empty) { margin: 0.4rem 0 0; max-height: 40vh; overflow: auto; }
 .mb-prompt { color: var(--accent); font-weight: 700; white-space: nowrap; }
 .minibuffer input {
   flex: 1; min-width: 0; font: inherit; color: var(--ink); background: transparent;
@@ -294,11 +307,9 @@ html:not(.js) .v-featured { display: none; }
 .colophon { margin: 0.8rem 0 0; font-size: 0.75rem; color: var(--muted); }
 .at-bottom .modeline { background: var(--ml-active); }
 
-@media (prefers-reduced-motion: no-preference) {
-  .js .minibuffer-wrap { transition: background-color 0.4s ease; }
-  .js.at-bottom .minibuffer-wrap { animation: grow 0.35s ease-out; }
-  @keyframes grow { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0); } }
-}
+html.motion-on .minibuffer-wrap { transition: background-color 0.4s ease; }
+html.motion-on.at-bottom .minibuffer-wrap { animation: grow 0.35s ease-out; }
+@keyframes grow { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0); } }
 
 /* ---- small screens -------------------------------------------------------------------------- */
 @media (max-width: 34rem) {
@@ -312,11 +323,13 @@ html:not(.js) .v-featured { display: none; }
 
 /* ---- still: reduced motion, or Motion turned off --------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  html:not(.motion-on), html:not(.motion-on) *, html:not(.motion-on) *::before, html:not(.motion-on) *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
 }
+html.motion-off, html.motion-off *, html.motion-off *::before, html.motion-off *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation: none !important; }
 @media (prefers-reduced-motion: no-preference) {
-  html:not(.still) { scroll-behavior: smooth; }
+  html:not(.js) { scroll-behavior: smooth; }
 }
+html.motion-on { scroll-behavior: smooth; }
 
 /* ---- forced colours (Windows high contrast) ------------------------------------------------- */
 @media (forced-colors: active) {

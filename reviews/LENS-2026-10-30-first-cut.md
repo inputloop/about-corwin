@@ -75,3 +75,30 @@ principle.
   it into an Org buffer is small, and would be the C4 "one model, many surfaces" test for this site.
 - Bryant's page could share `build.py` and the card format, so the two pages read as a pair.
 - The offline taxonomy is a reusable piece: the shop page's catalog could get the same prompt.
+
+## 2026-10-30, later: what the second reader found, and what changed
+
+An independent reviewer (a fresh session given the code and the requirements, not this record) read
+the site. Everything below was confirmed and changed; prove-red grew from 15 to 19 planted faults.
+
+- **Private detail in served files** (inverse finding 3, sharpened): the served model named the c4
+  repository path, a commit and internal note names. Now the served header is neutral, the code is
+  byte-identical to the original, provenance lives only in PROVENANCE.md, and a test scans every file
+  in `public/` for private names.
+- **An overstated claim**: "sends nothing unless you open a door" is not true of NextTime's map
+  tiles. Narrowed, with the exception named.
+- **Search precision**: the shop's own card tied every field together. Hubs and the view/window
+  items no longer teach associations, a card is shown only for a word it says itself, spread counts
+  0.3, and a name prefix must be most of the name. "php" went from 13 cards to 2.
+- **Filters and prompt disagreed**: each now clears the other; the echo counts what is visible; a CSS
+  counter says how many are left with scripts off.
+- **Accessibility**: the mode-line's name now starts with its visible words (2.5.3); the single-key
+  `/` shortcut is gone (2.1.4); results follow the prompt in tab order; window buttons carry
+  `aria-expanded`; the Motion button now wins over the system setting, parallax included.
+- **Smaller**: navigation help split for scripts on and off; build errors on a new `do` word or a
+  malformed link are reported, not thrown; assets carry content hashes; the fly-down yields to the
+  wheel, touch or a key; no TODO ships in the page.
+
+Inverse finding 1 (family) widened at Corwin's word in the session: his dad Steven, his grandparents
+Bill and Jean, his wife Dee, each linked, and his Minicon and science fiction fandom. It is still his
+to confirm the wording. Findings 2 and 4 stand as written.

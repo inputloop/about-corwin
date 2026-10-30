@@ -20,7 +20,7 @@ score: Public repositories | 7 | 2026-10-29
 inputloop is two people and the agents who work for us. We make small free software: tools for working with an AI assistant on your own computer, games you play from your own cartridge, a simulator for learning chemistry, and patched PHP for old business software.
 
 == function ==
-Everything we publish runs where you put it and sends nothing unless you open a door. The memory is kept in plain files you can read, the ways of working are written down, and the rooms where people and agents meet run on your machines.
+What we publish runs where you put it. Our assistant tools send nothing unless you open a door, and where something does reach out, it says so: NextTime's map, for one, loads its tiles from a public map server. The memory is kept in plain files you can read, the ways of working are written down, and the rooms where people and agents meet run on your machines.
 
 == practice ==
 Much of our code and writing is done by Claude models working for us under the name Mentat, and our bylines say so, so a reader can weigh the work knowing what made it. The rest of this page is inputloop: the work you can pick up today, and the ideas we keep coming back to when we make it.

@@ -130,11 +130,17 @@ class Content(unittest.TestCase):
                     for name in pat.findall(fh.read()):
                         self.assertIn(name, build.PUBLIC_REPOS, "%s links %s" % (f, name))
 
-    def test_private_project_names_stay_off_the_page(self):
-        page = read("index.html").lower()
-        for name in ("gitcha", "llama-bridge", "topoforge", "theseus", "persona-engine", "ghostwheel",
-                     "legendoflinks", "mariosworld", "mariospaint", "al2n", "kid-glove", "tavern"):
-            self.assertNotIn(name, page, name)
+    PRIVATE = ("gitcha", "llama-bridge", "llama bridge", "topoforge", "theseus", "persona-engine",
+               "ghostwheel", "legendoflinks", "mariosworld", "mariospaint", "al2n", "kid-glove", "tavern",
+               "inputloop/c4", "showroom", "hzpa", "research-lives-in", "business-research", "thickity")
+
+    def test_private_project_names_stay_off_every_served_file(self):
+        for root, _, files in os.walk(os.path.join(OUT, "public")):
+            for f in files:
+                with open(os.path.join(root, f), encoding="utf-8", errors="replace") as fh:
+                    text = fh.read().lower()
+                for name in self.PRIVATE:
+                    self.assertNotIn(name, text, "%s names %s" % (f, name))
 
     def test_credit_is_given_as_the_catalog_gives_it(self):
         whose = {c["slug"]: c["facets"]["whose"] for c in DATA["cards"]}
@@ -274,6 +280,16 @@ class Page(unittest.TestCase):
             details = [n for n in art.all() if n.tag == "details"]
             self.assertEqual(len(details), 1, "the introduction opens with no script, under <details>")
 
+    def test_navigation_help_is_split_for_scripts_on_and_off(self):
+        for c in DATA["cards"]:
+            js, nojs = build.how_to(c)
+            self.assertIn("Activate the window", js)
+            self.assertTrue(nojs.startswith("Without scripts"))
+            self.assertIn('<span class="nojs-only">%s</span>' % build.e(nojs), self.src)
+
+    def test_no_todo_ships(self):
+        self.assertNotIn("TODO", self.src)
+
     def test_window_tooltips_say_more_about(self):
         for c in DATA["cards"]:
             self.assertIn('title="More about %s"' % build.e(c["title"]), self.src)
@@ -296,17 +312,27 @@ class LibreJS(unittest.TestCase):
         self.assertIn('rel="jslicense"', page)
         self.assertIn('id="jslicense-labels1"', labels)
         srcs = re.findall(r'<script src="([^"]+)"', page)
-        self.assertEqual(sorted(srcs), sorted("js/" + n for n in build.JS_FILES))
+        self.assertEqual(sorted(s.split("?")[0] for s in srcs), sorted("js/" + n for n in build.JS_FILES))
         for s in srcs:
             self.assertIn('href="%s"' % s, labels)
-            js = read(s)
+            js = read(s.split("?")[0])
             self.assertTrue(js.startswith("// @license " + build.GPL_MAGNET), s)
             self.assertTrue(js.rstrip().endswith("// @license-end"), s)
 
-    def test_chamber_model_is_unchanged_from_c4(self):
+    def test_chamber_model_keeps_its_licence_and_author(self):
         js = read("js", "chamber.model.js")
-        self.assertIn("PROVENANCE", js)
         self.assertIn("Copyright 2026 Corwin Brust", js)
+        self.assertIn("GPLv3-or-later", js)
+
+    def test_asset_urls_carry_a_content_version(self):
+        page = read("index.html")
+        urls = re.findall(r'(?:src|href)="((?:css|js)/[^"]+)"', page)
+        self.assertTrue(urls)
+        import hashlib
+        for u in urls:
+            path, _, v = u.partition("?v=")
+            with open(os.path.join(OUT, "public", path), "rb") as f:
+                self.assertEqual(v, hashlib.sha256(f.read()).hexdigest()[:10], u)
 
 
 class Server(unittest.TestCase):

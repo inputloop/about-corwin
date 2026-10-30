@@ -149,6 +149,7 @@ test('a click on the card opens the introduction; the window opens the featured 
   assert.ok(await p.isVisible('#nexttime .v-baseball'));
   await p.click('#nexttime .face > .window');
   assert.equal(await p.getAttribute('#nexttime', 'data-current'), 'featured');
+  assert.equal(await p.getAttribute('#nexttime .face > .window', 'aria-expanded'), 'true');
   assert.equal(await p.$$eval('#nexttime .feature-slot canvas', (c) => c.length), 1);
   await shot(p, 'js-open');
   await p.click('#quantum3d5 .face .title');
@@ -165,7 +166,7 @@ test('the prompt steers what the window opens: numbers open the scoreboard', { s
   const p = await page();
   await p.fill('#prompt', 'numbers for php');
   await p.press('#prompt', 'Enter');
-  await p.waitForFunction(() => /scoreboard view/.test(document.querySelector('#echo').textContent));
+  await p.waitForFunction(() => /the scoreboard/.test(document.querySelector('#echo').textContent));
   await p.click('#php-backport .face > .window');
   assert.equal(await p.getAttribute('#php-backport', 'data-current'), 'scoreboard');
   assert.ok(await p.isVisible('#php-backport .scoreboard'));
@@ -181,13 +182,21 @@ test('keyboard: summary opens a card, / goes to the prompt', { skip }, async () 
   await p.keyboard.press('Escape');
   await p.evaluate(() => document.activeElement.blur());
   await p.keyboard.press('/');
+  await p.waitForTimeout(200);
+  assert.notEqual(await p.evaluate(() => document.activeElement.id), 'prompt', 'no single-key shortcuts');
+  await p.keyboard.press('Alt+x');
   await p.waitForFunction(() => document.activeElement.id === 'prompt', null, { timeout: 5000 });
+  await p.keyboard.type('games');
+  await p.keyboard.press('Enter');
+  await p.waitForSelector('#results li button');
+  await p.keyboard.press('Tab');
+  assert.equal(await p.evaluate(() => document.activeElement.closest('#results') !== null), true, 'Tab goes from the prompt to the results');
   await p.context().close();
 });
 
 test('reduced motion: still windows, no flight, and Motion can turn it back on', { skip }, async () => {
   const p = await page({ reducedMotion: 'reduce' });
-  assert.ok(await p.$eval('html', (h) => h.classList.contains('still')));
+  assert.ok(await p.$eval('html', (h) => h.classList.contains('motion-off')));
   assert.equal(await p.getAttribute('#motion', 'aria-pressed'), 'false');
   const states = await p.$$eval('.card .window', (ws) => [...new Set(ws.map((w) => w.dataset.state))]);
   assert.deepEqual(states, ['still']);
@@ -198,6 +207,49 @@ test('reduced motion: still windows, no flight, and Motion can turn it back on',
   assert.equal(await p.getAttribute('#motion', 'aria-pressed'), 'true');
   await p.waitForTimeout(100);
   assert.ok((await p.$$eval('.card .window', (ws) => ws.map((w) => w.dataset.state))).includes('moving'));
+  await p.context().close();
+});
+
+test('the quick filters and the prompt clear each other, and the echo counts what is shown', { skip }, async () => {
+  const p = await page();
+  await p.click('label[for="f-play"]');
+  assert.deepEqual((await visible(p)).sort(), ['dungeon', 'four-swords']);
+  await p.waitForFunction(() => /^2 cards you would play/.test(document.querySelector('#echo').textContent));
+  await p.fill('#prompt', 'php');
+  await p.press('#prompt', 'Enter');
+  await p.waitForFunction(() => /cards for php/.test(document.querySelector('#echo').textContent));
+  assert.ok(await p.isChecked('#f-all'), 'the prompt clears the filter');
+  const shown = await visible(p);
+  const echo = await p.textContent('#echo');
+  assert.ok(echo.startsWith(shown.length + ' of '), `${echo} vs ${shown.length} shown`);
+  await p.click('label[for="f-learn"]');
+  assert.equal(await p.inputValue('#prompt'), '', 'the filter clears the prompt');
+  await p.context().close();
+});
+
+test('without scripts: the filters say how many cards are left', { skip }, async () => {
+  const p = await page({ javaScriptEnabled: false });
+  await p.click('label[for="f-play"]');
+  // A counter's value is not readable from the DOM, so check the mechanism: every card counts
+  // itself, a hidden card makes no box (so it cannot count), and the stage prints the counter.
+  const m = await p.evaluate(() => ({
+    inc: [...document.querySelectorAll('.card')].map((c) => getComputedStyle(c).counterIncrement),
+    shown: [...document.querySelectorAll('.card')].filter((c) => getComputedStyle(c).display !== 'none').length,
+    content: getComputedStyle(document.querySelector('.stage .shown'), '::before').content,
+  }));
+  assert.ok(m.inc.every((v) => v === 'shown 1'));
+  assert.equal(m.shown, 2);
+  assert.match(m.content, /counter\(shown\)/);
+  await p.context().close();
+});
+
+test('Motion on wins over the system setting, parallax included', { skip }, async () => {
+  const p = await page({ reducedMotion: 'reduce' });
+  await p.click('#motion');
+  assert.ok(await p.$eval('html', (h) => h.classList.contains('motion-on')));
+  const anim = await p.$eval('.px-near', (e) => getComputedStyle(e).animationName);
+  const css = await p.evaluate(() => CSS.supports('animation-timeline: view()'));
+  if (css) assert.equal(anim, 'px'); else assert.equal(anim, 'none');
   await p.context().close();
 });
 

@@ -2,4 +2,4 @@ title: Shells
 window: shells
 tags: skills, taxonomy, motion
 == presentation ==
-Things sit on rings around one in focus, closer for fewer steps apart. Orbit rings, graph, network, distance, spell ball.
+Things sit on rings around one in focus, closer for fewer steps apart. Orbit rings, graph, network, distance.

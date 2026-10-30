@@ -70,8 +70,8 @@ its tags. Keep prose under 500 words per card. Link only repositories that are p
 
 ## Open items for Corwin
 
-- `src/index.html` has a `TODO(Corwin)`: a line in your own words, if you want one, and your GPG
-  fingerprint, which this page does not guess. The Find me list points to the Windows section of the
+- A line in your own words in the About section, if you want one, and your GPG fingerprint in
+  `content/site.txt`, which this page does not guess. The Find me list points to the Windows section of the
   Emacs download page, where it is listed.
 - The family and fandom paragraph in `content/site.txt` (Steven, Bill and Jean Brust, Dee Brust,
   Minicon) was written from what you said in the session; trim or reword it as you like. Jean's link

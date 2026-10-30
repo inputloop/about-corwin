@@ -1,5 +1,5 @@
 title: A door you open yourself
-role: Nothing we make reaches outside your machine until you open the door it would go through.
+role: In our assistant tools, nothing reaches outside your machine until you open the door it would go through.
 order: 21
 window: planes
 do: run
@@ -12,7 +12,7 @@ stat: Default | every door closed
 stat: Checked by | a gate that reads the consent, not a promise to remember it
 
 == summary ==
-Every feature that talks to another machine starts switched off. You turn on the ones you want, one at a time, and the program says what each one sends.
+In vibrobeast, every feature that talks to another machine starts switched off. You turn on the ones you want, one at a time, and the program says what each one sends.
 
 == function ==
 Consent gates the action mechanically. Before anything touches credentials, someone else's system, or a person who is not part of the conversation, a gate checks that the consent is really there.

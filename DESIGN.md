@@ -19,7 +19,7 @@ own, and the scripts are added on top.
 | The portfolio's parallax runs where the browser ties CSS animation to scrolling (`animation-timeline: view()`) | The same, plus a script fallback where the browser cannot |
 | The mode-line's position counter is CSS too: a registered integer property animated by the root scroll timeline and printed with `counter()` | The script writes Top, a percentage, or Bot, and the section name |
 | The mode-line is `position: sticky` at the bottom, and the minibuffer follows it in the flow, so at the end of the page the mode-line gains a second line by itself | The same; a click on the mode-line flies the page down and opens the prompt |
-| The quick filters are radio buttons, and `body:has(#f-play:checked)` hides the rest | The same, plus the prompt |
+| The quick filters are radio buttons, and `body:has(#f-play:checked)` hides the rest; a CSS counter says how many are left | The same, plus the prompt (each clears the other) |
 
 What scripts never do: fetch anything, set a cookie, or store anything except your Motion choice
 (in your own browser). The content security policy in `src/.htaccess` enforces the first:
@@ -88,22 +88,30 @@ the same taxonomy.
 
 In the browser, `src/js/taxonomy.js`:
 
-1. measures association between tags as normalized pointwise mutual information over the items
-   (Python recomputes it in the tests and the two must agree);
+1. measures association between tags as normalized pointwise mutual information over the cards
+   (Python recomputes it in the tests and the two must agree). The views and windows are left out
+   of this step, and so is a hub: a card naming more than 1.5 times the median number of tags (the
+   shop's own card names every field it works in, and would tie them all together);
 2. lays the tags out as a tension field with C4's `chamber.model.js`, seeded so it settles the same
    way everywhere; associated tags pull together, all push apart, and the field settles toward
    balance (the Ideas card "How the prompt finds things" shows it live, with its balance reading);
 3. matches the prompt's words to tags: exact, plural, prefix, or one typo (sharing the first
    letter), with exact matches winning, so "numbers" is never read as "members"; names are matched
-   too, so "vibrobest" finds vibrobeast;
+   too, so "vibrobest" finds vibrobeast, but a prefix names a card only when it is most of the
+   name ("quantum" names Quantum 3D5; "back" does not name the backport);
 4. spreads each match one step along the associations, then scores cards per facet, damping a
-   facet by how many of its tags lit up so no one facet drowns the rest;
+   facet by how many of its tags lit up so no one facet drowns the rest. A tag reached only by
+   spreading counts 0.3 against 1 for a direct hit, and a card is shown only for a word it says
+   itself (or its name); spreading ranks, it does not admit;
 5. nudges each card by how close its centroid sits to the query's centroid in the field;
 6. reads the view and window items separately: "numbers" opens the scoreboard, "facts" the back,
-   "show me" the window, and "fog" leans toward the card whose window is the fog map. Words about
+   "show me" the window grown large; "fog" means a map, and the window it names (the fog map) adds
+   a lean toward the card that shows it, so Dungeon comes first. Words about
    how to see a thing count for only 0.3 when scoring cards, so they choose views, not subjects.
 
-The echo area always says which tags matched, so the guess can be checked.
+The echo area always says which tags matched, so the guess can be checked. The quick filters and
+the prompt narrow the same deck, so using one clears the other, and the echo counts the cards you
+can see. Without scripts, a CSS counter under the filters says how many are left.
 
 ## Windows
 
@@ -111,7 +119,13 @@ Each picture is a small canvas renderer in `src/js/windows.js`, drawn from ideas
 the orb (LAB orb), shells (Spell Ball), the tension field (chamber), fog of war (DUNGEON-play),
 planes in depth (LENS viz), and the Emacs buffer with its mode-line (the front door's Emacs look).
 One loop draws the windows on screen at up to 30 frames a second; with motion off each draws one
-still frame and the loop stops.
+still frame and the loop stops. Who decides: with scripts off, the system's reduced-motion setting;
+with scripts on, the Motion button, which starts from that setting and sets `motion-on` or
+`motion-off` on `<html>` for the CSS to follow, so turning Motion on brings back the parallax too.
+The fly-down stops the moment you use the wheel, touch the screen or press a key.
+
+The CSS and script URLs carry a hash of the file (`site.css?v=...`), so after a deploy no browser
+runs yesterday's script against today's page.
 
 ## Turned down
 

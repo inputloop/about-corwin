@@ -301,16 +301,17 @@ def render_links(links):
     return "<ul class=\"links\">%s</ul>" % "".join(out) if out else ""
 
 
-def how_to(c, windows):
-    w = windows[c["window"]]
+def how_to(c):
+    """How this card's navigation works, said once. Returns (with scripts, without scripts)."""
     views = card_views(c)
     names = {"baseball": "the back of the card", "scoreboard": "a scoreboard"}
     extra = [names[v] for v in views if v in names]
-    s = ("The window shows %s. Activate it for the featured view; click anywhere else on the "
-         "card for this introduction." % w["title"].lower())
+    js = "Activate the window for it grown large; click anywhere else on the card for this introduction."
     if extra:
-        s += " The buttons above also turn to %s." % " and ".join(extra)
-    return s
+        js += " The buttons above turn to %s." % " and ".join(extra)
+    nojs = "Without scripts, everything this card holds is below: %s." % ", ".join(
+        ["this introduction"] + extra)
+    return js, nojs
 
 
 def render_card(c, windows, level):
@@ -328,9 +329,11 @@ def render_card(c, windows, level):
                     for p in c["layers"][layer])
     views.append(
         '<section class="view v-prose" data-view="prose" aria-labelledby="%s-prose-h">'
-        '<%s id="%s-prose-h">%s</%s>%s<p class="how">%s %s</p>%s</section>'
+        '<%s id="%s-prose-h">%s</%s>%s<p class="how">%s <span class="js-only-inline">%s</span>'
+        '<span class="nojs-only">%s</span></p>%s</section>'
         % (slug, hv, slug, VIEW_HEADINGS["prose"], hv, prose,
-           e(" ".join(c["layers"]["presentation"])), e(how_to(c, windows)), render_links(c["links"])))
+           e(" ".join(c["layers"]["presentation"])), e(how_to(c)[0]), e(how_to(c)[1]),
+           render_links(c["links"])))
     stats = "".join("<div><dt>%s</dt><dd>%s</dd></div>" % (e(s["label"]), e(s["value"]))
                     for s in c["stats"])
     views.append(
@@ -382,8 +385,8 @@ def render_legend(data):
 
 def render_filters(data):
     """The quick filters in the display area: radio buttons that CSS alone can act on."""
-    used = sorted({c["facets"]["do"] for c in data["cards"]},
-                  key=lambda d: ("play", "build", "run", "read", "learn", "check").index(d))
+    order = [t["label"] for t in data["vocab"] if t["facet"] == "do"]
+    used = sorted({c["facets"]["do"] for c in data["cards"]}, key=order.index)
     out = ['<input type="radio" name="f" id="f-all" value="" checked>'
            '<label for="f-all">everything</label>']
     for d in used:
@@ -403,7 +406,7 @@ def render_filter_css(used):
 def render_site_links(site):
     out = []
     for v in site["header"].get("link", []):
-        parts = [p.strip() for p in v.split("|")]
+        parts = pipes(v, 2, site["path"])
         label, target = parts[0], parts[1]
         rel = ""
         if len(parts) > 2 and parts[2].startswith("rel="):
@@ -480,6 +483,19 @@ def render_jslicense(template):
     return template.replace("{{ROWS}}", rows)
 
 
+def versioned(text, out_dir):
+    """Add ?v=<hash of the file> to every css/ and js/ URL, so a browser holding yesterday's script
+    never runs it against today's page. The page is no-cache; these files are cached for a day."""
+    import hashlib
+
+    def tag(m):
+        path = os.path.join(out_dir, m.group(2))
+        with open(path, "rb") as f:
+            v = hashlib.sha256(f.read()).hexdigest()[:10]
+        return '%s="%s?v=%s"' % (m.group(1), m.group(2), v)
+    return re.sub(r'(src|href)="((?:css|js)/[\w.-]+)"', tag, text)
+
+
 def check_js_labels(src_js):
     for n in JS_FILES:
         with open(os.path.join(src_js, n), encoding="utf-8") as f:
@@ -509,9 +525,9 @@ def build(out_dir, content_dir=CONTENT, src_dir=SRC):
         f.write("/* Written by build.py: one rule per quick filter. CC-BY-SA-4.0 / GPL-3.0-or-later */\n")
         f.write(render_filter_css(used) + "\n")
     with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
-        f.write(page)
+        f.write(versioned(page, out_dir))
     with open(os.path.join(out_dir, "jslicense.html"), "w", encoding="utf-8") as f:
-        f.write(labels)
+        f.write(versioned(labels, out_dir))
     with open(os.path.join(out_dir, "taxonomy.json"), "w", encoding="utf-8") as f:
         json.dump(index, f, ensure_ascii=False, indent=1, sort_keys=True)
     return data, index
