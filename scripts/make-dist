@@ -1,0 +1,24 @@
+#!/bin/sh
+# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# make-dist -- turn public/ into dist/about-corwin.tar.gz: site/ (the web files), deploy/ (the
+# three host scripts) and MANIFEST.sha256 (a sha256 line per file). dist/stage.sh is a copy of the
+# stage script, to send beside the tarball. Needs only sh, tar, find and sha256sum or shasum.
+set -eu
+cd "$(dirname "$0")/.."
+OUT=${OUT:-public}
+DIST=${DIST:-dist}
+[ -f "$OUT/index.html" ] || { echo "make-dist: $OUT/ is empty; run python3 build.py first" >&2; exit 1; }
+sumc() { if command -v sha256sum >/dev/null 2>&1; then sha256sum "$@"; else shasum -a 256 "$@"; fi; }
+w=$(mktemp -d 2>/dev/null || mktemp -d -t abc)
+trap 'rm -rf "$w"' EXIT INT TERM
+mkdir "$w/site" "$w/deploy"
+(cd "$OUT" && tar cf - .) | (cd "$w/site" && tar xf -)
+for f in stage go-live rollback; do cp "deploy/$f.sh" "$w/deploy/$f.sh"; done
+(cd "$w" && find site deploy -type f | sort | while IFS= read -r f; do sumc "$f"; done > MANIFEST.sha256)
+mkdir -p "$DIST"
+tar -czf "$DIST/about-corwin.tar.gz" -C "$w" site deploy MANIFEST.sha256
+cp deploy/stage.sh "$DIST/stage.sh"
+n=$(wc -l < "$w/MANIFEST.sha256" | tr -d ' ')
+echo "make-dist: $DIST/about-corwin.tar.gz ($n files), $DIST/stage.sh"

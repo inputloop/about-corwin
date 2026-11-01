@@ -28,10 +28,16 @@ prove-red:
 serve: build
 	$(PYTHON) -m http.server $(PORT) --bind 127.0.0.1 --directory $(OUT)
 
+dist: build
+	sh scripts/make-dist
+
+access:
+	sh scripts/access-card deploy/access/aboutcorwin.card
+
 deploy: check
 	sh scripts/deploy-dreamhost.sh
 
 clean:
-	rm -rf $(OUT)
+	rm -rf $(OUT) dist
 
-.PHONY: all build content check check-fast prove-red serve deploy clean
+.PHONY: dist access all build content check check-fast prove-red serve deploy clean

@@ -24,6 +24,8 @@ run_checks() {
   "$py" build.py --out "$out" || return 1
   step "content, page, accessibility, LibreJS, contrast, second reader (python)"
   SITE_OUT=$out "$py" -m unittest discover -s tests/py || fail=1
+  step "access card and deploy scripts (sh)"
+  sh tests/deploy/run.sh || fail=1
   if command -v "$node" >/dev/null 2>&1; then
     step "taxonomy (node)"
     SITE_OUT=$out "$node" --test tests/js/*.test.mjs || fail=1
@@ -48,7 +50,7 @@ prove_red() {
   plant() {
     name=$1 file=$2 expr=$3 check=$4
     rm -rf "$tmp/w"; mkdir "$tmp/w"
-    (cd "$here" && tar cf - --exclude=./public --exclude=./node_modules --exclude=./.git .) | (cd "$tmp/w" && tar xf -)
+    (cd "$here" && tar cf - --exclude=./public --exclude=./node_modules --exclude=./dist --exclude=./.git .) | (cd "$tmp/w" && tar xf -)
     sed "$expr" "$tmp/w/$file" > "$tmp/x" && cp "$tmp/x" "$tmp/w/$file"
     if cmp -s "$here/$file" "$tmp/w/$file"; then
       printf 'PLANT FAILED  %s (the fault did not change %s)\n' "$name" "$file"; bad=1; return
@@ -74,6 +76,17 @@ prove_red() {
   plant "low-contrast muted text"            src/css/site.css   's/--muted: #59544b;/--muted: #a8a397;/'   "$pyc"
   plant "the CSP allows inline script"       src/.htaccess      "s/script-src 'self'/script-src 'self' 'unsafe-inline'/" "$pyc"
   plant "a private name in a served script"  src/js/windows.js  's#^  .use strict.;#  "use strict"; // from inputloop/c4#' "$pyc"
+  depc="sh tests/deploy/run.sh"
+  plant "stage stops checking the sums"       deploy/stage.sh    's/|| bad=1$/|| bad=0/'                    "$depc"
+  plant "stage ignores unlisted files"        deploy/stage.sh    's/\[ -z "\$extra" \] ||/true ||/'          "$depc"
+  plant "stage accepts a tarball that climbs" deploy/stage.sh    "s#grep -Eq '.*'; then#grep -Eq NOPE; then#" "$depc"
+  plant "go-live skips the backup refusal"    deploy/go-live.sh  's#^if ! \$CP -a .*; fi$#true#'              "$depc"
+  plant "go-live trusts an unverified release" deploy/go-live.sh '/^(cd "\$rel" \&\& sumc/d'                  "$depc"
+  plant "go-live overwrites .dh-diag"         deploy/go-live.sh  's/\.dh-diag|\.dh-diag\/\*) echo/NOPE|NOPE\/*) echo/' "$depc"
+  plant "rollback skips its backup refusal"   deploy/rollback.sh 's#^if ! \$CP -a .*; fi$#true#'              "$depc"
+  plant "rollback forgets .dh-diag"           deploy/rollback.sh 's# ! -path ./.dh-diag##g'                  "$depc"
+  plant "the card reader accepts a key path"  scripts/access-card 's/if (val ~ \/BEGIN/if (0 \&\& val ~ \/BEGIN/' "$depc"
+  plant "the card reader forgets required lines" scripts/access-card 's/for (m in must) if/for (m in mustX) if/' "$depc"
   plant "heading levels skip"                build.py           's/render_card(c, windows, 4) for c in projects/render_card(c, windows, 5) for c in projects/' "$pyc"
   if command -v "$node" >/dev/null 2>&1; then
     plant "associations computed wrongly"    src/js/taxonomy.js 's/-Math.log(pab);/-Math.log(pab) * 0.9;/' "$nodec"
