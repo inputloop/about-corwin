@@ -30,6 +30,8 @@
   --sans: system-ui, -apple-system, "Segoe UI", Roboto, "DejaVu Sans", sans-serif;
   --mono: ui-monospace, "DejaVu Sans Mono", "Cascadia Mono", Consolas, Menlo, monospace;
   --measure: 66ch;
+  --read-scale: 1;
+  --read-lh: 1.6;
   --gutter: 16px;
   color-scheme: light;
 }
@@ -62,6 +64,18 @@
   --px-ink: rgb(200 173 255 / 0.09);
   color-scheme: dark;
 }
+
+/* High contrast: the egad vivendi pair read from Modus (black, white, bg-dim #1e1e1e, blue-warmer
+   #79a8ff), with a yellow focus ring. Picked in Customize; not follow-the-system. */
+:root[data-theme="hc"] {
+  --bg: #000000; --surface: #1e1e1e; --ink: #ffffff; --muted: #d0d0d0; --accent: #79a8ff;
+  --accent-ink: #000000; --rule: #9f9f9f; --card-rule: #535353; --card-margin: #8a4a4a;
+  --ml-bg: #1e1e1e; --ml-ink: #ffffff; --ml-active: #535353; --mb-bg: #000000; --focus: #ffd400;
+  --shadow: 0 0 0 1px #9f9f9f;
+  --px-ink: rgb(121 168 255 / 0.08);
+  color-scheme: dark;
+}
+:root[data-theme="hc"] a { text-decoration-thickness: 2px; }
 
 /* ---- base ----------------------------------------------------------------------------------- */
 *, *::before, *::after { box-sizing: border-box; }
@@ -116,6 +130,68 @@ button { font: inherit; }
 #motion[aria-pressed="true"], .viewbar button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .findme { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.3rem 1.4rem; font-family: var(--sans); font-size: 0.95rem; }
 
+/* ---- reading settings (Customize) -------------------------------------------------------------
+   Set as attributes on <html> by customize.js. They change the reading text (.reading, the card
+   views) and the line length; the bars, buttons and headings of the page keep their own sizes. */
+html[data-size="1"] { --read-scale: 1.15; }
+html[data-size="2"] { --read-scale: 1.3; }
+html[data-size="3"] { --read-scale: 1.5; }
+html[data-size="4"] { --read-scale: 1.75; }
+html[data-measure="narrow"] { --measure: 52ch; }
+html[data-measure="wide"] { --measure: 84ch; }
+html[data-leading="tight"] { --read-lh: 1.4; }
+html[data-leading="loose"] { --read-lh: 1.85; }
+html[data-leading="looser"] { --read-lh: 2.1; }
+.reading { font-size: calc(1.0625rem * var(--read-scale, 1)); line-height: var(--read-lh, 1.6); }
+
+/* ---- the about section: text, a side column, then the cards ---------------------------------- */
+.about-grid { display: grid; gap: 0 3rem; grid-template-columns: minmax(0, 1fr); }
+.about-cards { grid-column: 1 / -1; }
+.side { display: grid; gap: 1.2rem; align-content: start; font-family: var(--sans); font-size: 0.95rem; margin-top: 1.5rem; }
+.side-card { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 0.2rem 1rem 0.9rem; box-shadow: var(--shadow); }
+.side-card h3 { font-size: 1rem; margin: 0.8rem 0 0.4rem; }
+.side ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; }
+.side .findme { display: grid; }
+.side .what { color: var(--muted); font-family: var(--mono); font-size: 0.85em; overflow-wrap: anywhere; }
+.side .when { color: var(--muted); font-size: 0.85em; white-space: nowrap; }
+.side .src { color: var(--muted); font-size: 0.85em; margin: 0.7rem 0 0; }
+.builds li, .posts li { display: flex; flex-wrap: wrap; gap: 0 0.5rem; align-items: baseline; }
+@media (min-width: 62rem) {
+  .about-grid { grid-template-columns: minmax(0, var(--measure)) minmax(17rem, 23rem); justify-content: space-between; }
+  .side { margin-top: 4.3rem; position: sticky; top: 3.2rem; align-self: start; }
+}
+
+/* ---- Customize: the floating control, as M-x customize is to the mode-line ------------------ */
+.custom { display: none; }
+.js .custom { display: block; position: fixed; top: 0; right: max(var(--gutter), calc((100vw - 72rem) / 2 + var(--gutter))); z-index: 40; font-family: var(--sans); }
+.custom-btn {
+  font: 0.8rem var(--mono); color: var(--ml-ink); background: var(--ml-bg); border: 1px solid var(--rule); border-top: 0;
+  border-radius: 0 0 8px 8px; padding: 0.2rem 0.8rem; min-height: 1.6rem; cursor: pointer; opacity: 0.85;
+}
+.custom-btn:hover, .custom-btn[aria-expanded="true"], .custom-btn:focus-visible { opacity: 1; background: var(--ml-active); }
+.custom-panel {
+  position: absolute; top: 1.6rem; right: 0; width: min(23rem, calc(100vw - 2 * var(--gutter))); max-height: calc(100vh - 3.5rem);
+  overflow: auto; background: var(--mb-bg); color: var(--ink); border: 2px solid var(--ml-bg); border-radius: 0 0 8px 8px;
+  padding: 0.2rem 1rem 1rem; box-shadow: var(--shadow); font-size: 0.95rem; line-height: 1.4;
+}
+.custom-panel[hidden] { display: none; }
+.custom-panel .c-title { font-size: 1.05rem; margin: 0.7rem 0 0.2rem; font-family: var(--mono); }
+.custom-panel .c-note { color: var(--muted); margin: 0 0 0.5rem; font-size: 0.85rem; }
+.custom-panel fieldset { border: 0; border-top: 1px solid var(--rule); margin: 0; padding: 0.4rem 0 0.5rem; display: flex; flex-wrap: wrap; gap: 0.15rem 1rem; }
+.custom-panel legend { font: 0.9rem var(--mono); color: var(--muted); padding: 0 0.4rem 0 0; float: left; width: 100%; }
+.custom-panel label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2rem; cursor: pointer; font-family: var(--mono); font-size: 0.9rem; }
+.custom-panel input { position: absolute; opacity: 0; width: 1.5rem; height: 1.5rem; margin: 0; }
+.custom-panel .box::before { content: "[ ]"; }
+.custom-panel input:checked + .box::before { content: "[*]"; font-weight: bold; }
+.custom-panel input:focus-visible + .box { outline: 3px solid var(--focus); outline-offset: 2px; }
+.c-actions { display: flex; gap: 0.6rem; margin: 0.6rem 0 0.2rem; }
+.c-actions button { font: 0.95rem var(--mono); color: var(--ink); background: var(--surface); border: 1px solid var(--ink); border-radius: 4px; padding: 0.3rem 0.8rem; min-height: 2.2rem; cursor: pointer; }
+.c-actions button:hover { background: var(--ml-active); }
+.c-state { font: 0.85rem var(--mono); color: var(--muted); margin: 0.4rem 0 0; }
+@media (max-width: 40rem) { .js .custom { right: var(--gutter); } }
+@media (forced-colors: active) { .custom-btn, .custom-panel { border: 2px solid CanvasText; } }
+@media print { .custom { display: none !important; } }
+
 /* ---- cards ---------------------------------------------------------------------------------- */
 .deck {
   display: grid; gap: 1.4rem;
@@ -154,12 +230,12 @@ button { font: inherit; }
 .window:hover .logo, .window:focus-visible .logo { opacity: 1; }
 .more { background: var(--surface); border: 1px solid var(--rule); border-top: 0; border-radius: 0 0 6px 6px; box-shadow: var(--shadow); }
 .more > summary { padding: 0.45rem 1.1rem; font: 0.9rem var(--sans); color: var(--accent); cursor: pointer; }
-.views { padding: 0 1.1rem 1rem; }
+.views { padding: 0 1.1rem 1rem; font-size: calc(1rem * var(--read-scale, 1)); line-height: var(--read-lh, 1.6); }
 .view h4, .view h5 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 1rem 0 0.4rem; }
 .view p { margin: 0 0 0.7rem; }
-.view .how { color: var(--muted); font-size: 0.95rem; border-left: 3px solid var(--rule); padding-left: 0.7rem; }
-.links { padding-left: 1.1rem; margin: 0.4rem 0 0; font-family: var(--sans); font-size: 0.92rem; }
-.stats { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1rem; margin: 0; font-size: 0.95rem; }
+.view .how { color: var(--muted); font-size: 0.95em; border-left: 3px solid var(--rule); padding-left: 0.7rem; }
+.links { padding-left: 1.1rem; margin: 0.4rem 0 0; font-family: var(--sans); font-size: 0.92em; }
+.stats { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1rem; margin: 0; font-size: 0.95em; }
 .stats div { display: contents; }
 .stats dt { font: 600 0.8rem/1.6 var(--sans); text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
 .stats dd { margin: 0; }

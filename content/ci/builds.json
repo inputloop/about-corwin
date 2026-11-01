@@ -1,0 +1,36 @@
+{
+ "source": "https://corwin.bru.st/emacs-latest.json",
+ "fetched": "2026-11-01",
+ "data": [
+  {
+   "branch": "emacs-ucrt-32",
+   "latest": "",
+   "date": "2026-10-30.22"
+  },
+  {
+   "branch": "emacs-ucrt-31",
+   "latest": "",
+   "date": "2026-10-30.22"
+  },
+  {
+   "branch": "emacs-32",
+   "latest": "emacs-32-3b92ea",
+   "date": "2026-10-30.21"
+  },
+  {
+   "branch": "emacs-31",
+   "latest": "emacs-31-93791a",
+   "date": "2026-10-30.16"
+  },
+  {
+   "branch": "emacs-30",
+   "latest": "emacs-30.1.90_write_x64_app_reg_keys",
+   "date": "2025-08-17.23"
+  },
+  {
+   "branch": "emacs-tree-sitter",
+   "latest": "cmake,markdown,json",
+   "date": "2026-10-30.16"
+  }
+ ]
+}

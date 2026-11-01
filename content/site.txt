@@ -9,6 +9,7 @@ link: inputloop on GitHub | https://github.com/inputloop
 link: The shop's own site, corwin.cloud (source) | https://github.com/inputloop/corwin.cloud
 link: inputloop mail (Bryant and me) | mailto:BryantAndCorwin@inputloop.com
 link: My signing key: see the Windows section of the Emacs download page | https://www.gnu.org/software/emacs/download.html#windows
+link: My Emacs blog | https://corwin.bru.st/
 link: Init files on GitLab | https://gitlab.com/mplscorwin/dotfiles
 link: IRC nick | corwin
 

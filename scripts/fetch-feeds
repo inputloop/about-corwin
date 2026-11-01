@@ -1,0 +1,124 @@
+#!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+"""fetch-feeds -- save a snapshot of the latest posts of Corwin's Emacs blog (https://corwin.bru.st/).
+
+A person runs this, on a machine that can reach the blog, before building the site:
+
+    scripts/fetch-feeds                 try the usual feed addresses, write content/feeds/emacs-blog.json
+    scripts/fetch-feeds --from FILE     read a feed saved in FILE instead (RSS 2.0 or Atom)
+    scripts/fetch-feeds --n 5           how many posts to keep (default 5, at most 12)
+
+The page never fetches anything: build.py reads the snapshot. See docs/BLOG-INGEST.md. Standard
+library only. Keeps the old snapshot when nothing can be read. Refuses XML that declares a DOCTYPE or
+entities, and keeps only https links on the blog's own host.
+"""
+import argparse
+import datetime
+import json
+import os
+import re
+import sys
+import urllib.request
+import xml.etree.ElementTree as ET
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BLOG = "https://corwin.bru.st/"
+HOST = "corwin.bru.st"
+OUT = os.path.join(ROOT, "content", "feeds", "emacs-blog.json")
+CANDIDATES = ("index.xml", "feed/", "feed.xml", "atom.xml", "rss.xml", "rss", "?feed=rss2")
+ATOM = "{http://www.w3.org/2005/Atom}"
+
+
+def clean(s, n=200):
+    return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", s or "")).strip()[:n]
+
+
+def own_https(url):
+    m = re.match(r"^https://([^/:?#]+)(/[^\s]*)?$", url or "")
+    return bool(m) and m.group(1) == HOST
+
+
+def iso(text):
+    """A date as YYYY-MM-DD from an RFC 822 (RSS) or ISO 8601 (Atom) string, else None."""
+    text = (text or "").strip()
+    m = re.match(r"^(\d{4}-\d{2}-\d{2})", text)
+    if m:
+        return m.group(1)
+    m = re.search(r"(\d{1,2})\s+([A-Za-z]{3})[a-z]*\s+(\d{4})", text)
+    if m:
+        try:
+            return datetime.datetime.strptime("%s %s %s" % (m.group(1), m.group(2).title(), m.group(3)),
+                                              "%d %b %Y").strftime("%Y-%m-%d")
+        except ValueError:
+            return None
+    return None
+
+
+def parse(data):
+    if re.search(rb"<!DOCTYPE|<!ENTITY", data, re.I):
+        raise ValueError("feed declares a DOCTYPE or entity; refused")
+    root = ET.fromstring(data)
+    posts = []
+    if root.tag == ATOM + "feed":
+        for en in root.findall(ATOM + "entry"):
+            link = ""
+            for l in en.findall(ATOM + "link"):
+                if l.get("rel", "alternate") == "alternate":
+                    link = l.get("href", "")
+            posts.append({"title": clean(en.findtext(ATOM + "title")),
+                          "date": iso(en.findtext(ATOM + "published") or en.findtext(ATOM + "updated")),
+                          "url": link,
+                          "tags": [clean(c.get("term"), 40) for c in en.findall(ATOM + "category")][:6]})
+    else:
+        for it in root.iter("item"):
+            posts.append({"title": clean(it.findtext("title")),
+                          "date": iso(it.findtext("pubDate")),
+                          "url": (it.findtext("link") or "").strip(),
+                          "tags": [clean(c.text, 40) for c in it.findall("category")][:6]})
+    return [p for p in posts if p["title"] and own_https(p["url"])]
+
+
+def fetch(url):
+    req = urllib.request.Request(url, headers={"User-Agent": "aboutcorwin-fetch-feeds/1 (build-time, by Corwin)"})
+    with urllib.request.urlopen(req, timeout=20) as r:
+        return r.read(2_000_000)
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--from", dest="src")
+    ap.add_argument("--n", type=int, default=5)
+    ap.add_argument("--out", default=OUT)
+    a = ap.parse_args(argv)
+    n = max(1, min(12, a.n))
+    posts, used = [], None
+    if a.src:
+        with open(a.src, "rb") as f:
+            posts, used = parse(f.read()), os.path.basename(a.src)
+    else:
+        for c in CANDIDATES:
+            try:
+                posts = parse(fetch(BLOG + c))
+            except Exception as err:  # try the next address
+                print("fetch-feeds: %s%s: %s" % (BLOG, c, err), file=sys.stderr)
+                continue
+            if posts:
+                used = BLOG + c
+                break
+    if not posts:
+        print("fetch-feeds: no posts read; the old snapshot is kept", file=sys.stderr)
+        return 1
+    posts = posts[:n]
+    snap = {"source": BLOG, "feed": used, "fetched": datetime.date.today().isoformat(),
+            "status": "feed", "posts": posts}
+    os.makedirs(os.path.dirname(a.out), exist_ok=True)
+    with open(a.out, "w", encoding="utf-8") as f:
+        json.dump(snap, f, ensure_ascii=False, indent=1)
+        f.write("\n")
+    print("fetch-feeds: %d posts from %s -> %s" % (len(posts), used, os.path.relpath(a.out)))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

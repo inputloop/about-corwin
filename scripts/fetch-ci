@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+"""fetch-ci -- save a snapshot of the data Corwin's Emacs CI publishes after each build.
+
+emacs-local-ci's build-dist.sh uploads a build to corwin.bru.st and then runs update-sym-links.sh
+there, which rewrites two files in the same shape (see docs/BLOG-INGEST.md):
+
+    https://corwin.bru.st/emacs-latest.json   [{"branch":..., "latest":..., "date":"YYYY-MM-DD.HH"}, ...]
+    https://corwin.bru.st/emacs-latest.js     document.emacsVersionData = <that same array>;
+
+This script reads that published file (never the build machine's logs or paths) and writes
+content/ci/builds.json in the same shape plus where and when it was read. build.py renders it.
+
+    scripts/fetch-ci                 fetch emacs-latest.json from corwin.bru.st (https, that host only)
+    scripts/fetch-ci --from FILE     read a saved emacs-latest.json or emacs-latest.js instead
+
+Every value must match a strict pattern or the row is dropped, so no path, host name or secret can
+ride along. Keeps the old snapshot when nothing valid is read. Standard library only.
+"""
+import argparse
+import datetime
+import json
+import os
+import re
+import sys
+import urllib.request
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+URL = "https://corwin.bru.st/emacs-latest.json"
+OUT = os.path.join(ROOT, "content", "ci", "builds.json")
+BRANCH = re.compile(r"^[a-z][a-z0-9-]{1,30}$")
+LATEST = re.compile(r"^[A-Za-z0-9._,+-]{0,80}$")
+DATE = re.compile(r"^\d{4}-\d{2}-\d{2}\.\d{2}$")
+
+
+def parse(text):
+    text = re.sub(r"^\s*//.*$", "", text, flags=re.M).strip()
+    text = re.sub(r"^\s*document\.emacsVersionData\s*=\s*", "", text).rstrip(" ;\n")
+    rows = json.loads(text)
+    if not isinstance(rows, list):
+        raise ValueError("not a list")
+    keep = []
+    for r in rows:
+        if (isinstance(r, dict) and isinstance(r.get("branch"), str) and BRANCH.match(r["branch"])
+                and isinstance(r.get("latest"), str) and LATEST.match(r["latest"])
+                and isinstance(r.get("date"), str) and DATE.match(r["date"])):
+            keep.append({"branch": r["branch"], "latest": r["latest"], "date": r["date"]})
+    return keep
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--from", dest="src")
+    ap.add_argument("--out", default=OUT)
+    ap.add_argument("--fetched", default=None, help="date to record (default: today)")
+    a = ap.parse_args(argv)
+    try:
+        if a.src:
+            with open(a.src, encoding="utf-8") as f:
+                text = f.read()
+        else:
+            req = urllib.request.Request(URL, headers={"User-Agent": "aboutcorwin-fetch-ci/1 (build-time, by Corwin)"})
+            with urllib.request.urlopen(req, timeout=20) as r:
+                text = r.read(200_000).decode("utf-8", "replace")
+        rows = parse(text)
+    except Exception as err:
+        print("fetch-ci: %s; the old snapshot is kept" % err, file=sys.stderr)
+        return 1
+    if not rows:
+        print("fetch-ci: no valid rows; the old snapshot is kept", file=sys.stderr)
+        return 1
+    snap = {"source": URL, "fetched": a.fetched or datetime.date.today().isoformat(), "data": rows}
+    os.makedirs(os.path.dirname(a.out), exist_ok=True)
+    with open(a.out, "w", encoding="utf-8") as f:
+        json.dump(snap, f, indent=1)
+        f.write("\n")
+    print("fetch-ci: %d rows -> %s" % (len(rows), os.path.relpath(a.out)))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

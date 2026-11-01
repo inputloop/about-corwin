@@ -1,5 +1,5 @@
 title: inputloop
-role: I co-own inputloop, a small free software shop, with my best friend Bryant Frankford.
+role: I co-own inputloop, a small free software shop, with Bryant Frankford.
 order: 5
 window: orb
 logo: inputloop

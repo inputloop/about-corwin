@@ -102,3 +102,15 @@ The older `make deploy` (`scripts/deploy-dreamhost.sh`, rsync from your machine 
 root) is still there for a quick copy to a site you do not mind overwriting; it keeps no backup.
 
 Afterwards, check the live headers once: `curl -sI https://aboutcorwin.com/ | grep -i content-security`.
+
+## Snapshots saved before a build
+
+The page fetches nothing after it loads, and `build.py` fetches nothing either. Two scripts a person
+runs, on a machine that can reach corwin.bru.st, save what the page shows (docs/BLOG-INGEST.md):
+
+```sh
+scripts/fetch-feeds    # content/feeds/emacs-blog.json, the latest posts of the Emacs blog
+scripts/fetch-ci       # content/ci/builds.json, the published emacs-latest.json from the CI
+```
+
+Both keep the old snapshot when they read nothing; `--from FILE` reads a saved copy.

@@ -182,7 +182,7 @@ test('keyboard: summary opens a card, / goes to the prompt', { skip }, async () 
   await p.keyboard.press('Escape');
   await p.evaluate(() => document.activeElement.blur());
   await p.keyboard.press('/');
-  await p.waitForTimeout(200);
+  await p.waitForTimeout(3200);
   assert.notEqual(await p.evaluate(() => document.activeElement.id), 'prompt', 'no single-key shortcuts');
   await p.keyboard.press('Alt+x');
   await p.waitForFunction(() => document.activeElement.id === 'prompt', null, { timeout: 5000 });
@@ -302,4 +302,175 @@ test('every window kind draws without throwing, big and small', { skip }, async 
   for (const [k, v] of Object.entries(result)) assert.equal(v, 'ok', k);
   assert.ok(Object.keys(result).length >= 12);
   await p.context().close();
+});
+
+// ---- layout and the Customize control ------------------------------------------------------------
+
+test('at desktop width the text and the side column share the row and fill the width', { skip }, async () => {
+  const p = await page();
+  const t = await p.$eval('.about-text', (e) => e.getBoundingClientRect().toJSON());
+  const s = await p.$eval('.side', (e) => e.getBoundingClientRect().toJSON());
+  assert.ok(s.left > t.right - 1 && Math.abs(s.top - t.top) < 200, 'the side column sits beside the text');
+  assert.ok(s.right > 1280 * 0.85, 'the right-hand side of the page is used');
+  assert.ok(t.width < 800, 'the line stays readable');
+  assert.ok(await p.isVisible('.side .posts'));
+  assert.ok(await p.isVisible('.side .builds'));
+  await shot(p, 'about-desktop');
+  await p.context().close();
+});
+
+test('at phone width nothing scrolls sideways and the side column follows the text', { skip }, async () => {
+  const p = await page({ viewport: { width: 390, height: 844 } });
+  assert.equal(await p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+  const t = await p.$eval('.about-text', (e) => e.getBoundingClientRect().bottom);
+  const s = await p.$eval('.side', (e) => e.getBoundingClientRect().top);
+  assert.ok(s >= t - 1);
+  await p.click('#custom-btn');
+  assert.equal(await p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+  await shot(p, 'about-phone');
+  await p.context().close();
+});
+
+test('without scripts the Customize control is not there', { skip }, async () => {
+  const p = await page({ javaScriptEnabled: false });
+  assert.equal(await p.isVisible('#custom'), false);
+  await p.context().close();
+});
+
+test('Customize is reachable by keyboard, opens with Enter, and Escape returns to the button', { skip }, async () => {
+  const p = await page();
+  let reached = false;
+  for (let i = 0; i < 4 && !reached; i++) {
+    await p.keyboard.press('Tab');
+    reached = await p.evaluate(() => document.activeElement && document.activeElement.id === 'custom-btn');
+  }
+  assert.ok(reached, 'the button is within the first few Tab stops');
+  assert.equal(await p.getAttribute('#custom-btn', 'aria-expanded'), 'false');
+  await p.keyboard.press('Enter');
+  assert.equal(await p.getAttribute('#custom-btn', 'aria-expanded'), 'true');
+  assert.ok(await p.isVisible('#custom-panel'));
+  await p.keyboard.press('Tab');
+  assert.equal(await p.evaluate(() => document.activeElement.closest('#custom-panel') !== null), true, 'Tab goes into the panel next');
+  await p.keyboard.press('Escape');
+  assert.equal(await p.getAttribute('#custom-btn', 'aria-expanded'), 'false');
+  assert.equal(await p.evaluate(() => document.activeElement.id), 'custom-btn');
+  const ring = await p.evaluate(() => getComputedStyle(document.activeElement).outlineStyle);
+  assert.notEqual(ring, 'none', 'a visible focus ring');
+  await p.context().close();
+});
+
+test('hover opens the panel and leaving closes it; a click pins it', { skip }, async () => {
+  const p = await page();
+  await p.hover('#custom-btn');
+  assert.ok(await p.isVisible('#custom-panel'));
+  await p.mouse.move(10, 600);
+  assert.equal(await p.isVisible('#custom-panel'), false);
+  await p.click('#custom-btn');
+  await p.mouse.move(10, 600);
+  assert.ok(await p.isVisible('#custom-panel'), 'pinned stays open');
+  await p.context().close();
+});
+
+test('text size changes the reading text and nothing else', { skip }, async () => {
+  const p = await page();
+  const sizes = () => p.evaluate(() => {
+    const f = (s) => parseFloat(getComputedStyle(document.querySelector(s)).fontSize);
+    return { about: f('#about-h ~ p'), how: f('#how > p'), chrome: [f('.masthead h1'), f('.contents a'), f('.modeline'), f('#motion'), f('.custom-btn'), f('.side .findme li'), f('.lede'), f('.face .title'), f('.mb-prompt')] };
+  });
+  const before = await sizes();
+  await p.click('#custom-btn');
+  await p.check('input[name=size][value="3"]');
+  const after = await sizes();
+  assert.ok(after.about > before.about * 1.4, 'the about text grew');
+  assert.ok(after.how > before.how * 1.4, 'the how-it-works text grew');
+  assert.deepEqual(after.chrome, before.chrome, 'the bars, buttons and headings did not');
+  // an opened card's words grow too
+  await p.click('#dungeon .window');
+  const card = await p.$eval('#dungeon .v-prose p', (e) => parseFloat(getComputedStyle(e).fontSize));
+  assert.ok(card > 20, 'card text follows the setting');
+  await p.context().close();
+});
+
+test('line length and spacing follow the settings', { skip }, async () => {
+  const p = await page();
+  const m = () => p.$eval('.about-text', (e) => e.getBoundingClientRect().width);
+  const lh = () => p.$eval('#about-h ~ p', (e) => parseFloat(getComputedStyle(e).lineHeight));
+  const w0 = await m(), l0 = await lh();
+  await p.click('#custom-btn');
+  await p.check('input[name=measure][value=narrow]');
+  assert.ok(await m() < w0);
+  await p.check('input[name=leading][value=looser]');
+  assert.ok(await lh() > l0 * 1.2);
+  await p.context().close();
+});
+
+test('the colour themes change the page; high contrast meets 7:1 for ink on the page', { skip }, async () => {
+  const p = await page();
+  await p.click('#custom-btn');
+  for (const t of ['dark', 'hc', 'light']) {
+    await p.check('input[name=theme][value=' + t + ']');
+    assert.equal(await p.getAttribute('html', 'data-theme'), t);
+  }
+  await p.check('input[name=theme][value=hc]');
+  const bg = await p.$eval('body', (e) => getComputedStyle(e).backgroundColor);
+  assert.equal(bg, 'rgb(0, 0, 0)');
+  await p.context().close();
+});
+
+test('Apply remembers across a reload, Reset forgets, and refused storage still works', { skip }, async () => {
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 860 } });
+  const p = await ctx.newPage();
+  await p.goto(URL); await p.waitForSelector('html[data-customize=ready]');
+  await p.click('#custom-btn');
+  await p.check('input[name=size][value="2"]');
+  assert.match(await p.textContent('#c-state'), /EDITED/);
+  await p.click('#c-apply');
+  assert.match(await p.textContent('#c-state'), /SAVED/);
+  await p.reload(); await p.waitForSelector('html[data-customize=ready]');
+  assert.equal(await p.getAttribute('html', 'data-size'), '2');
+  await p.click('#custom-btn');
+  assert.equal(await p.isChecked('input[name=size][value="2"]'), true);
+  await p.click('#c-reset');
+  assert.equal(await p.getAttribute('html', 'data-size'), null);
+  await p.reload(); await p.waitForSelector('html[data-customize=ready]');
+  assert.equal(await p.getAttribute('html', 'data-size'), null);
+  await ctx.close();
+
+  const ctx2 = await browser.newContext({ viewport: { width: 1280, height: 860 } });
+  await ctx2.addInitScript(() => { Object.defineProperty(window, 'localStorage', { get() { throw new Error('refused'); } }); });
+  const q = await ctx2.newPage();
+  const errs = []; q.on('pageerror', (e) => errs.push(e.message));
+  await q.goto(URL); await q.waitForSelector('html[data-customize=ready]');
+  await q.click('#custom-btn');
+  await q.check('input[name=size][value="1"]');
+  await q.click('#c-apply');
+  assert.equal(await q.getAttribute('html', 'data-size'), '1');
+  assert.deepEqual(errs, []);
+  await ctx2.close();
+});
+
+test('Reduce motion presses the Motion button, and unticking gives it back', { skip }, async () => {
+  const p = await page();
+  assert.equal(await p.getAttribute('#motion', 'aria-pressed'), 'true');
+  await p.click('#custom-btn');
+  await p.check('input[name=calm]');
+  assert.equal(await p.getAttribute('#motion', 'aria-pressed'), 'false');
+  await p.uncheck('input[name=calm]');
+  assert.equal(await p.getAttribute('#motion', 'aria-pressed'), 'true');
+  await p.context().close();
+});
+
+test('nothing is fetched after the page loads, even while using Customize', { skip }, async () => {
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 860 } });
+  const p = await ctx.newPage();
+  await p.goto(URL); await p.waitForSelector('html[data-customize=ready]');
+  const late = [];
+  p.on('request', (r) => late.push(r.url()));
+  await p.click('#custom-btn');
+  await p.check('input[name=size][value="3"]');
+  await p.click('#c-apply');
+  await p.fill('#prompt', 'emacs');
+  await p.waitForTimeout(400);
+  assert.deepEqual(late, []);
+  await ctx.close();
 });

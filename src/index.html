@@ -19,9 +19,47 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
 <script src="js/taxonomy.js" defer></script>
 <script src="js/windows.js" defer></script>
 <script src="js/site.js" defer></script>
+<script src="js/customize.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to the content</a>
+
+<div class="custom" id="custom">
+  <button type="button" id="custom-btn" class="custom-btn" aria-expanded="false" aria-controls="custom-panel">Customize</button>
+  <form class="custom-panel" id="custom-panel" aria-labelledby="custom-h" hidden>
+    <p id="custom-h" class="c-title">Customize: reading</p>
+    <p class="c-note">Changes the reading text and the colours, not the bars or buttons. Kept in this browser only; nothing is sent.</p>
+    <fieldset><legend>Text size:</legend>
+      <label><input type="radio" name="size" value="0"><span class="box"></span>100%</label>
+      <label><input type="radio" name="size" value="1"><span class="box"></span>115%</label>
+      <label><input type="radio" name="size" value="2"><span class="box"></span>130%</label>
+      <label><input type="radio" name="size" value="3"><span class="box"></span>150%</label>
+      <label><input type="radio" name="size" value="4"><span class="box"></span>175%</label>
+    </fieldset>
+    <fieldset><legend>Line length:</legend>
+      <label><input type="radio" name="measure" value="narrow"><span class="box"></span>Narrow</label>
+      <label><input type="radio" name="measure" value="normal"><span class="box"></span>Normal</label>
+      <label><input type="radio" name="measure" value="wide"><span class="box"></span>Wide</label>
+    </fieldset>
+    <fieldset><legend>Line spacing:</legend>
+      <label><input type="radio" name="leading" value="tight"><span class="box"></span>Tight</label>
+      <label><input type="radio" name="leading" value="normal"><span class="box"></span>Normal</label>
+      <label><input type="radio" name="leading" value="loose"><span class="box"></span>Loose</label>
+      <label><input type="radio" name="leading" value="looser"><span class="box"></span>Looser</label>
+    </fieldset>
+    <fieldset><legend>Colour theme:</legend>
+      <label><input type="radio" name="theme" value="auto"><span class="box"></span>Follow system</label>
+      <label><input type="radio" name="theme" value="light"><span class="box"></span>Light</label>
+      <label><input type="radio" name="theme" value="dark"><span class="box"></span>Dark</label>
+      <label><input type="radio" name="theme" value="hc"><span class="box"></span>High contrast (egad vivendi colours)</label>
+    </fieldset>
+    <fieldset><legend>Motion:</legend>
+      <label><input type="checkbox" name="calm" value="1"><span class="box"></span>Reduce motion</label>
+    </fieldset>
+    <p class="c-actions"><button type="button" id="c-apply">[Apply]</button> <button type="button" id="c-reset">[Reset]</button></p>
+    <p class="c-state" id="c-state" role="status">State: STANDARD SETTINGS.</p>
+  </form>
+</div>
 
 <header class="masthead" id="top">
   <div class="wrap">
@@ -44,14 +82,26 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
 </header>
 
 <main id="main">
-  <section id="about" class="wrap prose" aria-labelledby="about-h">
-    <h2 id="about-h">About</h2>
-    {{ABOUT}}
-    <h3>Find me</h3>
-    <ul class="findme">{{FINDME}}</ul>
-    <h3 id="about-cards">Two cards about me</h3>
-    <p class="lede">The prompt at the foot of the page answers questions about me from these two cards and from the ones below them. They open the same way the others do.</p>
-    <div class="deck">{{ABOUTCARDS}}</div>
+  <section id="about" class="wrap" aria-labelledby="about-h">
+    <div class="about-grid">
+      <div class="reading prose about-text">
+        <h2 id="about-h">About</h2>
+        {{ABOUT}}
+      </div>
+      <aside class="side" aria-label="Where to find me, and recent Emacs work">
+        <section class="side-card" aria-labelledby="findme-h">
+          <h3 id="findme-h">Find me</h3>
+          <ul class="findme">{{FINDME}}</ul>
+        </section>
+        {{BLOG}}
+        {{CI}}
+      </aside>
+      <div class="about-cards">
+        <h3 id="about-cards">Two cards about me</h3>
+        <p class="lede">The prompt at the foot of the page answers questions about me from these two cards and from the ones below them. They open the same way the others do.</p>
+        <div class="deck">{{ABOUTCARDS}}</div>
+      </div>
+    </div>
   </section>
 
   <section id="involvements" class="wrap" aria-labelledby="involvements-h">
@@ -81,9 +131,9 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
     </div>
   </section>
 
-  <section id="how" class="wrap prose" aria-labelledby="how-h">
+  <section id="how" class="wrap prose reading" aria-labelledby="how-h">
     <h2 id="how-h">How this page works</h2>
-    <p>It is one page of HTML and CSS that reads well with scripts turned off. The scripts add the moving windows, the parallax, the cards that grow, and the prompt; GNU LibreJS can check their <a href="jslicense.html" rel="jslicense">licence labels</a>. Nothing is fetched after the page loads and nothing is stored about you, except whether you turned motion off, which stays in your own browser.</p>
+    <p>It is one page of HTML and CSS that reads well with scripts turned off. The scripts add the moving windows, the parallax, the cards that grow, and the prompt; GNU LibreJS can check their <a href="jslicense.html" rel="jslicense">licence labels</a>. Nothing is fetched after the page loads and nothing is sent about you. Your Customize settings and whether you turned motion off stay in your own browser. The blog posts and build list were saved when the page was built.</p>
     <h3>Views of a card</h3>
     <dl class="legend">{{LEGEND_VIEWS}}</dl>
     <h3>Windows</h3>

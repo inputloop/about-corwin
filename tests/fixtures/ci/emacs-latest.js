@@ -1,0 +1,3 @@
+// @license magnet:?xt=urn:btih:0b31508aeb0634b347b8270c7bee4d411b5d4109&dn=agpl-3.0.txt AGPL-v3-or-Later
+document.emacsVersionData = [{"branch":"emacs-ucrt-32","latest":"","date":"2026-10-30.22"}, {"branch":"emacs-ucrt-31","latest":"","date":"2026-10-30.22"}, {"branch":"emacs-32","latest":"emacs-32-3b92ea","date":"2026-10-30.21"}, {"branch":"emacs-31","latest":"emacs-31-93791a","date":"2026-10-30.16"}, {"branch":"emacs-30","latest":"emacs-30.1.90_write_x64_app_reg_keys","date":"2025-08-17.23"}, {"branch":"emacs-tree-sitter","latest":"cmake,markdown,json","date":"2026-10-30.16"}]
+// @license-end

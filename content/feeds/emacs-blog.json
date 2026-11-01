@@ -1,0 +1,13 @@
+{
+ "source": "https://corwin.bru.st/",
+ "feed": null,
+ "fetched": "2026-11-01",
+ "status": "front page titles, no feed read",
+ "posts": [
+  {"title": "Emacs 29.2 Windows Binaries", "date": null, "url": "https://corwin.bru.st/", "tags": []},
+  {"title": "Emacs Devel: Design and Architecture", "date": null, "url": "https://corwin.bru.st/", "tags": []},
+  {"title": "The Turtle and the Snail", "date": null, "url": "https://corwin.bru.st/", "tags": []},
+  {"title": "Emacs 29.3 and CVE-2024-30205", "date": null, "url": "https://corwin.bru.st/", "tags": []},
+  {"title": "My build command for Emacs 29 Snapshots", "date": null, "url": "https://corwin.bru.st/", "tags": []}
+ ]
+}

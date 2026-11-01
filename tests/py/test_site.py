@@ -275,7 +275,7 @@ class Page(unittest.TestCase):
     def test_form_controls_have_labels(self):
         labelled = {n.attrs["for"] for n in self.by_tag("label") if "for" in n.attrs}
         for i in self.by_tag("input"):
-            self.assertTrue(i.attrs.get("id") in labelled or i.attrs.get("aria-label"), i.attrs)
+            self.assertTrue(i.attrs.get("id") in labelled or i.attrs.get("aria-label") or i.parent.tag == "label", i.attrs)
 
     def test_links_and_buttons_have_names(self):
         for n in self.by_tag("a") + self.by_tag("button") + self.by_tag("summary"):
@@ -418,7 +418,9 @@ class Colour(unittest.TestCase):
         dark = re.search(r':root\[data-theme="dark"\] \{(.*?)\n\}', css, re.S).group(1)
         dark_media = re.search(r':root:not\(\[data-theme="light"\]\) \{(.*?)\n  \}', css, re.S).group(1)
         grab = lambda block: dict(re.findall(r"--([\w-]+):\s*(#[0-9a-fA-F]{6})", block))
-        cls.themes = {"light": grab(light), "dark": grab(dark), "dark (system)": grab(dark_media)}
+        hc = re.search(r':root\[data-theme="hc"\] \{(.*?)\n\}', css, re.S).group(1)
+        cls.themes = {"light": grab(light), "dark": grab(dark), "dark (system)": grab(dark_media),
+                      "high contrast": grab(hc)}
 
     def test_themes_agree(self):
         self.assertEqual(self.themes["dark"], self.themes["dark (system)"],
@@ -434,6 +436,136 @@ class Colour(unittest.TestCase):
         self.assertGreaterEqual(contrast("#f2e9c9", "#10131a"), 7)
         self.assertGreaterEqual(contrast("#ffd166", "#10131a"), 7)
         self.assertGreaterEqual(contrast("#9aa3b5", "#10131a"), 4.5)
+
+
+def run_script(name, *args):
+    return subprocess.run([sys.executable, os.path.join(ROOT, "scripts", name)] + list(args),
+                          capture_output=True, text=True, cwd=ROOT)
+
+
+class Wording(unittest.TestCase):
+    SKIP = {".git", "public", "dist", "node_modules", "__pycache__"}
+
+    def files(self):
+        for base, dirs, names in os.walk(ROOT):
+            dirs[:] = [d for d in dirs if d not in self.SKIP]
+            for n in names:
+                yield os.path.join(base, n)
+
+    def test_no_best_friend(self):
+        for path in self.files():
+            if path.endswith((".png", ".svg", ".gz", ".pyc")) or path.endswith("test_site.py") or path.endswith("run.sh"):
+                continue
+            with open(path, encoding="utf-8", errors="replace") as f:
+                self.assertNotIn("best friend", f.read().lower(), path)
+        self.assertNotIn("best friend", read("index.html").lower())
+
+    def test_the_blog_host_is_spelled_right(self):
+        wrong = "brust" + ".st"
+        for path in self.files():
+            if path.endswith((".png", ".gz", ".pyc")) or path.endswith("test_site.py") or path.endswith("run.sh"):
+                continue
+            with open(path, encoding="utf-8", errors="replace") as f:
+                self.assertNotIn(wrong, f.read(), path)
+        self.assertIn('href="https://corwin.bru.st/"', read("index.html"))
+
+
+class Snapshots(unittest.TestCase):
+    PATHLIKE = re.compile(r"[A-Za-z]:[\\/]|\\|/(?:home|g|h|c|usr|etc|var|tmp|mnt|users|sessions)/|\.log\b|@|\bpassphrase|\bkey\b", re.I)
+
+    def snap(self, *parts):
+        with open(os.path.join(ROOT, *parts), encoding="utf-8") as f:
+            return json.load(f)
+
+    def test_ci_snapshot_has_no_path_like_strings(self):
+        ci = self.snap("content", "ci", "builds.json")
+        for r in ci["data"]:
+            self.assertEqual(sorted(r), ["branch", "date", "latest"])
+            for v in r.values():
+                self.assertIsNone(self.PATHLIKE.search(v), r)
+                self.assertNotIn("/", v)
+        self.assertTrue(ci["data"])
+
+    def test_page_shows_the_builds_and_the_blog(self):
+        page = read("index.html")
+        self.assertIn("Recent Emacs builds", page)
+        self.assertIn("From my Emacs blog", page)
+        self.assertIn('href="https://corwin.bru.st/emacs-32/"', page)
+        self.assertIn("emacs-32-3b92ea", page)
+        self.assertIn("Emacs 29.2 Windows Binaries", page)
+        self.assertIn("2026-10-30T21", page)
+
+    def test_blog_links_stay_on_the_blog_over_https(self):
+        for p in self.snap("content", "feeds", "emacs-blog.json")["posts"]:
+            self.assertRegex(p["url"], r"^https://corwin\.bru\.st(/|$)")
+
+    def test_build_refuses_a_post_off_the_blog_and_a_path_in_a_build(self):
+        with tempfile.TemporaryDirectory() as t:
+            shutil.copytree(os.path.join(ROOT, "content"), os.path.join(t, "content"))
+            fp = os.path.join(t, "content", "feeds", "emacs-blog.json")
+            d = json.load(open(fp))
+            d["posts"][0]["url"] = "https://evil.example/x"
+            json.dump(d, open(fp, "w"))
+            with self.assertRaises(build.ContentError):
+                build.load(os.path.join(t, "content"))
+            shutil.copy(os.path.join(ROOT, "content", "feeds", "emacs-blog.json"), fp)
+            cp = os.path.join(t, "content", "ci", "builds.json")
+            d = json.load(open(cp))
+            d["data"][0]["latest"] = "G:/dev-git/emacs-32"
+            json.dump(d, open(cp, "w"))
+            with self.assertRaises(build.ContentError):
+                build.load(os.path.join(t, "content"))
+
+    def test_fetch_feeds_reads_rss_and_atom_and_keeps_only_our_host(self):
+        with tempfile.TemporaryDirectory() as t:
+            out = os.path.join(t, "o.json")
+            r = run_script("fetch-feeds", "--from", "tests/fixtures/feeds/rss.xml", "--out", out)
+            self.assertEqual(r.returncode, 0, r.stderr)
+            posts = json.load(open(out))["posts"]
+            self.assertEqual([p["title"] for p in posts], ["Fixture post one", "Fixture & two"])
+            self.assertEqual(posts[0]["date"], "2024-10-12")
+            r = run_script("fetch-feeds", "--from", "tests/fixtures/feeds/atom.xml", "--out", out)
+            self.assertEqual(json.load(open(out))["posts"][0]["date"], "2024-05-02")
+
+    def test_fetch_feeds_refuses_entities(self):
+        with tempfile.TemporaryDirectory() as t:
+            out = os.path.join(t, "o.json")
+            r = run_script("fetch-feeds", "--from", "tests/fixtures/feeds/evil.xml", "--out", out)
+            self.assertNotEqual(r.returncode, 0)
+            self.assertFalse(os.path.exists(out))
+
+    def test_fetch_ci_keeps_the_published_shape_and_drops_odd_rows(self):
+        with tempfile.TemporaryDirectory() as t:
+            out, src = os.path.join(t, "o.json"), os.path.join(t, "in.js")
+            with open(os.path.join(ROOT, "tests", "fixtures", "ci", "emacs-latest.js")) as f:
+                text = f.read()
+            text = text.replace("]\n// @license-end", ', {"branch":"emacs-31","latest":"C:\\\\g\\\\x","date":"2026-10-30.16"}]\n// @license-end')
+            open(src, "w").write(text)
+            r = run_script("fetch-ci", "--from", src, "--out", out, "--fetched", "2026-11-01")
+            self.assertEqual(r.returncode, 0, r.stderr)
+            rows = json.load(open(out))["data"]
+            self.assertEqual(len(rows), 6)
+            for row in rows:
+                self.assertIsNone(Snapshots.PATHLIKE.search(row["latest"]), row)
+
+
+class Customize(unittest.TestCase):
+    def test_the_control_and_its_fields_are_in_the_page(self):
+        page = read("index.html")
+        for want in ('id="custom-btn"', 'aria-controls="custom-panel"', "Text size:", "Line length:",
+                     "Line spacing:", "Colour theme:", "Reduce motion", "[Apply]", "[Reset]"):
+            self.assertIn(want, page)
+        self.assertLess(page.index('id="custom-btn"'), page.index('class="masthead"'))
+
+    def test_the_control_needs_scripts_and_hides_without_them(self):
+        css = read("css", "site.css")
+        self.assertRegex(css, r"\.custom \{ display: none; \}")
+        self.assertIn(".js .custom { display: block;", css)
+
+    def test_reading_text_is_what_scales(self):
+        css = read("css", "site.css")
+        self.assertIn(".reading { font-size: calc(1.0625rem * var(--read-scale, 1))", css)
+        self.assertNotRegex(css, r"html\[data-size[^{]*\{[^}]*font-size")
 
 
 class SecondReader(unittest.TestCase):

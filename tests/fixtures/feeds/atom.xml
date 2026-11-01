@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Fixture</title>
+<entry><title>Atom fixture</title><link rel="alternate" href="https://corwin.bru.st/atom-one/"/><published>2024-05-02T09:00:00Z</published><category term="org"/></entry>
+</feed>

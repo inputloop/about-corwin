@@ -41,7 +41,7 @@ MAX_PROSE_WORDS = 500
 PUBLIC_REPOS = {".github", "fourSwordsFromThePast", "NextTime-Dev", "quantum3d5",
                 "suit-crm-6-5-php-sec-backport", "vibrobeast", "vibrobeast-skills", "corwin.cloud",
                 "topology", "about-corwin", "gitcha", "ta", "three-phase-transcription", "journal"}
-JS_FILES = ("chamber.model.js", "taxonomy.js", "windows.js", "site.js")
+JS_FILES = ("chamber.model.js", "taxonomy.js", "windows.js", "site.js", "customize.js")
 GPL_MAGNET = "magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt"
 VIEW_ORDER = ("prose", "baseball", "scoreboard", "featured")
 VIEW_HEADINGS = {"prose": "Introduction", "baseball": "On the back",
@@ -50,6 +50,87 @@ VIEW_HEADINGS = {"prose": "Introduction", "baseball": "On the back",
 
 class ContentError(Exception):
     pass
+
+
+BLOG_HOST = "corwin.bru.st"
+BLOG_URL = "https://corwin.bru.st/"
+OWN_URL = re.compile(r"^https://corwin\.bru\.st(/[A-Za-z0-9._~%/?=&#+-]*)?$")
+CI_BRANCH = re.compile(r"^[a-z][a-z0-9-]{1,30}$")
+CI_LATEST = re.compile(r"^[A-Za-z0-9._,+-]{0,80}$")
+CI_DATE = re.compile(r"^(\d{4}-\d{2}-\d{2})\.(\d{2})$")
+
+
+def load_snapshots(content_dir=CONTENT):
+    """The two build-time snapshots (docs/BLOG-INGEST.md). Missing or malformed files are an error
+    the person can fix by running scripts/fetch-feeds or scripts/fetch-ci; nothing is fetched here."""
+    def read_json(*parts):
+        path = os.path.join(content_dir, *parts)
+        try:
+            with open(path, encoding="utf-8") as f:
+                return json.load(f), path
+        except (OSError, ValueError) as err:
+            raise ContentError("%s: cannot read snapshot (%s)" % (path, err))
+    blog, bp = read_json("feeds", "emacs-blog.json")
+    posts = []
+    for p in blog.get("posts", [])[:8]:
+        title, url, date = p.get("title"), p.get("url"), p.get("date")
+        if not isinstance(title, str) or not title.strip() or len(title) > 200:
+            raise ContentError("%s: a post has no usable title" % bp)
+        if not isinstance(url, str) or not OWN_URL.match(url):
+            raise ContentError("%s: post link %r is not https on %s" % (bp, url, BLOG_HOST))
+        if date is not None and not re.match(r"^\d{4}-\d{2}-\d{2}$", str(date)):
+            raise ContentError("%s: post date %r is not YYYY-MM-DD" % (bp, date))
+        posts.append({"title": title.strip(), "url": url, "date": date})
+    if not isinstance(blog.get("fetched"), str) or not re.match(r"^\d{4}-\d{2}-\d{2}$", blog["fetched"]):
+        raise ContentError("%s: 'fetched' must be a date" % bp)
+    ci, cp = read_json("ci", "builds.json")
+    rows = []
+    for r in ci.get("data", []):
+        m = CI_DATE.match(str(r.get("date")))
+        if not (m and CI_BRANCH.match(str(r.get("branch"))) and CI_LATEST.match(str(r.get("latest", "")))):
+            raise ContentError("%s: row %r does not match the published shape" % (cp, r))
+        rows.append({"branch": r["branch"], "latest": r["latest"], "day": m.group(1), "hour": m.group(2)})
+    if not isinstance(ci.get("fetched"), str) or not re.match(r"^\d{4}-\d{2}-\d{2}$", ci["fetched"]):
+        raise ContentError("%s: 'fetched' must be a date" % cp)
+    rows.sort(key=lambda r: (r["day"], r["hour"]), reverse=True)
+    return {"blog": {"posts": posts, "fetched": blog["fetched"], "status": str(blog.get("status", ""))},
+            "ci": {"rows": rows[:8], "fetched": ci["fetched"]}}
+
+
+def render_blog(snap):
+    b = snap["blog"]
+    if not b["posts"]:
+        items = "<li>No posts saved yet. Run scripts/fetch-feeds.</li>"
+    else:
+        items = "".join('<li><a href="%s">%s</a>%s</li>' % (
+            e(p["url"]), e(p["title"]),
+            ' <time class="when" datetime="%s">%s</time>' % (e(p["date"]), e(p["date"])) if p["date"] else "")
+            for p in b["posts"][:5])
+    dated = any(p["date"] for p in b["posts"])
+    note = ("Saved from the blog on %s." % e(b["fetched"])) + ("" if dated else " Dates are not saved yet.")
+    return ('<section class="side-card" aria-labelledby="blog-h"><h3 id="blog-h">From my Emacs blog</h3>'
+            '<ul class="posts">%s</ul><p class="src">%s <a href="%s">Read the blog</a>.</p></section>'
+            % (items, note, BLOG_URL))
+
+
+def render_ci(snap):
+    c = snap["ci"]
+    if not c["rows"]:
+        items = "<li>No builds saved yet. Run scripts/fetch-ci.</li>"
+    else:
+        out = []
+        for r in c["rows"][:6]:
+            what = ("grammars: " + r["latest"].replace(",", ", ")) if r["branch"] == "emacs-tree-sitter" \
+                else (r["latest"] or "installer links")
+            out.append('<li><a href="%s%s/">%s</a> <span class="what">%s</span> '
+                       '<time class="when" datetime="%sT%s">%s %sh</time></li>'
+                       % (BLOG_URL, e(r["branch"]), e(r["branch"]), e(what), e(r["day"]), e(r["hour"]),
+                          e(r["day"]), e(r["hour"])))
+        items = "".join(out)
+    return ('<section class="side-card" aria-labelledby="ci-h"><h3 id="ci-h">Recent Emacs builds</h3>'
+            '<ul class="builds">%s</ul><p class="src">Newest uploads from my Windows build machine, as '
+            'published by corwin.bru.st on %s. Hours are the server\'s clock.</p></section>'
+            % (items, e(c["fetched"])))
 
 
 # ---- reading ---------------------------------------------------------------------------------
@@ -155,7 +236,8 @@ def load(content_dir=CONTENT):
     slugs = [c["slug"] for c in cards]
     if len(slugs) != len(set(slugs)):
         raise ContentError("two cards share a slug")
-    return {"vocab": vocab, "site": site, "cards": cards, "views": views, "windows": windows}
+    return {"vocab": vocab, "site": site, "cards": cards, "views": views, "windows": windows,
+            "snap": load_snapshots(content_dir)}
 
 
 def check_tags(names, by_id, path):
@@ -454,6 +536,8 @@ def render(data, template):
         "PRONOUNS": e(one(site, "pronouns")),
         "ABOUT": about,
         "FINDME": render_site_links(site),
+        "BLOG": render_blog(data["snap"]),
+        "CI": render_ci(data["snap"]),
         "ABOUTCARDS": "".join(render_card(c, windows, 4) for c in about_cards),
         "FOOTER": "".join('<p class="colophon">%s</p>' % inline(p) for p in site["layers"]["footer"]),
         "INVOLVEMENTS": "".join(render_card(c, windows, 3) for c in inv),

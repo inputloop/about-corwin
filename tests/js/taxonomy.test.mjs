@@ -222,6 +222,11 @@ test('the browser code never reaches the network or stores more than Motion', ()
       assert.ok(!src.includes(bad), `${f} uses ${bad}`);
     }
     const sets = src.match(/localStorage\.setItem\(([^,]+),/g) || [];
-    for (const s of sets) assert.match(s, /aboutcorwin\.motion/, `${f}: ${s}`);
+    for (const s of sets) {
+      if (f === 'customize.js') {
+        assert.match(s, /\(KEY,$/, `${f}: ${s}`);
+        assert.match(src, /var KEY = 'aboutcorwin\.customize';/);
+      } else assert.match(s, /aboutcorwin\.motion/, `${f}: ${s}`);
+    }
   }
 });

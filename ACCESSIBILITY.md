@@ -72,3 +72,11 @@ Spell Ball's accessibility note in C4's showroom. Where a test holds a promise, 
   there is no summary of all views at once.
 
 Found something that does not work for you? Write to corwin@bru.st, or open an issue.
+
+## Customize (2026-11-01)
+
+A "Customize" button floats at the top right when scripts run (hidden without them). Hover opens
+its panel, a press pins it, Escape closes it and returns focus to the button. Its fields: text size
+of the reading text only, line length, line spacing, colour theme (follow system, light, dark, high
+contrast) and reduce motion. Settings stay in the browser's localStorage and are never sent.
+tests/browser checks the keyboard path, that only reading text scales, and that nothing is fetched.

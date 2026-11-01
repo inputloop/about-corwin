@@ -12,11 +12,13 @@ link: Mail Bryant and me, about inputloop | mailto:BryantAndCorwin@inputloop.com
 link: Mastodon | https://hostux.social/@corwin
 link: IRC nick | corwin
 link: My signing key, in the Windows section of the Emacs download page | https://www.gnu.org/software/emacs/download.html#windows
+link: My Emacs blog | https://corwin.bru.st/
 link: Init files on GitLab | https://gitlab.com/mplscorwin/dotfiles
 stat: Mail | corwin@bru.st
 stat: Shop mail | BryantAndCorwin@inputloop.com
 stat: Mastodon | hostux.social/@corwin
 stat: IRC | corwin
+stat: Emacs blog | corwin.bru.st
 
 == summary ==
 The surest way to reach me is mail, to corwin@bru.st. I am also on Mastodon at hostux.social and on IRC as corwin. For anything about inputloop, mail goes to Bryant and me together.
