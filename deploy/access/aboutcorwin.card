@@ -1,0 +1,18 @@
+# Access card for aboutcorwin.com. Plain words, one "key: value" per line. See deploy/ACCESS-CARD.md.
+# No key paths, no passwords, no key text: only the NAME the key register answers to.
+card: aboutcorwin.com on DreamHost shared hosting
+updated: 2026-11-01
+host: iad1-shared-b8-03.dreamhost.com
+user: dh_f4vxkv
+key-register: aboutcorwinhost
+web-root: ~/aboutcorwin.com
+staging-root: ~/aboutcorwin.com-releases
+tools: git, python3, perl, rsync, make, emacs, node, php
+may: read the account's sites and their history
+may: write into a new dated folder under the staging root
+may: replace files in the web root, but only after a backup copy of it exists
+may-not: delete old site copies or releases
+may-not: touch mail, databases or the crontab
+may-not: touch any other user
+may-not: touch .dh-diag (a root-owned link DreamHost keeps in the web root)
+note: nothing is installed on the host for the deploy; the three scripts travel inside each release.

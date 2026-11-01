@@ -1,0 +1,65 @@
+#!/bin/sh
+# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# access-card -- read an access card (deploy/ACCESS-CARD.md) and say it back in plain sentences.
+#
+#   sh scripts/access-card deploy/access/aboutcorwin.card     validate, then print sentences
+#   sh scripts/access-card --check FILE                       validate only (quiet, exit 0 or 1)
+#
+# Exit 1 with a numbered complaint for each fault: a missing line, a repeated one-value line, an
+# unknown key, a malformed host, user or register name, or anything that looks like a key path or
+# key text (the card names a key register entry, never a key).
+set -u
+quiet=0
+if [ "${1:-}" = --check ]; then quiet=1; shift; fi
+f=${1:-}
+[ -n "$f" ] && [ -f "$f" ] || { echo "usage: sh scripts/access-card [--check] FILE" >&2; exit 2; }
+
+awk -v quiet="$quiet" '
+function bad(n, msg) { printf "%s:%d: %s\n", FILENAME, n, msg > "/dev/stderr"; faults++ }
+function trim(s) { sub(/^[ \t]+/, "", s); sub(/[ \t\r]+$/, "", s); return s }
+BEGIN {
+  split("card updated host user key-register web-root staging-root tools may may-not note", k, " ")
+  for (i in k) known[k[i]] = 1
+  split("card updated host user key-register web-root staging-root tools", r, " ")
+  for (i in r) must[r[i]] = 1
+  many["may"] = 1; many["may-not"] = 1; many["note"] = 1
+  mustmany["may"] = 1; mustmany["may-not"] = 1
+}
+{
+  line = trim($0)
+  if (line == "" || line ~ /^#/) next
+  c = index(line, ":")
+  if (c < 2) { bad(NR, "not a \"key: value\" line"); next }
+  key = trim(substr(line, 1, c - 1)); val = trim(substr(line, c + 1))
+  if (!(key in known)) { bad(NR, "unknown key \"" key "\""); next }
+  if (val == "") { bad(NR, "\"" key "\" has no value"); next }
+  if (!(key in many) && (key in seen)) bad(NR, "\"" key "\" appears twice (first on line " seen[key] ")")
+  if (!(key in seen)) seen[key] = NR
+  # Never a secret: no key path, key text or drive-letter path anywhere on the card.
+  if (val ~ /BEGIN [A-Z ]*PRIVATE|PRIVATE KEY|ssh-(rsa|ed25519)|id_(rsa|ed25519|ecdsa)|\.keys|\.ssh\/|[A-Za-z]:[\\\/]|\\/)
+    bad(NR, "\"" key "\" looks like a key path or key text; name the key-register entry instead")
+  if (key == "host" && val !~ /^[A-Za-z0-9][A-Za-z0-9.-]*\.[A-Za-z]+$/) bad(NR, "host must be a host name like server.example.com")
+  if (key == "user" && val !~ /^[a-z_][a-z0-9_-]*$/) bad(NR, "user must be a plain account name")
+  if (key == "key-register" && val !~ /^[A-Za-z0-9_.-]+$/) bad(NR, "key-register must be a plain name (letters, digits, . _ -), no slashes or colons")
+  if (key == "updated" && val !~ /^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$/) bad(NR, "updated must be a date, YYYY-MM-DD")
+  if ((key == "web-root" || key == "staging-root") && val !~ /^(~|\/)/) bad(NR, key " must start with ~ or /")
+  if (key == "tools") n = split(val, t, /, */)
+  if (key in many) { cnt[key]++; txt[key, cnt[key]] = val } else v[key] = val
+}
+END {
+  for (m in must) if (!(m in seen)) bad(0, "missing the \"" m ":\" line")
+  for (m in mustmany) if (!(m in seen)) bad(0, "missing at least one \"" m ":\" line")
+  if (faults) { printf "access-card: %d fault(s); the card is not valid\n", faults > "/dev/stderr"; exit 1 }
+  if (quiet) exit 0
+  printf "%s (card dated %s).\n\n", v["card"], v["updated"]
+  printf "You reach %s as the user %s, with the key the register knows as \"%s\".\n", v["host"], v["user"], v["key-register"]
+  printf "The website is served from %s; new copies are staged in %s.\n", v["web-root"], v["staging-root"]
+  printf "The host has: %s.\n\n", v["tools"]
+  print "The deploy may:"
+  for (i = 1; i <= cnt["may"]; i++) printf "  - %s\n", txt["may", i]
+  print "The deploy may not:"
+  for (i = 1; i <= cnt["may-not"]; i++) printf "  - %s\n", txt["may-not", i]
+  for (i = 1; i <= cnt["note"]; i++) { if (i == 1) print ""; printf "Note: %s\n", txt["note", i] }
+}' "$f"
