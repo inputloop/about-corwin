@@ -1,0 +1,201 @@
+#!/bin/sh
+# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# schedule -- the one command that owns the schedule of the about-corwin channel, on each host.
+#
+#   sh deploy/schedule install [minter|puller]    put the scripts in ~/bin and the schedule in place
+#   sh deploy/schedule status  [minter|puller]    say in words what is scheduled and what it last did
+#   sh deploy/schedule remove  [minter|puller]    take our schedule out; nothing else is touched
+#
+# Role: minter = gw33 (builds and publishes), puller = the DreamHost account (installs). Left out, the
+# role is guessed from the user name (gw33 -> minter, dh_* -> puller). Safe to run again: install
+# changes nothing when everything is already as it should be.
+#
+# minter: a systemd timer (about-corwin-mint.timer, every 17 minutes) when this user has sudo and
+#         systemd; otherwise a marked block in the user's crontab.
+# puller: a marked block in the user's crontab (cron is all shared hosting has):
+#             # BEGIN about-corwin pull (managed by deploy/schedule)
+#             ...one line...
+#             # END about-corwin pull
+#         Lines outside the block are never read or changed. A crontab with only one of the two
+#         markers is refused, not guessed at. The crontab is copied to ~/crontab-backup-<time> before
+#         it is changed.
+# For tests: SCHED_BIN (script folder), SCHED_UNITS (unit folder), SCHED_SUDO (a word, or empty),
+# SCHED_SYSTEMCTL, SCHED_FORCE=cron|systemd.
+set -u
+here=$(cd "$(dirname "$0")" && pwd)
+BIN=${SCHED_BIN:-$HOME/bin}
+UNITS=${SCHED_UNITS:-/etc/systemd/system}
+SUDO=${SCHED_SUDO-sudo}
+SYSCTL=${SCHED_SYSTEMCTL:-systemctl}
+PUBLISH=${MINT_PUBLISH:-/var/www/corwin.cloud-dist/about-corwin}
+WORK=${MINT_WORK:-$HOME/mint-about-corwin}
+REL=${RELEASES:-$HOME/aboutcorwin.com-releases}
+INTERVAL=17
+TAG="about-corwin pull"
+BEGIN="# BEGIN $TAG (managed by deploy/schedule)"
+END="# END $TAG"
+me=$(id -un)
+
+cmd=${1:-}; role=${2:-}
+if [ -z "$role" ]; then case $me in gw33) role=minter ;; dh_*) role=puller ;; esac; fi
+case $cmd in install|status|remove) ;; *) echo "usage: sh deploy/schedule install|status|remove [minter|puller]" >&2; exit 64 ;; esac
+case $role in minter|puller) ;; *) echo "schedule: I cannot tell the role for user $me; say minter or puller" >&2; exit 64 ;; esac
+say() { printf '%s\n' "$*"; }
+die() { printf 'schedule: %s\n' "$*" >&2; exit 1; }
+
+if [ $role = minter ]; then script=mint-about-corwin.sh; blockname="about-corwin mint"; else script=pull-aboutcorwin.sh; blockname="about-corwin pull"; fi
+BEGIN="# BEGIN $blockname (managed by deploy/schedule)"; END="# END $blockname"
+
+use_systemd() {
+  [ $role = minter ] || return 1
+  case ${SCHED_FORCE:-} in cron) return 1 ;; systemd) return 0 ;; esac
+  command -v "$SYSCTL" >/dev/null 2>&1 || return 1
+  [ -z "$SUDO" ] || $SUDO -n true 2>/dev/null
+}
+
+copy_scripts() {
+  mkdir -p "$BIN" || die "cannot make $BIN"
+  for f in $script chan-read.sh; do
+    [ -f "$here/$f" ] || die "$here/$f is missing"
+    if cmp -s "$here/$f" "$BIN/$f" 2>/dev/null; then say "script $BIN/$f is already current"
+    else cp "$here/$f" "$BIN/.$f.part" && chmod 755 "$BIN/.$f.part" && mv -f "$BIN/.$f.part" "$BIN/$f" && say "script $BIN/$f written"; fi
+  done
+}
+
+# ---- cron block ----
+cron_now() { crontab -l 2>/dev/null || true; }
+cron_check() {  # refuse a crontab that holds one marker without the other
+  b=$(cron_now | grep -cxF "$BEGIN"); e=$(cron_now | grep -cxF "$END")
+  [ "$b" = "$e" ] && [ "$b" -le 1 ] || die "the crontab has $b BEGIN and $e END markers for \"$blockname\"; I will not guess. Fix it by hand with: crontab -e"
+}
+cron_strip() { awk -v b="$BEGIN" -v e="$END" '$0==b{skip=1;next} $0==e{skip=0;next} !skip' ; }
+cron_line() { printf '*/%s * * * * /bin/sh %s/%s >/dev/null 2>&1\n' "$INTERVAL" "$BIN" "$script"; }
+cron_set() {  # file with the whole new crontab
+  command -v crontab >/dev/null 2>&1 || die "no crontab command here"
+  crontab "$1" || die "crontab refused the new table; the old one is still in place"
+}
+cron_install() {
+  cron_check
+  tmp=$(mktemp); cron_now > "$tmp.old"
+  if grep -qxF "$BEGIN" "$tmp.old"; then   # replace in place, so a re-run never moves the block
+    awk -v b="$BEGIN" -v e="$END" -v ln="$(cron_line)" '$0==b{print; print ln; skip=1; next} $0==e{print; skip=0; next} !skip' "$tmp.old" > "$tmp"
+  else
+    { cat "$tmp.old"; printf '%s\n%s\n%s\n' "$BEGIN" "$(cron_line)" "$END"; } > "$tmp"
+  fi
+  if cmp -s "$tmp" "$tmp.old"; then say "crontab already has the \"$blockname\" block; unchanged"; rm -f "$tmp" "$tmp.old"; return 0; fi
+  if [ -s "$tmp.old" ]; then cp "$tmp.old" "$HOME/crontab-backup-$(date +%Y%m%d-%H%M%S)"; say "old crontab copied to $HOME/crontab-backup-*"; fi
+  cron_set "$tmp"; rm -f "$tmp" "$tmp.old"
+  cron_check; [ "$(cron_now | grep -cxF "$BEGIN")" = 1 ] || die "the block did not land"
+  say "crontab block \"$blockname\" installed: $(cron_line)"
+}
+cron_remove() {
+  cron_check
+  if [ "$(cron_now | grep -cxF "$BEGIN")" = 0 ]; then say "no \"$blockname\" block in the crontab; nothing to remove"; return 0; fi
+  tmp=$(mktemp); cp /dev/null "$tmp.old"; cron_now > "$tmp.old"
+  cp "$tmp.old" "$HOME/crontab-backup-$(date +%Y%m%d-%H%M%S)"
+  cron_strip < "$tmp.old" > "$tmp"
+  if [ -s "$tmp" ]; then cron_set "$tmp"; else crontab -r || die "could not clear the empty crontab"; fi
+  rm -f "$tmp" "$tmp.old"; say "crontab block \"$blockname\" removed; other lines left as they were"
+}
+cron_status() {
+  cron_check
+  if [ "$(cron_now | grep -cxF "$BEGIN")" = 1 ]; then
+    say "SCHEDULED by cron (user $me): $(cron_line | sed 's/ >\/dev\/null 2>&1//')"
+    say "  cron has no exact interval: it runs at minutes 0, 17, 34 and 51 of every hour."
+  else say "NOT SCHEDULED in cron: no \"$blockname\" block."; fi
+}
+
+# ---- systemd timer (minter) ----
+unit_service() { cat <<U
+[Unit]
+Description=Mint the about-corwin channel (notice, check, build, publish)
+[Service]
+Type=oneshot
+User=$me
+Environment=HOME=$HOME
+ExecStart=/bin/sh $BIN/$script
+Nice=10
+NoNewPrivileges=yes
+PrivateTmp=yes
+TimeoutStartSec=20min
+U
+}
+unit_timer() { cat <<U
+[Unit]
+Description=Every $INTERVAL minutes: mint the about-corwin channel
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=${INTERVAL}min
+AccuracySec=10s
+Unit=about-corwin-mint.service
+[Install]
+WantedBy=timers.target
+U
+}
+sd_install() {
+  changed=0
+  for pair in service:unit_service timer:unit_timer; do
+    kind=${pair%%:*}; fn=${pair##*:}; f=$UNITS/about-corwin-mint.$kind
+    t=$(mktemp); $fn > "$t"
+    if cmp -s "$t" "$f" 2>/dev/null; then say "unit $f is already current"
+    else $SUDO install -m 644 "$t" "$f" || die "could not write $f"; say "unit $f written"; changed=1; fi
+    rm -f "$t"
+  done
+  $SUDO mkdir -p "$PUBLISH" && $SUDO chown "$me" "$PUBLISH" || die "could not make the publish folder $PUBLISH"
+  say "publish folder $PUBLISH is owned by $me"
+  [ $changed = 0 ] || $SUDO $SYSCTL daemon-reload || die "daemon-reload failed"
+  $SUDO $SYSCTL enable --now about-corwin-mint.timer || die "could not enable the timer"
+  say "timer about-corwin-mint.timer enabled and running (every $INTERVAL minutes)"
+}
+sd_remove() {
+  if $SUDO $SYSCTL disable --now about-corwin-mint.timer 2>/dev/null; then say "timer stopped and disabled"; else say "timer was not enabled"; fi
+  for kind in timer service; do
+    f=$UNITS/about-corwin-mint.$kind
+    if [ -f "$f" ]; then mkdir -p "$HOME/schedule-removed" && $SUDO mv "$f" "$HOME/schedule-removed/about-corwin-mint.$kind.$(date +%Y%m%d-%H%M%S)" && say "unit $f moved to $HOME/schedule-removed/ (not deleted)"; fi
+  done
+  $SUDO $SYSCTL daemon-reload 2>/dev/null || true
+}
+sd_status() {
+  if ! $SYSCTL cat about-corwin-mint.timer >/dev/null 2>&1; then say "NOT SCHEDULED by systemd: no about-corwin-mint.timer."; return 1; fi
+  say "SCHEDULED by systemd: about-corwin-mint.timer, every $INTERVAL minutes."
+  $SYSCTL list-timers about-corwin-mint.timer --no-pager 2>/dev/null | sed 's/^/  /'
+  st=$($SYSCTL show about-corwin-mint.service -p Result -p ExecMainStatus -p ExecMainExitTimestamp 2>/dev/null | tr '\n' ' ')
+  [ -z "$st" ] || say "  last run according to systemd: $st"
+}
+
+# ---- what it last did ----
+last_lines() { if [ -f "$1" ]; then say "  $2 ($1), newest last:"; tail -n 3 "$1" | sed 's/^/    /'; else say "  no $2 yet ($1 does not exist)."; fi; }
+report() {
+  if [ $role = minter ]; then
+    last_lines "$WORK/mint.log" "mint log"
+    if [ -f "$PUBLISH/channel.json" ]; then
+      say "  the feed now says key: $(sh "$BIN/chan-read.sh" "$PUBLISH/channel.json" key 2>/dev/null || echo unreadable)  stamp: $(sh "$BIN/chan-read.sh" "$PUBLISH/channel.json" stamp 2>/dev/null)"
+      say "  artifacts kept: $(ls -1 "$PUBLISH"/about-corwin-*.tar.gz 2>/dev/null | wc -l | tr -d ' ')"
+    else say "  no feed published yet at $PUBLISH/channel.json."; fi
+  else
+    last_lines "$REL/pull.log" "pull log"
+    if [ -f "$REL/.installed-about-corwin" ]; then say "  installed now: $(sed -n 's/^key=//p' "$REL/.installed-about-corwin")  (release $(sed -n 's/^release=//p' "$REL/.installed-about-corwin"))"
+    else say "  nothing recorded as installed yet."; fi
+    if [ -f "$BIN/$script" ]; then say "  asking the feed now: $(sh "$BIN/$script" -n -v 2>&1 | tail -n 1)"; fi
+  fi
+  say "  to stop: sh $here/schedule remove $role"
+}
+
+case $cmd in
+  install)
+    copy_scripts
+    if use_systemd; then sd_install; else cron_install; fi ;;
+  remove)
+    if use_systemd; then sd_remove; fi
+    cron_remove ;;
+  status)
+    say "role: $role (user $me)"
+    if use_systemd; then
+      sd_status || true
+      cron_check
+      if [ "$(cron_now | grep -cxF "$BEGIN")" = 1 ]; then say "WARNING: there is also a cron block for this job; run: sh $here/schedule remove $role, then install again."; fi
+    else cron_status; fi
+    report ;;
+esac
