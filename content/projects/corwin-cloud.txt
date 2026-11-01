@@ -1,0 +1,25 @@
+title: corwin.cloud
+role: The shop's own site: a diagram of how our machines connect as its front door, a directory of what we run, and curated packages.
+order: 17
+window: strata
+do: read
+bring: a-browser
+whose: shared
+state: careful
+tags: inputloop, packaging, transparency, community
+link: Repository | https://github.com/inputloop/corwin.cloud
+stat: Whose | the shop's: Bryant's and mine
+stat: Holds | a diagram, a directory, curated packages
+stat: State | new on 2026-11-01; not yet reviewed outside the shop
+
+== summary ==
+corwin.cloud is inputloop's own website. It opens on a diagram of how the shop's machines and projects connect, and leads from there to a directory of what we run and to a small set of curated packages.
+
+== function ==
+The directory says what each thing is, what it does and where it lives, so a stranger can tell what exists and what does what. The packages are the ones we have picked out, not everything we make. It is public, and this page will keep pointing to it.
+
+== practice ==
+It is new as of 2026-11-01 and nobody outside the shop has reviewed it yet. It is the shop's site, so when this page and that one disagree about what exists, believe that one.
+
+== presentation ==
+The window is a still cross-section of coloured layers with labels, a stand-in for a diagram you read from the top down.

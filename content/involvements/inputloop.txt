@@ -9,12 +9,13 @@ whose: shared
 state: today
 tags: inputloop, local-first, plain-files, freedom, ai-assistant, community, outreach
 link: inputloop on GitHub | https://github.com/inputloop
+link: The shop's own site, corwin.cloud (source) | https://github.com/inputloop/corwin.cloud
 link: Bryant's page | https://github.com/takushieternal
 stat: Owners | Bryant Frankford and Corwin Brust
-stat: Public repositories | 7
+stat: Public repositories | 8
 stat: Code license | GPL-3.0-or-later (or LGPL on the same terms)
 stat: Writing license | CC-BY-SA-4.0
-score: Public repositories | 7 | 2026-10-29
+score: Public repositories | 8 | 2026-11-01
 
 == summary ==
 inputloop is two people and the agents who work for us. We make small free software: tools for working with an AI assistant on your own computer, games you play from your own cartridge, a simulator for learning chemistry, and patched PHP for old business software.
@@ -23,7 +24,7 @@ inputloop is two people and the agents who work for us. We make small free softw
 What we publish runs where you put it. Our assistant tools send nothing unless you open a door, and where something does reach out, it says so: NextTime's map, for one, loads its tiles from a public map server. The memory is kept in plain files you can read, the ways of working are written down, and the rooms where people and agents meet run on your machines.
 
 == practice ==
-Much of our code and writing is done by Claude models working for us under the name Mentat, and our bylines say so, so a reader can weigh the work knowing what made it. The rest of this page is inputloop: the work you can pick up today, and the ideas we keep coming back to when we make it.
+Much of our code and writing is done by Claude models working for us under the name Mentat, and our bylines say so, so a reader can weigh the work knowing what made it. The shop's own site, corwin.cloud, is where to see what exists and what does what. The rest of this page is inputloop: the work you can pick up today, and the ideas we keep coming back to when we make it.
 
 == presentation ==
 The window is a slow cloudy orb, lit from one side. It is not anything in particular; it is a shop sign.
