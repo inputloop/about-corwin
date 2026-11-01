@@ -13,7 +13,8 @@ labelled for GNU LibreJS, add moving windows on each card, a parallax portfolio,
 into index cards, an Emacs-style mode-line, and a prompt that searches the cards by meaning with no
 server behind it.
 
-- `content/`: the words. One plain text file per card, plus `site.txt` and `vocabulary.txt`.
+- `content/`: the words. One plain text file per card (`about/` for the two cards about Corwin, then
+  `involvements/`, `projects/`, `concepts/`), plus `site.txt` (About and footer words) and `vocabulary.txt`.
 - `src/`: the page template, the stylesheet, the scripts, the logos, `.htaccess`.
 - `build.py`: turns the two into `public/`. Python 3.8 or later, standard library only.
 - `tests/`: Python, JavaScript and browser checks, and `tests/run.sh --prove-red`, which breaks a
@@ -70,15 +71,29 @@ its tags. Keep prose under 500 words per card. Link only repositories that are p
 
 ## Open items for Corwin
 
+Refreshed 2026-11-01.
+
 - A line in your own words in the About section, if you want one, and your GPG fingerprint in
   `content/site.txt`, which this page does not guess. The Find me list points to the Windows section of the
   Emacs download page, where it is listed.
+- The About text was rewritten on 2026-11-01 from CORWIN.md (what it shows, not its praise), the
+  earlier page, and the shop's public list. Check three claims only you can settle: "one of the
+  Savannah Hackers, the volunteers who keep GNU's project hosting running"; "I help organize
+  EmacsConf" (CORWIN.md says core organizer; the card keeps "one of the volunteers"); and that you
+  publish card-games on MELPA (linked as melpa.org/#/card-games, which responds, but the page does not
+  say who maintains it).
+- corwin.cloud: the card describes it only as the brief did (a diagram of how the machines connect,
+  a directory, curated packages) and links the repository. The GitHub API reported the repository
+  empty on 2026-11-01, so correct the card once there is more to say, and say if the site itself has
+  an address to link. Its state is "careful" (not yet reviewed outside the shop).
 - The family and fandom paragraph in `content/site.txt` (Steven, Bill and Jean Brust, Dee Brust,
   Minicon) was written from what you said in the session; trim or reword it as you like. Jean's link
   is *Defending Principles*, the book of Bill's writing she edited and introduced (no WSWS page about
   her own life turned up). Minicon links to mnstf.org/minicon/, because minicon.org's https
   certificate does not verify (it redirects there over plain http).
 - fourSwordsFromThePast's credit is "not yet written in its README", as the shop page has it.
+- The other cards' numbers are dated 2026-10-29; only the public-repository count (8) was
+  recounted on 2026-11-01. Recount the rest when you next look.
 
 ## Licence
 

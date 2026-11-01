@@ -42,6 +42,16 @@ Spell Ball's accessibility note in C4's showroom. Where a test holds a promise, 
 - **Forced colours.** In Windows high contrast the decorative parallax is removed and selected
   controls get a system outline.
 
+- **Questions about me, answered without the prompt.** How to reach me is in the Find me list in the
+  About section and again on the Find me card, as plain links (mail first, because it works for
+  everyone), and "Corwin at a glance" says who I am and what I work on; both are native `<details>`
+  cards like the rest, so they read with scripts off. The prompt's example questions, in the About
+  section and the footer, are plain text, not controls. The prompt's placeholder is only a hint;
+  its label, "Ask the page:", is what a screen reader announces. (`test_about_cards_answer_the_common_questions`;
+  the node check "visitor asks ..." holds each example question to a card that answers it)
+- **Dates on what can go stale.** The About text, the footer and every scoreboard number say the
+  day they were checked, so a reader of any tool can tell how old a claim is. (`test_the_about_and_footer_words_carry_the_date_they_were_checked`)
+
 ## Partly
 
 - **The windows' pictures** are decorative: each card's introduction describes in words what its
@@ -56,7 +66,8 @@ Spell Ball's accessibility note in C4's showroom. Where a test holds a promise, 
 ## Cannot (yet)
 
 - **The prompt without scripts.** The quick filters work without scripts; the free-text prompt
-  needs them, and the page says so in the echo area when they are off.
+  needs them, and the page says so in the echo area when they are off. The answers to its most
+  common questions (who I am, how to reach me, what inputloop is) are on the page as ordinary text.
 - **A spoken tour** of a card's views. The view buttons are a labelled group with `aria-pressed`, but
   there is no summary of all views at once.
 
