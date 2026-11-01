@@ -65,25 +65,40 @@ All of these run the same `make check` and `make prove-red`, and keep `public/` 
 
 ## Publishing to Dreamhost (shared hosting)
 
-The site is static, so nothing runs on the server but Apache. `src/.htaccess` travels with it: it
-sets the security headers, compression, caching, the 404 page and the move to https.
+The site is static, so nothing runs on the server but Apache, and nothing needs installing there.
+`src/.htaccess` travels with the site: it sets the security headers, compression, caching, the 404
+page and the move to https. The deploy keeps every release and a copy of whatever it replaces.
 
-1. In the Dreamhost panel, under **Websites**, make sure aboutcorwin.com is fully hosted (not
-   parked) and note the web directory (by default `~/aboutcorwin.com`) and the server name.
-2. Under **Users** (SFTP/SSH users), give that user **SSH** access, then add your public key to its
-   `~/.ssh/authorized_keys`.
-3. Turn on the free certificate under **Websites, Secure Certificates**; the `.htaccess` redirect
-   to https expects it.
-4. From your machine:
+One-time setup in the Dreamhost panel: under **Websites**, make aboutcorwin.com fully hosted (not
+parked) and note the web directory (by default `~/aboutcorwin.com`) and the server name; under
+**Users**, give the shell user **SSH** access and add your public key to `~/.ssh/authorized_keys`;
+under **Websites, Secure Certificates**, turn on the free certificate (the redirect expects it).
+Then write down what you have in an access card, [deploy/ACCESS-CARD.md](deploy/ACCESS-CARD.md),
+and check it with `sh scripts/access-card deploy/access/aboutcorwin.card`.
 
-   ```sh
-   make check
-   DH_USER=youruser DH_HOST=yourserver.dreamhost.com sh scripts/deploy-dreamhost.sh             # dry run
-   DH_USER=youruser DH_HOST=yourserver.dreamhost.com DEPLOY=yes sh scripts/deploy-dreamhost.sh  # copy
-   ```
+The flow, one word per step:
 
-   `DH_PATH` changes the folder; `DELETE=yes` also removes files on the server that are no longer
-   in `public/`. Without rsync, any SFTP client works: copy the contents of `public/`, including
-   the hidden `.htaccess`.
+1. **make dist** (your machine): builds `public/` and writes `dist/about-corwin.tar.gz` (the site,
+   the three host scripts and `MANIFEST.sha256`, a sha256 per file) and `dist/stage.sh`.
+2. Copy both to the host (scp, or any SFTP client) into a folder you made for them.
+3. **stage** (on the host: `sh stage.sh`): unpacks into `~/aboutcorwin.com-releases/<YYYYMMDD-HHMMSS>/`
+   and checks every file against the manifest, and that nothing unlisted is there. A release that
+   fails is renamed `-FAILED`, never deleted. The live site is not touched. It prints the line to go
+   live and leaves `go-live`, `rollback` and `stage` beside the releases.
+4. **go-live** (on the host: `sh ~/aboutcorwin.com-releases/go-live <stamp>`, or the `deploy/go-live.sh`
+   inside the release): verifies again, copies the whole web root to `<stamp>-previous/` and stops if
+   that copy fails, then copies the release in file by file (each lands whole or not at all), leaves
+   `.dh-diag` alone, deletes nothing, and prints what was new and what changed.
+5. **rollback** (`sh ~/aboutcorwin.com-releases/rollback`): copies the current web root to
+   `<stamp>-before-rollback/`, then puts the newest `-previous` back. Files only the rolled-back
+   release added are removed from the web root (they are in the copy just made).
+
+Only `sh`, `tar`, `find`, `cmp` and `sha256sum` (or `shasum`) are used on the host, not rsync, so it
+works where rsync is missing. Set `RELEASES` or `WEBROOT` to change the folders. The checks run these
+scripts against a temp directory standing in for the host home (`tests/deploy/run.sh`), with planted
+faults: a tampered file, a failed backup, a planted `.dh-diag`.
+
+The older `make deploy` (`scripts/deploy-dreamhost.sh`, rsync from your machine straight into the web
+root) is still there for a quick copy to a site you do not mind overwriting; it keeps no backup.
 
 Afterwards, check the live headers once: `curl -sI https://aboutcorwin.com/ | grep -i content-security`.

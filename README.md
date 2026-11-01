@@ -17,6 +17,9 @@ server behind it.
   `involvements/`, `projects/`, `concepts/`), plus `site.txt` (About and footer words) and `vocabulary.txt`.
 - `src/`: the page template, the stylesheet, the scripts, the logos, `.htaccess`.
 - `build.py`: turns the two into `public/`. Python 3.8 or later, standard library only.
+- `deploy/`, `scripts/make-dist`, `scripts/access-card`: the shared-hosting deploy (stage, go-live,
+  rollback) and the access card that says in words what a host lets you do; see
+  [deploy/ACCESS-CARD.md](deploy/ACCESS-CARD.md).
 - `tests/`: Python, JavaScript and browser checks, and `tests/run.sh --prove-red`, which breaks a
   copy on purpose to show that each check can fail.
 - [DESIGN.md](DESIGN.md) says why it is made this way; [ACCESSIBILITY.md](ACCESSIBILITY.md) says what
@@ -72,6 +75,11 @@ its tags. Keep prose under 500 words per card. Link only repositories that are p
 ## Open items for Corwin
 
 Refreshed 2026-11-01.
+
+- Go live. The site is built, packed and staged on the host but not live (`deploy/STATUS-2026-11-01.md`).
+  After you have checked the three claims below, run on the host:
+  `sh ~/aboutcorwin.com-releases/go-live 20261101-040301`. It copies the web root aside first; if
+  the About text changes, `make dist` and send the two files in `dist/` again (BUILDING.md).
 
 - A line in your own words in the About section, if you want one, and your GPG fingerprint in
   `content/site.txt`, which this page does not guess. The Find me list points to the Windows section of the
