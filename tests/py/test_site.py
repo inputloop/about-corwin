@@ -469,6 +469,38 @@ class Wording(unittest.TestCase):
                 self.assertNotIn(wrong, f.read(), path)
         self.assertIn('href="https://corwin.bru.st/"', read("index.html"))
 
+    def test_prose_keeps_one_voice(self):
+        # docs/VOICE-READ-2026-11-01.md: card and About prose speak as "I" (Corwin) or "we" (the shop).
+        # Third person is for titles, labels, credits and meta, which sit above the first "== " line,
+        # and for a visitor's question in curly quotes.
+        third = re.compile(r"\b(Corwin|[Hh]e|[Hh]im|[Hh]is)\b")
+        skip = {"windows", "views"}
+        for base, dirs, names in os.walk(os.path.join(ROOT, "content")):
+            dirs[:] = [d for d in dirs if d not in skip]
+            for n in names:
+                if not n.endswith(".txt") or n == "vocabulary.txt":
+                    continue
+                path, prose = os.path.join(base, n), False
+                with open(path, encoding="utf-8") as f:
+                    for i, line in enumerate(f, 1):
+                        if line.startswith("== "):
+                            prose = True
+                            continue
+                        if not prose:
+                            continue
+                        t = re.sub("“[^”]*”", "", line)
+                        t = t.replace("I am Corwin Brust", "").replace("Corwin Brust and Contributors", "")
+                        self.assertIsNone(third.search(t), "%s:%d speaks of Corwin in the third person" % (path, i))
+
+    def test_dotfiles_point_at_sourcehut_not_the_old_gitlab_copy(self):
+        # Corwin, 2026-11-01: his init files live on sourcehut; the GitLab repository is an old copy.
+        old = "gitlab.com/" + "mplscorwin/dotfiles"
+        for base, _, names in os.walk(os.path.join(OUT, "public")):
+            for n in names:
+                with open(os.path.join(base, n), encoding="utf-8", errors="replace") as f:
+                    self.assertNotIn(old, f.read(), os.path.join(base, n))
+        self.assertIn('href="https://git.sr.ht/~mplscorwin/dotfiles"', read("index.html"))
+
 
 class Snapshots(unittest.TestCase):
     PATHLIKE = re.compile(r"[A-Za-z]:[\\/]|\\|/(?:home|g|h|c|usr|etc|var|tmp|mnt|users|sessions)/|\.log\b|@|\bpassphrase|\bkey\b", re.I)

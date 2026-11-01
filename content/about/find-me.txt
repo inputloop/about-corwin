@@ -13,7 +13,7 @@ link: Mastodon | https://hostux.social/@corwin
 link: IRC nick | corwin
 link: My signing key, in the Windows section of the Emacs download page | https://www.gnu.org/software/emacs/download.html#windows
 link: My Emacs blog | https://corwin.bru.st/
-link: Init files on GitLab | https://gitlab.com/mplscorwin/dotfiles
+link: Init files on sourcehut | https://git.sr.ht/~mplscorwin/dotfiles
 stat: Mail | corwin@bru.st
 stat: Shop mail | BryantAndCorwin@inputloop.com
 stat: Mastodon | hostux.social/@corwin

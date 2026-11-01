@@ -17,7 +17,7 @@ On the shop page each thing says whose it is, and when we do not know yet, it sa
 Much of our code and writing is done by Claude models working as Mentat. The bylines say so, and usually which model, so a reader can weigh the work knowing what made it.
 
 == practice ==
-This page was drafted that way too: its commits are Corwin's, with a Mentat byline.
+This page was drafted that way too: its commits are mine, with a Mentat byline.
 
 == presentation ==
 The window is a ledger of names and the work beside each one.
