@@ -98,6 +98,11 @@ prove_red() {
   plant "rollback forgets .dh-diag"           deploy/rollback.sh 's# ! -path ./.dh-diag##g'                  "$depc"
   plant "the card reader accepts a key path"  scripts/access-card 's/if (val ~ \/BEGIN/if (0 \&\& val ~ \/BEGIN/' "$depc"
   plant "the card reader forgets required lines" scripts/access-card 's/for (m in must) if/for (m in mustX) if/' "$depc"
+  plant "a hand-placed offset in the stylesheet" src/css/site.css 's/^\.pp-alone {/#pp-mentat { margin-top: 3rem; }\n.pp-alone {/' "$pyc"
+  plant "a hand-placed slot in a personae card" content/personae/mentat.txt 's/^kind: persona$/kind: persona\nslot: 0/' "$pyc"
+  plant "the personae order ignores the relations" build.py 's/            steps = sorted(pl\[p\["person"\]\] - pr\[p\["persona"\]\] for p in pairs)/            steps = list(range(len(pairs)))/' "$pyc"
+  plant "two related pairs may meet at once" build.py 's/            if len(set(steps)) != len(steps):/            if False:/' "$pyc"
+  plant "a pairing drops out of the written list" build.py 's/for r in pp\["pairs"\])$/for r in pp["pairs"][1:])/' "$pyc"
   plant "heading levels skip"                build.py           's/render_card(c, windows, 4) for c in projects/render_card(c, windows, 5) for c in projects/' "$pyc"
   if command -v "$node" >/dev/null 2>&1; then
     plant "Customize phones home"            src/js/customize.js 's#^  var doc = document, html = doc.documentElement;#  var doc = document, html = doc.documentElement; fetch("/x");#' "$nodec"
@@ -118,6 +123,7 @@ prove_red() {
     plant "the hub card teaches associations" src/js/taxonomy.js 's/var HUB = 1.5;/var HUB = 99;/' "$nodec"
     plant "spreading admits cards"           src/js/taxonomy.js 's/      if (!direct) score = 0;//' "$nodec"
     plant "presentation words pick subjects" src/js/taxonomy.js 's/var PRESENTATION_ON_CARDS = 0.3;/var PRESENTATION_ON_CARDS = 1;/' "$nodec"
+    plant "the personae tie-break turns around" build.py 's/score = (gaps, tuple(-ord(c)/score = (gaps, tuple(ord(c)/' "$nodec"
     if [ "${SKIP_BROWSER:-}" != 1 ]; then
       plant "Customize is out of the tab order" src/index.html   's/id="custom-btn" class="custom-btn"/id="custom-btn" tabindex="-1" class="custom-btn"/' "$brc"
       plant "Escape does not close Customize" src/js/customize.js "s/ev.key !== 'Escape' || panel.hidden/ev.key !== 'Esc_' || panel.hidden/" "$brc"
@@ -128,6 +134,14 @@ prove_red() {
       plant "the minibuffer is not after the mode-line" src/css/site.css 's/^  position: sticky; bottom: 0; z-index: 20;$/  position: static; z-index: 20;/' "$brc"
       plant "the mode-line never says Bot"   src/js/site.js     "s/: y >= max - 2 ? 'Bot' :/: false ? 'Bot' :/" "$brc"
       plant "a single-key shortcut"          src/js/site.js     "s/if (ev.altKey \&\& (ev.key === 'x'/if ((ev.key === '\/' || ev.altKey) \&\& (ev.key === '\/' || ev.key === 'x'/" "$brc"
+      plant "the personae columns move the same way" src/js/personae.js "s/(base + shift).toFixed(1)/(base - shift).toFixed(1)/" "$brc"
+      plant "a postcard while no pair is level" src/js/personae.js 's/var LEVEL = 0.3;/var LEVEL = 0.8;/' "$brc"
+      plant "the postcard never shows"       src/js/personae.js 's/      postcard.hidden = false;/      postcard.hidden = true;/' "$brc"
+      plant "the postcard is not announced"  src/js/personae.js 's/if (current === pair) say.textContent/if (false) say.textContent/' "$brc"
+      plant "reduced motion still moves the columns" src/js/personae.js "s/function moving() { return html.classList.contains('motion-on'); }/function moving() { return true; }/" "$brc"
+      plant "the show button leaves focus behind" src/js/personae.js 's/      postcard.focus({ preventScroll: true });/      void 0;/' "$brc"
+      plant "personae slots go uneven"       src/js/personae.js "s/    sec.style.setProperty('--pp-h', height + 'px');/    void 0;/" "$brc"
+      plant "the prompt stops marking what it found" src/js/site.js "s/c.classList.toggle('is-match', r !== undefined);/c.classList.toggle('is-match', false);/" "$brc"
       plant "reduced motion ignored"         src/js/site.js     "s/: !reduce.matches;/: true;/" "$brc"
     fi
   fi

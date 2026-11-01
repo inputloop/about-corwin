@@ -1,0 +1,4 @@
+title: Corwin Brust
+kind: person
+role: I build GNU Emacs for Windows, help run EmacsConf, and keep inputloop with Bryant Frankford.
+credit: Commits as Corwin Brust

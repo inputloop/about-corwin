@@ -318,6 +318,85 @@ html:not(.js) .v-featured { display: none; }
 /* While the mode-line flies the page down, cards lean with the speed. */
 .flying .card .face { transform: rotate(calc(var(--tilt) + var(--vel, 0) * 1deg)) scale(calc(1 - var(--vel-abs, 0) * 0.02)); transition: none; }
 
+/* ---- dramatis personae ------------------------------------------------------------------------
+   Two plain lists side by side, and the pairings written out under them: that is the page with
+   scripts off or Motion off. With Motion on, personae.js pins a stage and slides the people's
+   column up and the personas' column down by the scroll. Nothing here places anyone: there is no
+   rule for a particular card, only for kinds of card. The order comes from build.py. */
+.personae { position: relative; }
+.pp-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 clamp(0.75rem, 4vw, 3rem); }
+.pp-col h3 { margin-top: 1rem; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.pp-list { list-style: none; margin: 0; padding: 0; display: grid; row-gap: 1rem; }
+.pp-card {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; box-shadow: var(--shadow);
+  padding: 0.7rem 0.9rem 0.8rem; font-family: var(--sans);
+  font-size: calc(0.95rem * var(--read-scale, 1)); line-height: var(--read-lh, 1.6);
+}
+.pp-persona { border-style: dashed; border-color: var(--accent); }
+.pp-kind { margin: 0; font: 0.72rem/1.4 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.pp-name { margin: 0.1rem 0 0.25rem; font-size: 1.05rem; }
+.pp-role { margin: 0; color: var(--ink); }
+.pp-credit { margin: 0.4rem 0 0; font: 0.8rem/1.4 var(--mono); color: var(--muted); overflow-wrap: anywhere; }
+.pp-pairs { padding-left: 1.2rem; max-width: var(--measure); font-size: calc(1rem * var(--read-scale, 1)); line-height: var(--read-lh, 1.6); }
+.pp-pairs li { margin: 0 0 0.6rem; }
+.pp-src { font-family: var(--sans); font-size: 0.85em; }
+.pp-alone { color: var(--muted); max-width: var(--measure); }
+.pp-moving, .pp-show { display: none; }
+.pp-postcard[hidden] { display: none; }
+
+html.motion-on .pp-moving { display: inline; }
+html.motion-on .pp-show {
+  display: inline-block; font: 0.8rem var(--sans); color: var(--ink); background: var(--surface);
+  border: 1px solid var(--rule); border-radius: 999px; padding: 0.15rem 0.7rem; min-height: 1.8rem; cursor: pointer;
+}
+/* The run: one window-height of stage, plus a share of a window-height for each step. */
+html.motion-on .pp-track { height: calc(100vh + var(--pp-steps, 6) * 45vh); }
+html.motion-on .pp-stage { position: sticky; top: 0; height: calc(100vh - 2rem); overflow: hidden; }
+html.motion-on .pp-cols { height: 100%; }
+html.motion-on .pp-col { position: relative; min-width: 0; }
+html.motion-on .pp-col h3 { position: relative; z-index: 2; margin: 0; padding: 2rem 0 0.5rem; background: linear-gradient(var(--bg) 80%, transparent); }
+html.motion-on .pp-list { will-change: transform; }
+html.motion-on .pp-card { height: var(--pp-h, auto); overflow: hidden; transition: none; }
+/* The strip's two joints: across the top the people's column turns into the personas', across
+   the bottom the personas' turns back, with the half twist drawn as a band that changes face. */
+html.motion-on .pp-stage::before, html.motion-on .pp-stage::after {
+  content: ""; position: absolute; left: 50%; width: min(10rem, 30vw); height: 1.2rem; translate: -50% 0; z-index: 1;
+  border: 2px solid var(--rule); background: linear-gradient(90deg, var(--surface) 0 45%, var(--accent) 55% 100%);
+  opacity: 0.55; pointer-events: none;
+}
+html.motion-on .pp-stage::before { top: 0.4rem; border-radius: 0 0 50% 50% / 0 0 100% 100%; }
+html.motion-on .pp-stage::after { bottom: 0.4rem; border-radius: 50% 50% 0 0 / 100% 100% 0 0; background: linear-gradient(90deg, var(--accent) 0 45%, var(--surface) 55% 100%); }
+/* A pair coming level folds toward the middle, and the postcard opens over them. */
+html.motion-on .pp-card.is-meeting {
+  transform: translateX(calc(var(--pp-near, 0) * 25% * var(--pp-dir, 1))) scale(calc(1 - var(--pp-near, 0) * 0.12));
+  opacity: calc(1 - var(--pp-near, 0) * 0.8);
+}
+.pp-left .pp-card { --pp-dir: 1; }
+.pp-right .pp-card { --pp-dir: -1; }
+html.motion-on .pp-postcard {
+  position: absolute; left: 50%; top: var(--pp-y, 50%); z-index: 3;
+  width: min(34rem, calc(100% - 2 * var(--gutter))); translate: -50% -50%;
+  scale: calc(0.82 + var(--pp-near, 0) * 0.18); opacity: calc(0.35 + var(--pp-near, 0) * 0.65);
+  background-color: var(--surface);
+  border: 1px solid var(--rule); border-radius: 6px; box-shadow: var(--shadow);
+  padding: 0.8rem 1.1rem 1rem; font-family: var(--sans);
+  font-size: calc(0.95rem * var(--read-scale, 1)); line-height: var(--read-lh, 1.6);
+}
+html.motion-on .pp-postcard::after {
+  content: ""; position: absolute; top: 0.6rem; right: 0.6rem; width: 2.2rem; height: 2.6rem;
+  border: 2px dashed var(--accent); border-radius: 3px; opacity: 0.8;
+}
+.pp-pc-label { margin: 0; font: 0.72rem/1.4 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.pp-pc-names { margin: 0.15rem 3rem 0.3rem 0; font-weight: 700; font-size: 1.1rem; }
+.pp-pc-words { margin: 0; }
+@media (max-width: 34rem) {
+  .pp-card { padding: 0.55rem 0.6rem 0.65rem; font-size: calc(0.85rem * var(--read-scale, 1)); }
+  .pp-name { font-size: 0.95rem; }
+  html.motion-on .pp-track { height: calc(100vh + var(--pp-steps, 6) * 55vh); }
+}
+@media (forced-colors: active) { .pp-card, .pp-postcard { border: 2px solid CanvasText; } }
+@media print { .pp-show, .pp-postcard { display: none !important; } html.motion-on .pp-track { height: auto; } html.motion-on .pp-stage { position: static; height: auto; } }
+
 /* ---- the display area ----------------------------------------------------------------------- */
 .stage { border-top: 1px solid var(--rule); padding-bottom: 1.5rem; }
 .stage h2 { font: 600 0.8rem var(--mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }

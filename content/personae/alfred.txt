@@ -1,0 +1,6 @@
+title: Alfred
+kind: persona
+role: Who an agent is in Bryant's gardens: the voice, the map of the house and the laws he gave it.
+credit: Signs as Alfred, for Bryant
+source: The vibrobeast skill | https://github.com/inputloop/vibrobeast/blob/main/plugins/vibrobeast-skills/skills/vibrobeast/SKILL.md
+relation: bryant | Alfred is the voice Bryant gave his garden, and work there is signed by Alfred, for Bryant. | https://github.com/inputloop/vibrobeast/blob/main/plugins/vibrobeast-skills/skills/vibrobeast/SKILL.md

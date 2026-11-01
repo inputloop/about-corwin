@@ -10,11 +10,12 @@ the free software shop he keeps with Bryant Frankford.
 
 It is one page of HTML and CSS that reads well with scripts turned off. The scripts, all free and
 labelled for GNU LibreJS, add moving windows on each card, a parallax portfolio, cards that grow
-into index cards, an Emacs-style mode-line, and a prompt that searches the cards by meaning with no
+into index cards, a dramatis personae whose two columns slide past each other, an Emacs-style
+mode-line, and a prompt that searches the cards by meaning with no
 server behind it.
 
 - `content/`: the words. One plain text file per card (`about/` for the two cards about Corwin, then
-  `involvements/`, `projects/`, `concepts/`), plus `site.txt` (About and footer words) and `vocabulary.txt`.
+  `involvements/`, `projects/`, `concepts/`; `personae/` for the people and personas), plus `site.txt` (About and footer words) and `vocabulary.txt`.
 - `src/`: the page template, the stylesheet, the scripts, the logos, `.htaccess`.
 - `build.py`: turns the two into `public/`. Python 3.8 or later, standard library only.
 - `deploy/`, `scripts/make-dist`, `scripts/access-card`: the shared-hosting deploy (stage, go-live,

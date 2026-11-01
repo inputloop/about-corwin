@@ -1,0 +1,7 @@
+title: Vibrobeast
+kind: persona
+role: The direction of my garden: where things go, what is checked, what leaves. It does not write; Mentat does.
+credit: Directs; never signs
+source: The vibrobeast skill | https://github.com/inputloop/vibrobeast/blob/main/plugins/vibrobeast-skills/skills/vibrobeast/SKILL.md
+relation: corwin | Vibrobeast is the direction my garden takes, and Mentat is the voice that writes in it. | https://github.com/inputloop/vibrobeast/blob/main/plugins/vibrobeast-skills/skills/vibrobeast/SKILL.md
+relation: dee | The name began as a joke between Dee and me; years later a group naming call picked it up and kept it. | https://github.com/inputloop/vibrobeast

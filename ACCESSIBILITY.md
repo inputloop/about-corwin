@@ -80,3 +80,15 @@ its panel, a press pins it, Escape closes it and returns focus to the button. It
 of the reading text only, line length, line spacing, colour theme (follow system, light, dark, high
 contrast) and reduce motion. Settings stay in the browser's localStorage and are never sent.
 tests/browser checks the keyboard path, that only reading text scales, and that nothing is fetched.
+
+## Dramatis personae (2026-11-01)
+
+The people and the agents' personas are two ordinary lists (`ol`, under their own headings), and
+every pairing between them is written out beneath in a list with its source, scripts or not. The
+moving version (two columns sliding opposite ways, a postcard when a related pair comes level) runs
+only with Motion on; with reduced motion, Customize's Reduce motion, or scripts off, the lists stay
+still. The postcard is announced once through a polite status line when the reader stops on it.
+Nothing inside the moving columns takes focus; instead each pairing has a "Show this postcard"
+button that scrolls to where the pair meets and moves focus to the postcard. Cards take the
+reading text size from Customize, and all cards share the height of the tallest, so no text is cut
+off. tests/browser checks all of this at 1280 and 390 pixels.

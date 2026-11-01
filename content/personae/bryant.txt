@@ -1,0 +1,5 @@
+title: Bryant Frankford
+kind: person
+role: Keeps inputloop with me, and spent months showing me how to work with Claude before I knew I wanted to. Quantum 3D5 is his.
+credit: GitHub: takushieternal
+source: The vibrobeast README | https://github.com/inputloop/vibrobeast

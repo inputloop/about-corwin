@@ -191,7 +191,7 @@
   var ml = $('#modeline'), pos = $('.ml-pos', ml), sec = $('.ml-sec', ml);
   var sections = $$('main > section[id], .portfolio-inner > h3[id]');
   var SECTION_NAMES = { about: 'about', involvements: 'involvements', portfolio: 'inputloop', work: 'work',
-                        ideas: 'ideas', how: 'how', stage: 'display' };
+                        ideas: 'ideas', personae: 'personae', how: 'how', stage: 'display' };
   var ticking = false;
   function where() {
     ticking = false;

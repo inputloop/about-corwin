@@ -1,0 +1,5 @@
+title: Brigidt
+kind: person
+role: A lab partner in inputloop since 2026-10-25. NextTime is her work.
+credit: GitHub: definitelynotaspren
+source: inputloop's topology | https://github.com/inputloop/topology/blob/corwin/examples/inputloop/people/definitelynotaspren/TOPOLOGY.md

@@ -138,6 +138,68 @@ The fly-down stops the moment you use the wheel, touch the screen or press a key
 The CSS and script URLs carry a hash of the file (`site.css?v=...`), so after a deploy no browser
 runs yesterday's script against today's page.
 
+## Dramatis personae
+
+Corwin, 2026-11-01: split the people and the agents' personas into two columns; as you scroll, one
+column comes up while the other goes down, like a strip; at most one pair we know to be related is
+level at a time; when two related cards come level they turn into one postcard for both, one
+postcard at a time; and the prompt stays at the foot of the page.
+
+**The data.** One header-only text file per person or persona in `content/personae/` (the same
+store as the cards, for the same reasons): `title`, `kind` (person or persona), `role`, `credit`,
+`source`, and one `relation: other | what joins them | https source` line per pairing. A relation
+always pairs a person with a persona, is written once, and names its public source. A card may not
+carry any other key, so nobody can be given a slot, an order or an offset by hand: the build stops
+and says positions are computed. The cast is only who the page or a public inputloop repository
+already names, credited the way those do (Brigidt with her GitHub handle, definitelynotaspren).
+
+**The rule that places everyone.** People go in the left column, personas in the right. The left
+column rises as you scroll and the right one falls, so the person in left slot *a* comes level with
+the persona in right slot *b* when the columns have slid *a* − *b* slots past each other; call that
+the pair's meeting step. `build.py` (`order_personae`) tries every order of both columns and keeps
+the one where:
+
+1. no two related pairs have the same meeting step, so at most one is ever level;
+2. the meetings are as evenly spread as they can be: list the gaps between meeting steps, counting
+   one step before the first and one after the last as the ends of the run, from smallest to
+   largest, and prefer the order whose smallest gap is largest, then whose next gap is largest,
+   and so on;
+3. any tie goes to the order whose file names, read down the left column and then the right, come
+   first alphabetically.
+
+If no order keeps the pairs apart, the build stops and says so. The build writes each card's slot,
+each pairing's step, and the first and last step of the run into the page; `src/js/personae.js`
+only turns the scroll position into a step and moves the two columns by half a step each, opposite
+ways. It has no names and no positions in it, and the stylesheet has no rule for any one card.
+
+**The strip.** Because the columns move opposite ways, the run opens with the top of the people's
+column meeting the bottom of the personas', and closes with the bottom of the people's meeting the
+top of the personas': each column's end joins the other's start, as the two edges of a Möbius
+strip do. The two small bands at the top and bottom of the stage draw those joints, each changing
+colour halfway across for the half twist.
+
+**Level, and the postcard.** Two cards are level while their centres are within 0.3 of a slot.
+That is under half a slot, and related pairs never share a step, so at most one related pair is
+level at any scroll position. While one is, its two cards fold toward the middle and fade, and one
+postcard opens over them naming both and the relation; it is said once to screen readers, through
+a polite status line, when the reader stops on it. Every card takes the height of the tallest, so
+the slots stay even at any text size from Customize.
+
+**Without motion.** With scripts off, Motion off, Customize's Reduce motion, or the system's
+reduced-motion setting, the columns are two plain lists and nothing is pinned or moved. The
+pairings are always written out under the columns ("Who works with whom"), each with its source,
+so nothing a postcard says is only in a postcard. With motion on, each pairing also gets a "Show
+this postcard" button, which scrolls to where that pair meets and moves focus to the postcard.
+
+**Checks.** `tests/py/test_personae.py` (the page carries the computed order; no better-spaced
+order exists; a changed relation changes the order; the build refuses a position in a card; no
+stylesheet rule or script line names anyone), `tests/js/personae.test.mjs` (a second reader in
+JavaScript applies the rule above to the content files and must reach the page's order), and
+`tests/browser/personae.test.mjs` at 1280 and 390 pixels (opposite motion, at most one pair level
+at 98 scroll positions, exactly one postcard while one is and none otherwise, the announcement,
+the keyboard buttons, the still lists three ways, 175% text, and the prompt finding every card).
+Each has a planted fault in `tests/run.sh --prove-red`.
+
 ## Turned down
 
 - **A framework or a bundler.** Nothing here needs one, and either would put minified code between

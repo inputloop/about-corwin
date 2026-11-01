@@ -18,6 +18,7 @@ that src/js/taxonomy.js searches in the browser.
 import argparse
 import html
 import json
+import math
 import os
 import re
 import shutil
@@ -41,7 +42,7 @@ MAX_PROSE_WORDS = 500
 PUBLIC_REPOS = {".github", "fourSwordsFromThePast", "NextTime-Dev", "quantum3d5",
                 "suit-crm-6-5-php-sec-backport", "vibrobeast", "vibrobeast-skills", "corwin.cloud",
                 "topology", "about-corwin", "gitcha", "ta", "three-phase-transcription", "journal"}
-JS_FILES = ("chamber.model.js", "taxonomy.js", "windows.js", "site.js", "customize.js")
+JS_FILES = ("chamber.model.js", "taxonomy.js", "windows.js", "site.js", "customize.js", "personae.js")
 GPL_MAGNET = "magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt"
 VIEW_ORDER = ("prose", "baseball", "scoreboard", "featured")
 VIEW_HEADINGS = {"prose": "Introduction", "baseball": "On the back",
@@ -237,7 +238,118 @@ def load(content_dir=CONTENT):
     if len(slugs) != len(set(slugs)):
         raise ContentError("two cards share a slug")
     return {"vocab": vocab, "site": site, "cards": cards, "views": views, "windows": windows,
-            "snap": load_snapshots(content_dir)}
+            "snap": load_snapshots(content_dir), "personae": load_personae(content_dir)}
+
+
+# ---- dramatis personae -------------------------------------------------------------------------
+# People and the agent personas, in two columns that slide past each other as the page scrolls.
+# Who is which kind and who relates to whom is data (content/personae/); where each one stands is
+# computed from that data by order_personae(), never written by hand. DESIGN.md, "Dramatis
+# personae", says the rule in words.
+
+PERSONA_KINDS = ("person", "persona")
+PERSONA_KEYS = {"title", "kind", "role", "credit", "source", "relation"}
+# The most arrangements the exhaustive sort will try before it says the cast has outgrown it.
+MAX_ARRANGEMENTS = 2000000
+
+
+def load_personae(content_dir=CONTENT):
+    d = os.path.join(content_dir, "personae")
+    people, relations = [], []
+    for name in sorted(os.listdir(d)) if os.path.isdir(d) else []:
+        if not name.endswith(".txt"):
+            continue
+        rec = parse_file(os.path.join(d, name))
+        path = rec["path"]
+        extra = set(rec["header"]) - PERSONA_KEYS
+        if extra:
+            raise ContentError("%s: unknown key(s) %s; positions are computed from the relations, "
+                               "never written in a card" % (path, ", ".join(sorted(extra))))
+        if rec["layers"]:
+            raise ContentError("%s: a personae card is a header only" % path)
+        kind = one(rec, "kind")
+        if kind not in PERSONA_KINDS:
+            raise ContentError("%s: kind must be person or persona, not %r" % (path, kind))
+        src = rec["header"].get("source", [])
+        source = dict(zip(("label", "href"), pipes(src[0], 2, path))) if src else None
+        if source and not source["href"].startswith("https://"):
+            raise ContentError("%s: a source is an https link" % path)
+        slug = slug_of(path)
+        people.append({"slug": slug, "kind": kind, "title": one(rec, "title"), "role": one(rec, "role"),
+                       "credit": one(rec, "credit", required=False), "source": source, "path": path})
+        for v in rec["header"].get("relation", []):
+            other, words, href = pipes(v, 3, path)
+            if not href.startswith("https://"):
+                raise ContentError("%s: a relation names its source as an https link" % path)
+            relations.append({"a": slug, "b": other, "words": words, "href": href, "path": path})
+    by = {p["slug"]: p for p in people}
+    pairs, seen = [], set()
+    for r in relations:
+        if r["b"] not in by:
+            raise ContentError("%s: relation names %r, who has no content/personae card" % (r["path"], r["b"]))
+        a, b = by[r["a"]], by[r["b"]]
+        if a["kind"] == b["kind"]:
+            raise ContentError("%s: a relation pairs a person with a persona; %s and %s are both %ss"
+                               % (r["path"], a["slug"], b["slug"], a["kind"]))
+        person, persona = (a, b) if a["kind"] == "person" else (b, a)
+        key = (person["slug"], persona["slug"])
+        if key in seen:
+            raise ContentError("%s: the relation %s and %s is written twice" % (r["path"], key[0], key[1]))
+        seen.add(key)
+        pairs.append({"person": key[0], "persona": key[1], "words": r["words"], "href": r["href"]})
+    return order_personae(people, pairs)
+
+
+def order_personae(people, pairs):
+    """Place the people (left column, top down) and the personas (right column, top down).
+
+    The left column rises as the page scrolls and the right one falls, so the person in left slot a
+    comes level with the persona in right slot b when the columns have slid a - b slots past each
+    other: a - b is that pair's meeting step. The rule:
+
+      1. no two related pairs share a meeting step (at most one related pair is ever level);
+      2. the gaps between meetings, counting one step before the first and one after the last as
+         the run's ends, are as even as they can be: compare the gaps from smallest up and take
+         the arrangement whose smallest gap is largest, then whose next is largest, and so on;
+      3. ties go to the arrangement whose names, read down the left column and then down the
+         right, come first in alphabetical order of their file names.
+
+    Every arrangement is tried, so the answer is the best one and the same on every machine."""
+    from itertools import permutations
+    left = sorted(p["slug"] for p in people if p["kind"] == "person")
+    right = sorted(p["slug"] for p in people if p["kind"] == "persona")
+    n_arr = math.factorial(len(left)) * math.factorial(len(right))
+    if n_arr > MAX_ARRANGEMENTS:
+        raise ContentError("%d people and %d personas make %d arrangements; the exhaustive sort "
+                           "stops at %d" % (len(left), len(right), n_arr, MAX_ARRANGEMENTS))
+    lo, hi = -(len(right) - 1) - 1, (len(left) - 1) + 1   # the run's ends, one step outside
+    best, best_score = None, None
+    for L in permutations(left):
+        pl = {s: i for i, s in enumerate(L)}
+        for R in permutations(right):
+            pr = {s: i for i, s in enumerate(R)}
+            steps = sorted(pl[p["person"]] - pr[p["persona"]] for p in pairs)
+            if len(set(steps)) != len(steps):
+                continue
+            marks = [lo] + steps + [hi]
+            gaps = sorted(b - a for a, b in zip(marks, marks[1:]))
+            score = (gaps, tuple(-ord(c) for c in "\0".join(L + R)))
+            if best_score is None or score > best_score:
+                best, best_score = (L, R), score
+    if best is None:
+        raise ContentError("the relations cannot be laid out so that only one related pair is "
+                           "level at a time; add a person or a persona, or drop a relation")
+    L, R = best
+    by = {p["slug"]: p for p in people}
+    for i, s in enumerate(L):
+        by[s]["slot"] = i
+    for i, s in enumerate(R):
+        by[s]["slot"] = i
+    for p in pairs:
+        p["step"] = by[p["person"]]["slot"] - by[p["persona"]]["slot"]
+    pairs.sort(key=lambda p: p["step"])
+    return {"left": [by[s] for s in L], "right": [by[s] for s in R], "pairs": pairs,
+            "lo": lo, "hi": hi}
 
 
 def check_tags(names, by_id, path):
@@ -554,6 +666,7 @@ def render(data, template):
         "COUNT_TAGS": str(len(data["vocab"])),
         "INDEX_JSON": json_for_html(index),
     }
+    subs.update(render_personae(data["personae"]))
 
     def sub(m):
         key = m.group(1)
@@ -563,6 +676,38 @@ def render(data, template):
 
     out = re.sub(r"\{\{([A-Z0-9_]+)\}\}", sub, template)
     return out, index, used
+
+
+def render_personae(pp):
+    """The two columns, in the computed order, and the pairings written out. The build writes
+    each card's slot and each pairing's meeting step; personae.js only moves them by scroll."""
+    def card(p):
+        credit = '<p class="pp-credit">%s</p>' % e(p["credit"]) if p["credit"] else ""
+        kind = "Person" if p["kind"] == "person" else "Persona"
+        return ('<li class="pp-card pp-%s" id="pp-%s" data-slug="%s" data-slot="%d">'
+                '<p class="pp-kind">%s</p><h4 class="pp-name">%s</h4><p class="pp-role">%s</p>%s</li>'
+                % (p["kind"], e(p["slug"]), e(p["slug"]), p["slot"], kind, e(p["title"]), e(p["role"]), credit))
+    by = {p["slug"]: p for p in pp["left"] + pp["right"]}
+    pairs = "".join(
+        '<li class="pp-pair" data-person="%s" data-persona="%s" data-step="%d">'
+        '<strong class="pp-names">%s and %s</strong>: <span class="pp-words">%s</span> '
+        '<a class="pp-src" href="%s">Source<span class="visually-hidden"> for %s and %s</span></a></li>'
+        % (e(r["person"]), e(r["persona"]), r["step"], e(by[r["person"]]["title"]),
+           e(by[r["persona"]]["title"]), e(r["words"]), e(r["href"]),
+           e(by[r["person"]]["title"]), e(by[r["persona"]]["title"])) for r in pp["pairs"])
+    alone = [p["title"] for p in pp["left"] + pp["right"]
+             if not any(p["slug"] in (r["person"], r["persona"]) for r in pp["pairs"])]
+    note = ('<p class="pp-alone">No persona is paired with %s yet, so %s no postcard.</p>'
+            % (" or ".join(e(t) for t in alone), "these get" if len(alone) > 1 else "that card gets")
+            if alone else "")
+    return {
+        "PP_LEFT": "".join(card(p) for p in pp["left"]),
+        "PP_RIGHT": "".join(card(p) for p in pp["right"]),
+        "PP_PAIRS": pairs,
+        "PP_ALONE": note,
+        "PP_LO": str(pp["lo"]),
+        "PP_HI": str(pp["hi"]),
+    }
 
 
 def render_jslicense(template):

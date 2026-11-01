@@ -1,0 +1,6 @@
+title: Mentat
+kind: persona
+role: The voice Claude models write in, in my part of the shop, and the one used when nothing names another.
+credit: Signs as Mentat, for a person, with the model
+source: The vibrobeast README | https://github.com/inputloop/vibrobeast
+relation: corwin | Mentat writes for me. The commits are mine, and the last line of each says Mentat (for Corwin) and which model. | https://github.com/inputloop/vibrobeast
