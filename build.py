@@ -35,10 +35,12 @@ LAYER_WEIGHT = {"title": 1.0, "role": 0.8, "summary": 0.8, "function": 0.6,
 CARD_KINDS = ("about", "involvements", "projects", "concepts")
 MAX_PROSE_WORDS = 500
 # Repositories known public: seven that GitHub reported on 2026-10-29 (inputloop/.github-private
-# catalog.tsv), and corwin.cloud, public as of 2026-11-01.
+# catalog.tsv), corwin.cloud (public as of 2026-11-01), and six more public as of 2026-11-01:
+# topology (branch corwin), about-corwin, gitcha, ta, three-phase-transcription and journal.
 # A card may link to github.com/inputloop/<name> only for these; tests/py enforces it.
 PUBLIC_REPOS = {".github", "fourSwordsFromThePast", "NextTime-Dev", "quantum3d5",
-                "suit-crm-6-5-php-sec-backport", "vibrobeast", "vibrobeast-skills", "corwin.cloud"}
+                "suit-crm-6-5-php-sec-backport", "vibrobeast", "vibrobeast-skills", "corwin.cloud",
+                "topology", "about-corwin", "gitcha", "ta", "three-phase-transcription", "journal"}
 JS_FILES = ("chamber.model.js", "taxonomy.js", "windows.js", "site.js")
 GPL_MAGNET = "magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt"
 VIEW_ORDER = ("prose", "baseball", "scoreboard", "featured")

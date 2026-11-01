@@ -1,0 +1,26 @@
+title: topology
+role: Draws what you have, from the files that describe it: point it at the git repositories you keep and it draws how they fit together.
+order: 18
+window: field
+do: run
+bring: a-browser
+whose: shared
+state: careful
+tags: inputloop, taxonomy, transparency, plain-files, local-first
+link: Repository (the corwin branch) | https://github.com/inputloop/topology/tree/corwin
+stat: Whose | the shop's: Bryant's and mine; the drawing app inside it is Bryant's
+stat: Reads | a short TOPOLOGY.md in each repository
+stat: Sorts by | place, part, path and person
+stat: State | built on a working branch; public since 2026-11-01, not yet reviewed outside the shop
+
+== summary ==
+topology reads the git repositories you keep. Each one can say what it is in a short file called TOPOLOGY.md; topology sorts what they say by place, part, path and person, and draws the result so you can move the shapes around.
+
+== function ==
+The browser app works with no server at all: what you draw stays in your browser. A server is optional, and every feature on it can be switched off. Parts a repository marks private stay hidden until its owner says to show them, and the drawing says that something is being kept back.
+
+== practice ==
+It is a working branch, one of several versions made from the same conversations to be compared later, and nobody outside the shop has reviewed it. Its own README is the place to start, and the site corwin.cloud opens on it.
+
+== presentation ==
+The window is a tension field: things pull and push until they settle into a drawing, the way a graph of repositories finds its shape.

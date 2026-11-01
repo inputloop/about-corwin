@@ -12,10 +12,10 @@ link: inputloop on GitHub | https://github.com/inputloop
 link: The shop's own site, corwin.cloud (source) | https://github.com/inputloop/corwin.cloud
 link: Bryant's page | https://github.com/takushieternal
 stat: Owners | Bryant Frankford and Corwin Brust
-stat: Public repositories | 8
+stat: Public repositories | 14
 stat: Code license | GPL-3.0-or-later (or LGPL on the same terms)
 stat: Writing license | CC-BY-SA-4.0
-score: Public repositories | 8 | 2026-11-01
+score: Public repositories | 14 | 2026-11-01
 
 == summary ==
 inputloop is two people and the agents who work for us. We make small free software: tools for working with an AI assistant on your own computer, games you play from your own cartridge, a simulator for learning chemistry, and patched PHP for old business software.

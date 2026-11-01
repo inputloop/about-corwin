@@ -92,7 +92,7 @@ Refreshed 2026-11-01.
   her own life turned up). Minicon links to mnstf.org/minicon/, because minicon.org's https
   certificate does not verify (it redirects there over plain http).
 - fourSwordsFromThePast's credit is "not yet written in its README", as the shop page has it.
-- The other cards' numbers are dated 2026-10-29; only the public-repository count (8) was
+- The other cards' numbers are dated 2026-10-29; only the public-repository count (14) was
   recounted on 2026-11-01. Recount the rest when you next look.
 
 ## Licence

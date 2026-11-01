@@ -52,7 +52,7 @@ navigation works once, matter-of-factly, in its introduction.
 
 ## What is on the page, and what is not
 
-Only what is public. Of inputloop's repositories, GitHub reported seven public on 2026-10-29, and corwin.cloud was public by 2026-11-01; those
+Only what is public. Of inputloop's repositories, GitHub reported seven public on 2026-10-29, corwin.cloud was public by 2026-11-01, and on 2026-11-01 so were topology (branch corwin), about-corwin, gitcha, ta, three-phase-transcription and journal; those
 are the only ones the page links, and `build.PUBLIC_REPOS` plus a test enforce it. Corwin's
 involvements are taken from public sources: the EmacsConf talk pages (2020, 2023), the
 `Maintainer:` line of `ob-perl.el` in Emacs, the Dungeon repository on Savannah, and Corwin's own

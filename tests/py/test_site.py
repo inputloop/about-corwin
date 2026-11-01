@@ -130,7 +130,7 @@ class Content(unittest.TestCase):
                     for name in pat.findall(fh.read()):
                         self.assertIn(name, build.PUBLIC_REPOS, "%s links %s" % (f, name))
 
-    PRIVATE = ("gitcha", "llama-bridge", "llama bridge", "topoforge", "theseus", "persona-engine",
+    PRIVATE = ("llama-bridge", "llama bridge", "topoforge", "theseus", "persona-engine",
                "ghostwheel", "legendoflinks", "mariosworld", "mariospaint", "al2n", "kid-glove", "tavern",
                "inputloop/c4", "showroom", "hzpa", "research-lives-in", "business-research", "thickity")
 
@@ -165,6 +165,14 @@ class Content(unittest.TestCase):
             text = " ".join(DATA["site"]["layers"][name])
             self.assertRegex(text, r"\b\d{4}-\d{2}-\d{2}\b", "site.txt %s names no date" % name)
         self.assertIn("2026-11-01", read("index.html"))
+
+    def test_topology_and_gitcha_are_public_cards_that_link_their_public_repositories(self):
+        cards = {c["slug"]: c for c in DATA["cards"]}
+        want = {"topology": "https://github.com/inputloop/topology/tree/corwin", "gitcha": "https://github.com/inputloop/gitcha"}
+        for slug, href in want.items():
+            self.assertIn(href, [l["href"] for l in cards[slug]["links"]], slug)
+            self.assertIn(slug, build.PUBLIC_REPOS)
+            self.assertIn(href, read("index.html"))
 
     def test_corwin_cloud_is_a_public_card_that_links_its_public_repository(self):
         card = {c["slug"]: c for c in DATA["cards"]}["corwin-cloud"]

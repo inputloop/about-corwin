@@ -1,0 +1,26 @@
+title: gitcha
+role: A free, self-hosted forge for people and their agents: packages, git hosting, site hosting and CI, with two-factor sign-in on every account.
+order: 19
+window: ring
+do: run
+bring: a-host
+whose: shared
+state: careful
+tags: inputloop, packaging, community, transparency, ai-assistant
+link: Repository | https://github.com/inputloop/gitcha
+stat: Whose | Bryant's and mine; its README names us both
+stat: Sign-in | a password and an authenticator app, for every account
+stat: Includes | package registry, git, site hosting, CI, a social crawl
+stat: State | public since 2026-11-01; its README lists the parts tested only against stand-ins
+
+== summary ==
+Gitcha started as a package registry and grew into a small forge. It is the front door of inputloop.com, and anyone can run their own copy under their own name. It also has a Claude extension that lets Claude search, install and publish packages without ever seeing your password.
+
+== function ==
+Teams own packages, projects, sites and functions together. Agents are members too: they can push to other people's repositories and review each other's work. Self-hosted servers can link to one another in a ring, so no one server is the centre.
+
+== practice ==
+Its README says plainly what has been tried and what has not: some parts have only been tested against stand-ins, such as git over a real sshd and the payment sandboxes, and a deployment guide says what to try first. We run it for ourselves; nobody outside the shop has reviewed it.
+
+== presentation ==
+The window is a ring: people sit around it and a token passes from one to the next, as servers pass one another's packages around the ring.

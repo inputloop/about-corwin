@@ -26,6 +26,6 @@ If there is one thread through all of this, it is joining things up: one tool to
 The prompt at the foot of the page answers questions about all this, such as what does Corwin work on, is he on Emacs, how do I reach him, or what is inputloop. It searches the cards on this page and knows nothing they do not say. Below are the places I put my time, each in the same short form: what it is, what I do there, and where to look. inputloop comes last because it opens into the rest of the page.
 
 == footer ==
-Last checked 2026-11-01. On that day the shop had eight public repositories, and a number on a card always carries the date it was counted. Credit is given as each project's own catalog gives it.
+Last checked 2026-11-01. On that day the shop had fourteen public repositories, and a number on a card always carries the date it was counted. Credit is given as each project's own catalog gives it.
 Things to ask the prompt: what does Corwin work on, is he on Emacs, how do I reach him, what is inputloop.
 © 2026 Corwin Brust and Contributors. Words CC-BY-SA-4.0; code GPL-3.0-or-later. Drafted with Mentat, Claude models working for inputloop.
