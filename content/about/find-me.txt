@@ -1,0 +1,31 @@
+title: Find me
+role: How to reach me: mail, Mastodon, IRC, and the shop's shared mail.
+order: 1
+window: ring
+do: read
+bring: nothing
+whose: corwin
+state: today
+tags: contact, community, outreach
+link: Mail me | mailto:corwin@bru.st
+link: Mail Bryant and me, about inputloop | mailto:BryantAndCorwin@inputloop.com
+link: Mastodon | https://hostux.social/@corwin
+link: IRC nick | corwin
+link: My signing key, in the Windows section of the Emacs download page | https://www.gnu.org/software/emacs/download.html#windows
+link: Init files on GitLab | https://gitlab.com/mplscorwin/dotfiles
+stat: Mail | corwin@bru.st
+stat: Shop mail | BryantAndCorwin@inputloop.com
+stat: Mastodon | hostux.social/@corwin
+stat: IRC | corwin
+
+== summary ==
+The surest way to reach me is mail, to corwin@bru.st. I am also on Mastodon at hostux.social and on IRC as corwin. For anything about inputloop, mail goes to Bryant and me together.
+
+== function ==
+My signing key for the Windows builds of GNU Emacs is listed in the Windows section of the Emacs download page. I do not copy it here, so there is one place to check it.
+
+== practice ==
+Mail comes first because it works for everyone. If a link on this page does not work for you, or the page is hard to use with your tools, write and say so.
+
+== presentation ==
+The window shows people on a ring passing a token from one to the next, a picture of handing over.

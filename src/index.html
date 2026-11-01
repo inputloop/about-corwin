@@ -49,6 +49,9 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
     {{ABOUT}}
     <h3>Find me</h3>
     <ul class="findme">{{FINDME}}</ul>
+    <h3 id="about-cards">Two cards about me</h3>
+    <p class="lede">The prompt at the foot of the page answers questions about me from these two cards and from the ones below them. They open the same way the others do.</p>
+    <div class="deck">{{ABOUTCARDS}}</div>
   </section>
 
   <section id="involvements" class="wrap" aria-labelledby="involvements-h">
@@ -120,11 +123,11 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
 <footer class="minibuffer-wrap" id="minibuffer">
   <form class="minibuffer js-only-flex" id="mb-form" role="search" autocomplete="off">
     <label for="prompt" class="mb-prompt">Ask the page:</label>
-    <input id="prompt" name="q" type="search" spellcheck="false" aria-describedby="echo" placeholder="games, emacs on windows, numbers for php…">
+    <input id="prompt" name="q" type="search" spellcheck="false" aria-describedby="echo" placeholder="what does Corwin work on, is he on Emacs, how do I reach him…">
   </form>
   <div id="results" class="results"></div>
   <p id="echo" class="echo" role="status">End of buffer. <span class="nojs-only">The prompt needs JavaScript; the quick filters in the display area work without it.</span></p>
-  <p class="colophon">© 2026 Corwin Brust and Contributors. Words CC-BY-SA-4.0; code GPL-3.0-or-later. Drafted with Mentat, Claude models working for inputloop.</p>
+  {{FOOTER}}
 </footer>
 <script type="application/json" id="taxonomy-index">{{INDEX_JSON}}</script>
 </body>

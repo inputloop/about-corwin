@@ -120,7 +120,7 @@ class Content(unittest.TestCase):
             self.assertLessEqual(c["words"], build.MAX_PROSE_WORDS, c["path"])
 
     def test_only_public_inputloop_repositories_are_linked(self):
-        pat = re.compile(r"https://github\.com/inputloop/([^/\s\"#?]+)")
+        pat = re.compile(r"https://github\.com/inputloop/([^/\s\"#?)]+)")
         page = read("index.html")
         for name in pat.findall(page):
             self.assertIn(name, build.PUBLIC_REPOS, "links a repository not known to be public: %s" % name)
@@ -148,6 +148,29 @@ class Content(unittest.TestCase):
         self.assertEqual(whose["quantum3d5"], "bryant")
         self.assertEqual(whose["four-swords"], "unstated")
         self.assertEqual(whose["php-backport"], "corwin")
+
+    def test_about_cards_answer_the_common_questions(self):
+        cards = {c["slug"]: c for c in DATA["cards"]}
+        self.assertEqual(cards["glance"]["kind"], "about")
+        self.assertEqual(cards["find-me"]["kind"], "about")
+        hrefs = [l["href"] for l in cards["find-me"]["links"]]
+        self.assertIn("mailto:corwin@bru.st", hrefs, "how do I reach him: the card must hold the mail link")
+        self.assertTrue(any(h.startswith("https://hostux.social/") for h in hrefs))
+        page = read("index.html")
+        self.assertIn('id="glance"', page)
+        self.assertIn('id="find-me"', page)
+
+    def test_the_about_and_footer_words_carry_the_date_they_were_checked(self):
+        for name in ("about", "footer"):
+            text = " ".join(DATA["site"]["layers"][name])
+            self.assertRegex(text, r"\b\d{4}-\d{2}-\d{2}\b", "site.txt %s names no date" % name)
+        self.assertIn("2026-11-01", read("index.html"))
+
+    def test_corwin_cloud_is_a_public_card_that_links_its_public_repository(self):
+        card = {c["slug"]: c for c in DATA["cards"]}["corwin-cloud"]
+        self.assertIn("https://github.com/inputloop/corwin.cloud", [l["href"] for l in card["links"]])
+        self.assertIn("corwin.cloud", build.PUBLIC_REPOS)
+        self.assertIn("https://github.com/inputloop/corwin.cloud", read("index.html"))
 
     def test_every_scoreboard_number_has_a_date(self):
         for c in DATA["cards"]:

@@ -52,7 +52,7 @@ navigation works once, matter-of-factly, in its introduction.
 
 ## What is on the page, and what is not
 
-Only what is public. Of inputloop's repositories, GitHub reported seven public on 2026-10-29; those
+Only what is public. Of inputloop's repositories, GitHub reported seven public on 2026-10-29, and corwin.cloud was public by 2026-11-01; those
 are the only ones the page links, and `build.PUBLIC_REPOS` plus a test enforce it. Corwin's
 involvements are taken from public sources: the EmacsConf talk pages (2020, 2023), the
 `Maintainer:` line of `ob-perl.el` in Emacs, the Dungeon repository on Savannah, and Corwin's own
@@ -112,6 +112,17 @@ In the browser, `src/js/taxonomy.js`:
 The echo area always says which tags matched, so the guess can be checked. The quick filters and
 the prompt narrow the same deck, so using one clears the other, and the echo counts the cards you
 can see. Without scripts, a CSS counter under the filters says how many are left.
+
+## Questions about Corwin
+
+A visitor will ask the prompt who he is, what he works on, whether he is on Emacs, how to reach him
+and what inputloop is. Two cards of a fourth kind, `about` (content/about/), answer the first
+three of those: "Corwin at a glance" and "Find me". Their words are in the vocabulary as `profile`,
+`work` and `contact` (`reach`, `mail`, `mastodon`, `irc`, `about me`, `who is corwin`), and the
+node checks pin each question to the card that answers it. A tag's own label counts as one of its
+words in the prose, so a tag called `about` would have lit up every card that says "about"; that
+is why it is `profile`. The footer and About text are `content/site.txt` layers (`about`,
+`footer`), and each carries the date it was last checked.
 
 ## Windows
 

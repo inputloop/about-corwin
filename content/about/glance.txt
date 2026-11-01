@@ -1,0 +1,27 @@
+title: Corwin at a glance
+role: A systems engineer and software developer who volunteers for GNU and the FSF and keeps a small free software shop.
+order: 0
+window: field
+do: read
+bring: nothing
+whose: corwin
+state: today
+tags: gnu, freedom, inputloop, community, work, profile
+link: inputloop on GitHub | https://github.com/inputloop
+link: card-games on MELPA | https://melpa.org/#/card-games
+stat: Role | systems engineer and software developer
+stat: Volunteer for | GNU and the Free Software Foundation; a Savannah Hacker
+stat: Keeps | inputloop, with Bryant Frankford
+stat: Last checked | 2026-11-01
+
+== summary ==
+I am Corwin Brust. I have written software for about twenty-five years, and I volunteer for GNU and the Free Software Foundation as one of the Savannah Hackers. As of 2026-11-01, most of my time goes to inputloop, the small free software shop I keep with Bryant Frankford.
+
+== function ==
+What I do, in the order this page gives it: I build the Windows release of GNU Emacs, I help organize EmacsConf, I look after Org Babel's Perl support, I co-founded Dungeon, a game engine that runs in Emacs, and I publish card-games, an Emacs package on MELPA. inputloop covers the rest: tools for working with an AI assistant on your own computer, and the projects of Bryant and Brigidt that the shop carries.
+
+== practice ==
+Everything on this page was last checked on 2026-11-01. I say plainly what is finished and what is not, and I credit each project to the people who made it: NextTime is Brigidt's and Quantum 3D5 is Bryant's.
+
+== presentation ==
+The window is the tension field: every word the page knows, pulled together or pushed apart until it settles.

@@ -58,6 +58,9 @@ domain community-files: code of conduct, conduct, support, community files
 domain inputloop: inputloop, the shop
 domain governance: governance, vote, votes, admin, oversight, hierarchy
 domain writing: writing, written, docs, documentation, prose
+domain work: work, works, working, worked on, projects, portfolio, does, doing
+domain contact: contact, reach, email, e-mail, mail, mastodon, irc, get in touch, write to, address
+domain profile: about me, about you, about corwin, who is corwin, who are you, who is he, know about me, bio, biography, profile, at a glance, glance
 domain accessibility: accessibility, accessible, colour-blind, color-blind, screen reader
 
 technique packaging: packaging, package, binaries, release, distribution

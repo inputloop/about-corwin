@@ -32,12 +32,13 @@ LAYERS = ("summary", "function", "practice", "presentation")
 # How much a word found in each part of a card counts toward that card's tag weight.
 LAYER_WEIGHT = {"title": 1.0, "role": 0.8, "summary": 0.8, "function": 0.6,
                 "practice": 0.5, "presentation": 0.4}
-CARD_KINDS = ("involvements", "projects", "concepts")
+CARD_KINDS = ("about", "involvements", "projects", "concepts")
 MAX_PROSE_WORDS = 500
-# Repositories that GitHub reported public on 2026-10-29 (inputloop/.github-private catalog.tsv).
+# Repositories known public: seven that GitHub reported on 2026-10-29 (inputloop/.github-private
+# catalog.tsv), and corwin.cloud, public as of 2026-11-01.
 # A card may link to github.com/inputloop/<name> only for these; tests/py enforces it.
 PUBLIC_REPOS = {".github", "fourSwordsFromThePast", "NextTime-Dev", "quantum3d5",
-                "suit-crm-6-5-php-sec-backport", "vibrobeast", "vibrobeast-skills"}
+                "suit-crm-6-5-php-sec-backport", "vibrobeast", "vibrobeast-skills", "corwin.cloud"}
 JS_FILES = ("chamber.model.js", "taxonomy.js", "windows.js", "site.js")
 GPL_MAGNET = "magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt"
 VIEW_ORDER = ("prose", "baseball", "scoreboard", "featured")
@@ -434,6 +435,7 @@ def json_for_html(obj):
 def render(data, template):
     site = data["site"]
     windows = {w["id"]: w for w in data["windows"]}
+    about_cards = [c for c in data["cards"] if c["kind"] == "about"]
     inv = [c for c in data["cards"] if c["kind"] == "involvements" and c["slug"] != "inputloop"]
     shop = [c for c in data["cards"] if c["slug"] == "inputloop"]
     projects = [c for c in data["cards"] if c["kind"] == "projects"]
@@ -450,6 +452,8 @@ def render(data, template):
         "PRONOUNS": e(one(site, "pronouns")),
         "ABOUT": about,
         "FINDME": render_site_links(site),
+        "ABOUTCARDS": "".join(render_card(c, windows, 4) for c in about_cards),
+        "FOOTER": "".join('<p class="colophon">%s</p>' % inline(p) for p in site["layers"]["footer"]),
         "INVOLVEMENTS": "".join(render_card(c, windows, 3) for c in inv),
         "INPUTLOOP": "".join(render_card(c, windows, 3) for c in shop),
         "PROJECTS": "".join(render_card(c, windows, 4) for c in projects),

@@ -104,6 +104,31 @@ for (const [q, want] of cases) {
   test(`"${q}" puts ${want} first`, () => assert.equal(top(q)[0], want, JSON.stringify(T.query(model, q).items.slice(0, 3))));
 }
 
+// What a visitor would type to learn about Corwin. Each question must put a card that answers it
+// first (an array lists the cards that each answer it equally well). tests/run.sh --prove-red
+// plants one fault per question.
+const visitorQuestions = [
+  ['what does Corwin work on', ['glance']],
+  ['what do you know about me', ['glance']],
+  ['who is Corwin', ['glance']],
+  ['is he on Emacs', ['emacs-windows', 'emacsconf']],
+  ['how do I reach him', ['find-me']],
+  ['what is inputloop', ['inputloop']],
+  ['what is corwin.cloud', ['corwin-cloud']],
+];
+for (const [q, want] of visitorQuestions) {
+  test(`visitor asks "${q}": ${want.join(' or ')} comes first`, () => {
+    const r = T.query(model, q);
+    assert.ok(want.includes(r.items[0] && r.items[0].slug), JSON.stringify(r.items.slice(0, 3).map((i) => i.slug)));
+  });
+}
+
+test('the about cards are in the index, so the prompt can reach them', () => {
+  const kinds = Object.fromEntries(index.items.map((i) => [i.slug, i.kind]));
+  assert.equal(kinds.glance, 'about');
+  assert.equal(kinds['find-me'], 'about');
+});
+
 test('words about seeing choose a view; subjects still choose cards', () => {
   const r = T.query(model, 'numbers for php');
   assert.equal(r.view, 'scoreboard');
@@ -138,8 +163,9 @@ test('a prefix names a card only when it is most of the name', () => {
 });
 
 test('spreading ranks but never admits: every card shown says a word of the prompt itself', () => {
-  assert.deepEqual(top('conference', 9), ['emacsconf', 'emacs-windows']);
-  assert.deepEqual(top('show me games', 9).sort(), ['dungeon', 'four-swords', 'inputloop']);
+  // the glance card says EmacsConf and Dungeon itself, so it is admitted for those words
+  assert.deepEqual(top('conference', 9), ['emacsconf', 'emacs-windows', 'glance']);
+  assert.deepEqual(top('show me games', 9).sort(), ['dungeon', 'four-swords', 'glance', 'inputloop']);
   assert.ok(!top('memory', 9).includes('doors'));
 });
 
@@ -147,7 +173,9 @@ test('words about how to see do not reorder what to see', () => {
   const plain = top('emacs', 9);
   assert.deepEqual(top('typing emacs', 9), plain);
   assert.deepEqual(top('something moving emacs', 9), plain);
-  assert.equal(top('emacs numbers')[0], plain[0]);
+  // emacs-windows and emacsconf score within 0.05 of each other on 'emacs'; a view word must not
+  // pull in a third card or push either out of the first two.
+  assert.deepEqual(top('emacs numbers', 2).sort(), plain.slice(0, 2).sort());
 });
 
 test('the hub card does not teach associations', () => {

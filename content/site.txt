@@ -2,20 +2,30 @@ title: Corwin Brust
 pronounce: Core-win Brew-st
 pronouns: he/him
 tagline: I build Emacs for Windows, help run EmacsConf, and keep a small free software shop called inputloop with Bryant Frankford.
-description: Corwin Brust: volunteer builder of GNU Emacs for Windows, EmacsConf organizer, Org Babel Perl maintainer, and co-owner of inputloop.
+description: Corwin Brust: systems engineer and software developer, GNU and FSF volunteer (a Savannah Hacker), builder of GNU Emacs for Windows, EmacsConf organizer, Org Babel Perl maintainer, and co-owner of inputloop.
 contact: corwin@bru.st
 link: Mastodon | https://hostux.social/@corwin | rel=me
 link: inputloop on GitHub | https://github.com/inputloop
+link: The shop's own site, corwin.cloud (source) | https://github.com/inputloop/corwin.cloud
 link: inputloop mail (Bryant and me) | mailto:BryantAndCorwin@inputloop.com
 link: My signing key: see the Windows section of the Emacs download page | https://www.gnu.org/software/emacs/download.html#windows
 link: Init files on GitLab | https://gitlab.com/mplscorwin/dotfiles
 link: IRC nick | corwin
 
 == about ==
-I have written software for a living for about twenty-five years, most of it in Emacs. These days most of what I do is help other people get the same tools working on machines they keep.
+I am a systems engineer and software developer. I have written software for a living for about twenty-five years, most of it in Emacs. I volunteer for GNU and the Free Software Foundation, and I am one of the Savannah Hackers, the volunteers who keep GNU's project hosting running. These days most of what I do is help other people get the same tools working on machines they keep.
 
 I come from a family of writers, organizers and fans. My dad is the writer [Steven Brust](https://dreamcafe.com/). My grandparents, [Bill Brust](https://www.wsws.org/en/special/library/fi-19-1/15.html) and [Jean Brust](https://mehring.com/product/defending-principles-the-political-legacy-of-bill-brust/), organized for socialism in Minnesota for most of their lives. I am married to [Dee Brust](https://www.twinpropjane.com/), a folk musician and a retired ELL/ESL teacher of children from kindergarten through high school. I have been a science fiction fan all my life, and I have run a [Minicon](https://mnstf.org/minicon/), the Minneapolis science fiction convention. Some of that rubbed off: I like tools that people can share, and I like to show my work.
 
-My work covers a few things that look different from the outside. I build the Windows release of GNU Emacs. I help organize EmacsConf. I look after one small corner of Org mode. I co-founded a game engine for tabletop dungeon crawls that runs inside Emacs. The common thread is a habit of asking what a newcomer needs, writing that down, and then checking the written thing against what really happens.
+My work covers a few things that look different from the outside. I build the Windows release of GNU Emacs. I help organize EmacsConf. I look after one small corner of Org mode, its Perl support. I co-founded a game engine for tabletop dungeon crawls that runs inside Emacs. I also publish [card-games](https://melpa.org/#/card-games), an Emacs package you can install from MELPA. The common thread is a habit of asking what a newcomer needs, writing that down, and then checking the written thing against what really happens.
 
-Below are the places I put my time, each in the same short form: what it is, what I do there, and where to look. inputloop comes last because it opens into the rest of the page.
+As of 2026-11-01, most of my time goes to inputloop, the small free software shop I keep with Bryant Frankford. The shop also carries Brigidt's NextTime, a time-banking app for Nextcloud, and Bryant's Quantum 3D5. It has its own site now, corwin.cloud, whose [source is public](https://github.com/inputloop/corwin.cloud): a diagram of how our machines connect, a directory of what we run, and a few curated packages.
+
+If there is one thread through all of this, it is joining things up: one tool to another, one project to the people who could use it. When I start something I ask who it lets in, and I try to say plainly what is finished and what is not.
+
+The prompt at the foot of the page answers questions about all this, such as what does Corwin work on, is he on Emacs, how do I reach him, or what is inputloop. It searches the cards on this page and knows nothing they do not say. Below are the places I put my time, each in the same short form: what it is, what I do there, and where to look. inputloop comes last because it opens into the rest of the page.
+
+== footer ==
+Last checked 2026-11-01. On that day the shop had eight public repositories, and a number on a card always carries the date it was counted. Credit is given as each project's own catalog gives it.
+Things to ask the prompt: what does Corwin work on, is he on Emacs, how do I reach him, what is inputloop.
+© 2026 Corwin Brust and Contributors. Words CC-BY-SA-4.0; code GPL-3.0-or-later. Drafted with Mentat, Claude models working for inputloop.

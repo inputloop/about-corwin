@@ -29,7 +29,7 @@
 
   var STOP = ' a an and are about any as at be by can do does for from give how i in is it its me ' +
     'my of on or please show some something that the this to what which with you your ';
-  var CARD_KINDS = { involvements: 1, projects: 1, concepts: 1 };
+  var CARD_KINDS = { about: 1, involvements: 1, projects: 1, concepts: 1 };
   var PRESENT = 0.4;       // a tag counts as present on an item at this weight or more
   var SPREAD = 0.5;        // how far activation travels along one association
   var NEAR = 0.25;         // how much closeness in the field adds to a score
