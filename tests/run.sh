@@ -63,7 +63,10 @@ prove_red() {
   }
   pyc="\"$py\" build.py --out pub >/dev/null 2>&1; SITE_OUT=pub \"$py\" -m unittest discover -s tests/py"
   nodec="\"$py\" build.py --out pub >/dev/null && SITE_OUT=pub \"$node\" --test tests/js/*.test.mjs"
-  brc="\"$py\" build.py --out pub >/dev/null && SITE_OUT=pub \"$node\" --test --test-concurrency=1 tests/browser/*.test.mjs"
+  brc="\"$py\" build.py --out pub >/dev/null && SITE_OUT=pub \"$node\" --test --test-concurrency=1 tests/browser/site.test.mjs tests/browser/personae.test.mjs"
+  # The tone pads' browser check (with its long drift sweep) runs for the tone pads' own plants;
+  # every plant still has to turn its own check red.
+  brd="\"$py\" build.py --out pub >/dev/null && SITE_OUT=pub \"$node\" --test --test-concurrency=1 tests/browser/dpad.test.mjs"
   plant "a script loses its LibreJS label"   src/js/windows.js  '1s/^.*$/\/\/ no label/'                 "$pyc"
   plant "an inline style attribute"          build.py           's/<article class="card/<article style="x" class="card/' "$pyc"
   plant "a logo without words"               build.py           's/alt="" width="64"/width="64"/'       "$pyc"
@@ -111,6 +114,15 @@ prove_red() {
   plant "a with: line may join a persona"   build.py 's/^        if by\[w\["a"\]\]\["kind"\] != "person" or by\[w\["b"\]\]\["kind"\] != "person":$/        if False:/' "$pyc"
   plant "a cast card names a key"           content/personae/logan.txt 's/^role: Helps with the shop.s machines\./role: Helps with the machines and holds a key./' "$pyc"
   plant "a with: line drops out of the list" build.py 's/^        for w in pp.get("with", \[\]))$/        for w in pp.get("with", [])[1:])/' "$pyc"
+  plant "a tone version drops a fact"        content/sections/about.txt 's/I keep it with Bryant Frankford\. We carry/I keep it with a friend. We carry/' "$pyc"
+  plant "a tone version adds a name"         content/sections/about.txt 's/I keep it with Bryant Frankford\. We carry/I keep it with Bryant Frankford and Richard. We carry/' "$pyc"
+  plant "grade 4 and college swapped"        content/sections/about.txt 's/^== about \/ warm 4 ==$/== about \/ warmX 16 ==/;s/^== about \/ warm 16 ==$/== about \/ warm 4 ==/;s/^== about \/ warmX 16 ==$/== about \/ warm 16 ==/' "$pyc"
+  plant "a warm version loses its warmth"    content/sections/about.txt 's/^== about \/ warm 8 ==$/== about \/ formalX 8 ==/;s/^== about \/ formal 8 ==$/== about \/ warm 8 ==/;s/^== about \/ formalX 8 ==$/== about \/ formal 8 ==/' "$pyc"
+  plant "a plain version names Corwin Brust" content/sections/portfolio.txt 's/^This is the last place I put my time\./Corwin Brust put the time here last./' "$pyc"
+  plant "a formal version says he"           content/sections/about.txt 's/^Corwin Brust is a systems engineer and software developer\. Paid work/He is a systems engineer and software developer. Paid work/' "$pyc"
+  plant "the build shows a variant as the base" build.py 's/^    live = e(" ".join(u\["base"\]))$/    live = e(" ".join(u["cells"]["warm-4"]))/' "$pyc"
+  plant "the Python fallback skips warmth"   build_tone.py 's/^        w2 = toward(WARMTH, w, BASE\[0\])$/        w2 = w/' "$pyc"
+  plant "the About loses its kept paragraph" content/sections/about.txt '0,/^\[\[keep\]\]$/{/^\[\[keep\]\]$/d}' "$pyc"
   plant "heading levels skip"                build.py           's/render_card(c, windows, 4) for c in projects/render_card(c, windows, 5) for c in projects/' "$pyc"
   if command -v "$node" >/dev/null 2>&1; then
     plant "Customize phones home"            src/js/customize.js 's#^  var doc = document, html = doc.documentElement;#  var doc = document, html = doc.documentElement; fetch("/x");#' "$nodec"
@@ -132,6 +144,11 @@ prove_red() {
     plant "spreading admits cards"           src/js/taxonomy.js 's/      if (!direct) score = 0;//' "$nodec"
     plant "presentation words pick subjects" src/js/taxonomy.js 's/var PRESENTATION_ON_CARDS = 0.3;/var PRESENTATION_ON_CARDS = 1;/' "$nodec"
     plant "the second reader's search fills out of order" tests/js/personae.test.mjs 's/^    const rest = column.filter((c) => !paired.includes(c));$/    const rest = column.filter((c) => !paired.includes(c)).reverse();/' "$nodec"
+    plant "Coleman-Liau no longer rises"     content/sections/about.txt 's/^== about \/ plain 4 ==$/== about \/ plainX 16 ==/;s/^== about \/ plain 16 ==$/== about \/ plain 4 ==/;s/^== about \/ plainX 16 ==$/== about \/ plain 16 ==/' "$nodec"
+    plant "the JavaScript fallback skips warmth" src/js/tone.model.js 's/^      var w2 = toward(WARMTH, w, BASE\[0\]);$/      var w2 = w;/' "$nodec"
+    plant "the invert option does nothing"   src/js/tone.model.js "s/      var harder = (dir === 'up') !== !!invert;/      var harder = dir === 'up';/" "$nodec"
+    plant "the tone pads phone home"         src/js/dpad.js     's#^  var KEY = .aboutcorwin.tone.;#  var KEY = "aboutcorwin.tone"; fetch("/x");#' "$nodec"
+    plant "the tone pads store under another key" src/js/dpad.js "s/var KEY = 'aboutcorwin.tone';/var KEY = 'x';/" "$nodec"
     plant "the personae tie-break turns around" build.py 's/score = (gaps, tuple(-ord(c)/score = (gaps, tuple(ord(c)/' "$nodec"
     if [ "${SKIP_BROWSER:-}" != 1 ]; then
       plant "Customize is out of the tab order" src/index.html   's/id="custom-btn" class="custom-btn"/id="custom-btn" tabindex="-1" class="custom-btn"/' "$brc"
@@ -151,6 +168,14 @@ prove_red() {
       plant "the show button leaves focus behind" src/js/personae.js 's/      postcard.focus({ preventScroll: true });/      void 0;/' "$brc"
       plant "personae slots go uneven"       src/js/personae.js "s/    sec.style.setProperty('--pp-h', height + 'px');/    void 0;/" "$brc"
       plant "the prompt stops marking what it found" src/js/site.js "s/c.classList.toggle('is-match', r !== undefined);/c.classList.toggle('is-match', false);/" "$brc"
+      plant "the dodge is switched off"      src/js/dpad.js     's/^      off.x += vel.x; off.y += vel.y;$/      void 0;/' "$brd"
+      plant "focus leaves the page pad away" src/js/dpad.js     "s/  dock.addEventListener('focusin', function () { hold(true); });//" "$brd"
+      plant "the glow written as a style string" src/js/dpad.js "s/      p.style.setProperty('--gx', x.toFixed(1) + 'px');/      p.setAttribute('style', '--gx:' + x.toFixed(1) + 'px');/" "$brd"
+      plant "reduced motion glides the page pad" src/js/dpad.js "s/      if (calm() || held) { settleNow(); return; }/      if (held) { settleNow(); return; }/" "$brd"
+      plant "the tone keys reach into text fields" src/js/dpad.js "s/    if (ev.altKey || ev.metaKey || inField(ev.target)) return;/    if (ev.altKey || ev.metaKey) return;/" "$brd"
+      plant "Ctrl+Shift takes over a selection" src/js/dpad.js "s/      if (dir \&\& !selecting()) { ev.preventDefault(); act('page', dir); }/      if (dir) { ev.preventDefault(); act('page', dir); }/" "$brd"
+      plant "the pads show without scripts"  src/css/site.css   's/^\.dpad-wrap, \.tone-dock { display: none; }/.dpad-wrap, .tone-dock { display: block; }/' "$brd"
+      plant "a section pad moves the whole page" src/js/dpad.js "s/      if (b \&\& p.contains(b)) act(scope, b.getAttribute('data-move'));/      if (b \&\& p.contains(b)) act('page', b.getAttribute('data-move'));/" "$brd"
       plant "reduced motion ignored"         src/js/site.js     "s/: !reduce.matches;/: true;/" "$brc"
     fi
   fi

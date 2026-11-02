@@ -1,0 +1,64 @@
+SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+SPDX-License-Identifier: CC-BY-SA-4.0
+
+TONE: the rules the tone d-pad's checks share. build_tone.py (Python) and tests/js/tone.test.mjs
+(JavaScript) are written from these words, separately; each must reach the same answers.
+
+1. THE CELLS
+   Warmth has three steps: warm, plain, formal. Reading has four: grade 4, grade 8, grade 12,
+   college (written 16). A text's cell is a pair, such as "warm 4". The base cell is "plain 8":
+   the words already on the page. (Measured 2026-11-01: the About read grade 6.4 by
+   Flesch-Kincaid and 6.7 by Coleman-Liau, so today's text is the grade-8 step, not grade 12.)
+
+2. BEFORE MEASURING
+   Turn [words](https://...) into "words". Drop a paragraph that is only [[keep]] (the kept
+   paragraph is the same in every cell and is not measured). Lower-case the text.
+   A WORD is a run of letters a-z, with an apostrophe allowed between letters.
+   A SENTENCE ends at each run of . ! or ? that follows a word, and at each line end that follows
+   a word since the last end. A paragraph is one line.
+   SYLLABLES (Flesch-Kincaid only): drop apostrophes, count runs of a e i o u y; if the word ends in
+   e but not le and the count is above 1, take one away; never below 1. (Same as the voice palace's
+   readability/SPEC.md, from which fk.py was copied.)
+
+3. THE TWO READING METERS (they share no method)
+   Python, Flesch-Kincaid grade: 0.39 x words/sentences + 11.8 x syllables/words - 15.59.
+   JavaScript, Coleman-Liau index: 0.0588 x L - 0.296 x S - 15.8, where L is letters per 100 words
+   and S is sentences per 100 words (letters are a-z inside words; apostrophes do not count).
+   The rule: within each text, at each warmth, the four steps rise on both meters
+   (grade 4 < grade 8 < grade 12 < college). For the About only, each step also sits in its band
+   on both meters: grade 4 below 5.5; grade 8 from 5 to 9.5; grade 12 from 9 to 13.5; college
+   12.5 or more. Short lead-ins (one or two sentences) are held to order only: a meter cannot
+   place one sentence in a grade.
+
+4. THE WARMTH COUNT (direction only)
+   Points, counted over the words:
+     +3 each contraction: a word ending in n't, 're, 've, 'll, 'm or 'd, or one of it's, that's,
+        there's, here's, what's, let's, who's;
+     +2 each you, your, yours, you're, you've, you'll;
+     +1 each i, me, my, mine, we, us, our, ours;
+     +2 each of these: love, like, likes, fun, glad, happy, enjoy, hope, joy, friend, friends,
+        friendly, lucky, really, honestly, okay, hey, yes;
+     +3 each question mark, +2 each exclamation mark;
+     -2 each word of 7 letters or more ending in tion, tions, ment, ments, ness, ity, ities, ance,
+        ence (nominalisations: things said as nouns).
+   Warmth = points x 100 / words, rounded to one decimal. The rule: at every reading step,
+   warm > plain > formal, each by at least 1.0. Whether a cell sounds like Corwin is his read, not
+   this count's.
+
+5. SAME FACTS
+   A text declares its facts (fact: UNIT | words). Every cell holds every fact, exactly as written.
+   Nothing is added: every link address, every run of digits, and every capitalised word that does
+   not start a sentence must already appear in the base text or in an extra (extra: UNIT | words),
+   or be "I". (A word starts a sentence when it is the first word of a paragraph, or follows . ! ?
+   : or an opening quote mark.)
+
+6. THE VOICE RULE
+   Cells speak as "I" for Corwin and "we" for the shop. Only formal cells may name "Corwin Brust"
+   in the third person (Corwin, 2026-11-01: "no holds barred"); he, him and his stay out of every
+   cell except inside quotation marks.
+
+7. A MISSING CELL
+   Asked for warmth w and step g: try (w, g); then (w one step toward plain, g). If neither is
+   written, move g one step toward 8 and try again the same way. Reaching (plain, 8), use the base.
+   No cell can show empty. The build writes this table into the page; tone.model.js works it out
+   again in the browser, and a check holds that the two agree for every text and every cell.

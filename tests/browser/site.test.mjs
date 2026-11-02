@@ -378,7 +378,7 @@ test('text size changes the reading text and nothing else', { skip }, async () =
   const p = await page();
   const sizes = () => p.evaluate(() => {
     const f = (s) => parseFloat(getComputedStyle(document.querySelector(s)).fontSize);
-    return { about: f('#about-h ~ p'), how: f('#how > p'), chrome: [f('.masthead h1'), f('.contents a'), f('.modeline'), f('#motion'), f('.custom-btn'), f('.side .findme li'), f('.lede'), f('.face .title'), f('.mb-prompt')] };
+    return { about: f('#about-h ~ .tone-text p'), how: f('#how > p'), chrome: [f('.masthead h1'), f('.contents a'), f('.modeline'), f('#motion'), f('.custom-btn'), f('.side .findme li'), f('.lede'), f('.face .title'), f('.mb-prompt')] };
   });
   const before = await sizes();
   await p.click('#custom-btn');
@@ -397,7 +397,7 @@ test('text size changes the reading text and nothing else', { skip }, async () =
 test('line length and spacing follow the settings', { skip }, async () => {
   const p = await page();
   const m = () => p.$eval('.about-text', (e) => e.getBoundingClientRect().width);
-  const lh = () => p.$eval('#about-h ~ p', (e) => parseFloat(getComputedStyle(e).lineHeight));
+  const lh = () => p.$eval('#about-h ~ .tone-text p', (e) => parseFloat(getComputedStyle(e).lineHeight));
   const w0 = await m(), l0 = await lh();
   await p.click('#custom-btn');
   await p.check('input[name=measure][value=narrow]');

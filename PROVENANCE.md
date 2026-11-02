@@ -15,6 +15,15 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 - Used by: `src/js/taxonomy.js`, which lays the site's tags out as a tension field with it, and
   `tests/js/taxonomy.test.mjs`, which checks it still converges on its own.
 
+## build_tone.py: the Flesch-Kincaid count
+
+- From: the voice palace in inputloop/c4, `d/voice-palace/readability/fk.py` (Corwin's,
+  GPL-3.0-or-later; its rules in `readability/SPEC.md` there, read 2026-11-01).
+- Changes: the word, sentence and syllable rules are the same; the counting was folded into
+  `count()` and `fk()` to take a list of paragraphs, and `[[keep]]` paragraphs and Markdown links
+  are set aside first (`tests/spec/TONE.txt`, 2). The palace's awk twin, fk.awk, was not copied:
+  here the second reading meter is Coleman-Liau in JavaScript, which shares no method with it.
+
 ## Ideas, not code
 
 The window pictures in `src/js/windows.js` were written for this site; their ideas come from C4's

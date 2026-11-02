@@ -20,6 +20,7 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
 <script src="js/windows.js" defer></script>
 <script src="js/site.js" defer></script>
 <script src="js/customize.js" defer></script>
+{{TONE_SCRIPTS}}
 </head>
 <body>
 <a class="skip" href="#main">Skip to the content</a>
@@ -56,10 +57,11 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
     <fieldset><legend>Motion:</legend>
       <label><input type="checkbox" name="calm" value="1"><span class="box"></span>Reduce motion</label>
     </fieldset>
-    <p class="c-actions"><button type="button" id="c-apply">[Apply]</button> <button type="button" id="c-reset">[Reset]</button></p>
+    {{TONE_ROWS}}<p class="c-actions"><button type="button" id="c-apply">[Apply]</button> <button type="button" id="c-reset">[Reset]</button></p>
     <p class="c-state" id="c-state" role="status">State: STANDARD SETTINGS.</p>
   </form>
 </div>
+{{TONE_DOCK}}
 
 <header class="masthead" id="top">
   <div class="wrap">
@@ -82,10 +84,10 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
 </header>
 
 <main id="main">
-  <section id="about" class="wrap" aria-labelledby="about-h">
+  <section id="about" class="wrap"{{TS_ABOUT}} aria-labelledby="about-h">
     <div class="about-grid">
       <div class="reading prose about-text">
-        <h2 id="about-h">About</h2>
+        {{PAD_ABOUT}}<h2 id="about-h">About</h2>
         {{ABOUT}}
       </div>
       <aside class="side" aria-label="Where to find me, and recent Emacs work">
@@ -104,29 +106,29 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
     </div>
   </section>
 
-  <section id="involvements" class="wrap" aria-labelledby="involvements-h">
-    <h2 id="involvements-h">Where I put my time</h2>
-    <p class="lede">Each card is a business card: a name, one line, and a window. The window has a picture in it; the rest of the card opens into a short introduction.</p>
+  <section id="involvements" class="wrap"{{TS_INVOLVEMENTS}} aria-labelledby="involvements-h">
+    {{PAD_INVOLVEMENTS}}<h2 id="involvements-h">Where I put my time</h2>
+    {{LEDE_INVOLVEMENTS}}
     <div class="deck">{{INVOLVEMENTS}}</div>
   </section>
 
-  <section id="portfolio" class="portfolio" aria-labelledby="portfolio-h">
+  <section id="portfolio" class="portfolio"{{TS_PORTFOLIO}} aria-labelledby="portfolio-h">
     <div class="px" aria-hidden="true">
       <p class="px-layer px-far">{{PX1}}</p>
       <p class="px-layer px-mid">{{PX2}}</p>
       <p class="px-layer px-near">{{PX3}}</p>
     </div>
     <div class="wrap portfolio-inner">
-      <h2 id="portfolio-h">inputloop</h2>
-      <p class="lede">The last of the places I put my time, and the one the rest of this page is about. It has the same short form as the others.</p>
+      {{PAD_PORTFOLIO}}<h2 id="portfolio-h">inputloop</h2>
+      {{LEDE_PORTFOLIO}}
       <div class="deck deck-one">{{INPUTLOOP}}</div>
 
       <h3 id="work">What you can pick up today</h3>
-      <p class="lede">Only what is public. Each card says whose work it is; not all of it is mine.</p>
+      {{LEDE_WORK}}
       <div class="deck">{{PROJECTS}}</div>
 
       <h3 id="ideas">Ideas we keep coming back to</h3>
-      <p class="lede">These are not products. They are the habits behind the products, written down so you can hold us to them.</p>
+      {{LEDE_IDEAS}}
       <div class="deck">{{CONCEPTS}}</div>
     </div>
   </section>
@@ -143,6 +145,7 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
       <li><kbd>Alt</kbd>+<kbd>x</kbd> (as <kbd>M-x</kbd> in Emacs): go to the prompt. There are no single-key shortcuts.</li>
       <li><kbd>Escape</kbd>: close the open card. In the prompt, <kbd>Escape</kbd> or <kbd>Ctrl</kbd>+<kbd>g</kbd> clears it.</li>
       <li><kbd>↑</kbd> and <kbd>↓</kbd> in the prompt: earlier and later questions.</li>
+      {{TONE_KEYS}}
     </ul>
     <p class="nojs-only">With scripts off, every card's introduction, back and scoreboard open under <q>Read about</q>, and the quick filters below still work.</p>
     <p>The site is free: words under CC-BY-SA-4.0, code under the GPL, version 3 or later. It is built from plain text files by a small Python program; the source and the instructions to build it yourself travel with it. {{COUNT_CARDS}} cards, {{COUNT_TAGS}} tags.</p>
@@ -181,5 +184,6 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
   <p class="colophon act2-link"><a href="cast/index.html">Second act: the cast</a>, the people and the agents' personas who make this work.</p>
 </footer>
 <script type="application/json" id="taxonomy-index">{{INDEX_JSON}}</script>
+{{TONE_TABLE}}
 </body>
 </html>

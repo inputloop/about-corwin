@@ -81,6 +81,20 @@ of the reading text only, line length, line spacing, colour theme (follow system
 contrast) and reduce motion. Settings stay in the browser's localStorage and are never sent.
 tests/browser checks the keyboard path, that only reading text scales, and that nothing is fetched.
 
+## Tone pads (2026-11-01)
+
+- Every arm and centre is a `<button>` named in words ("Simpler words: the About"), in a
+  `role="group"` named for what it moves; an arm at the end of its line is `aria-disabled`. One
+  polite status line says what changed; focus never moves by itself.
+- Keys need a modifier (Ctrl+arrows, Ctrl+Shift+arrows) or a focused pad, never act inside a text
+  field, and leave a selection alone (WCAG 2.1.4). On macOS, Tab to a pad.
+- Up means harder words; Customize can turn that around ("Up makes the words simpler").
+- The page pad comes fully home and stays while it is hovered or focused, so a focused arm is
+  never covered (WCAG 2.4.11). With reduced motion it jumps instead of gliding, and there is no glow.
+- The other versions sit in `<template>` elements, out of the accessibility tree until shown.
+- Partly: on a narrow screen the page pad, while it dodges a section pad, can cover a few words of
+  the text under it until that section pad has scrolled past.
+
 ## Dramatis personae (2026-11-01; on its own page, cast/index.html, since 18:06)
 
 The people and the agents' personas are two ordinary lists (`ol`, under their own headings), and

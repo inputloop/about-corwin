@@ -1,0 +1,177 @@
+section: about
+unit: about | site.txt
+keep: about | 2
+fact: about | twenty-five years
+fact: about | Emacs
+fact: about | GNU
+fact: about | Free Software Foundation
+fact: about | Savannah Hackers
+fact: about | site reliability engineer
+fact: about | FSF
+fact: about | Worg
+fact: about | Org mode
+fact: about | Windows
+fact: about | GNU Emacs
+fact: about | EmacsConf
+fact: about | Perl
+fact: about | [card-games](https://melpa.org/#/card-games)
+fact: about | MELPA
+fact: about | 2026-11-01
+fact: about | inputloop
+fact: about | Bryant Frankford
+fact: about | Brigidt's NextTime
+fact: about | Nextcloud
+fact: about | Bryant's Quantum 3D5
+fact: about | corwin.cloud
+fact: about | (https://github.com/inputloop/corwin.cloud)
+fact: about | “what does Corwin work on?”
+fact: about | “is he on Emacs?”
+fact: about | “how do I reach him?”
+fact: about | “what is inputloop?”
+extra: about | Corwin Brust
+extra: about | Cupcakes
+extra: about | CC-BY-SA-4.0
+extra: about | https://corwin.bru.st/2026-03-19-cupcakes/
+
+== about / warm 4 ==
+Hi. I'm a systems engineer, and I write software. I've done it for a living for about twenty-five years. Most of it was in Emacs. Emacs is a text editor. It's also sort of my home. I help GNU and the Free Software Foundation. I'm one of the Savannah Hackers. We keep GNU's project hosting up. I'm a site reliability engineer for the FSF, too. That's a big name for "I keep the computers happy." I also help with Worg. It's the help site for Org mode. Mostly, I help you get these tools going on your own computer.
+
+[[keep]]
+
+My work looks like lots of things. I build GNU Emacs for Windows. I help run EmacsConf. I look after a tiny bit of Org mode: the bit for Perl. I helped start a game. You play it in Emacs, and you crawl through a dungeon. I made [card-games](https://melpa.org/#/card-games), too. You can get it from MELPA. What ties it all up? I ask what a new person needs. I write it down. Then I check it. Does it really work? I like to know.
+
+On 2026-11-01, most of my time goes to inputloop. It's a small free software shop. I keep it with Bryant Frankford. We carry Brigidt's NextTime, too. It's an app for Nextcloud, and you can use it to trade time. And we carry Bryant's Quantum 3D5. The shop has its own site now: corwin.cloud. Its [code is public](https://github.com/inputloop/corwin.cloud). It shows how our computers link up. It lists what we run. It has a few tools we picked.
+
+Here's the big thread. I like to join things up. One tool to the next. One project to the folks who need it. When I start a thing, I ask: who does it let in? I try to say what's done and what's not. As my poem [Cupcakes](https://corwin.bru.st/2026-03-19-cupcakes/) says: “People are cupcakes. / Or maybe muffins.” (It's yours to share, like every word here, under CC-BY-SA-4.0.)
+
+See the box at the foot of the page? You can ask it things. Try “what does Corwin work on?”, “is he on Emacs?”, “how do I reach him?” or “what is inputloop?” It looks through the cards on this page. It only knows what they say. Below are the places I spend my time. Each has the same short shape: what it is, what I do, and where to look. inputloop comes last. It opens up into the rest of the page.
+
+== about / plain 4 ==
+I am a systems engineer. I also write software. I have done it for a living for about twenty-five years. Most of it was in Emacs. I help GNU and the Free Software Foundation. I am one of the Savannah Hackers. We keep GNU's project hosting running. I am also a site reliability engineer with the FSF's sysops team. I help keep Worg going, too. It is the help site for the Org mode group. Most days I help other people get these tools working on the machines they keep.
+
+[[keep]]
+
+My work covers a few things. I build GNU Emacs for Windows. I help run EmacsConf. I look after one small part of Org mode: its Perl support. I helped start a game. It runs dungeon crawls in Emacs. I also put out [card-games](https://melpa.org/#/card-games). It is a small Emacs add-on. It is on MELPA. One habit ties it all up. I ask what a new person needs. I write that down. Then I check what I wrote against what really happens.
+
+As of 2026-11-01, most of my time goes to inputloop. It is a small free software shop. I keep it with Bryant Frankford. The shop also has Brigidt's NextTime. It is an app for Nextcloud that lets people trade time. It also has Bryant's Quantum 3D5. The shop has its own site, corwin.cloud. Its [source is public](https://github.com/inputloop/corwin.cloud). It has a map of how our machines link up. It lists what we run. It has a few tools we picked.
+
+One thread runs through all of this. I join things up. I join one tool to the next. I join a project to the people who can use it. When I start a thing, I ask who it lets in. I try to say plainly what is done and what is not.
+
+The prompt at the foot of the page answers questions. Ask it “what does Corwin work on?”, “is he on Emacs?”, “how do I reach him?” or “what is inputloop?” It looks through the cards on this page. It knows only what they say. Below are the places I put my time. Each has the same short form: what it is, what I do there, and where to look. inputloop comes last. It opens into the rest of the page.
+
+== about / formal 4 ==
+Corwin Brust is a systems engineer and software developer. Paid work: about twenty-five years of software, most of it in Emacs. Unpaid work: GNU and the Free Software Foundation. The Savannah Hackers keep GNU's project hosting running. Corwin Brust is one of them. Another role: site reliability engineer with the FSF's sysops team. Another task: to help keep Worg, the help site of the Org mode group. The main task now: to help others get these tools to work on the machines they keep.
+
+[[keep]]
+
+The work takes a few forms. A build of GNU Emacs for Windows. Help to run EmacsConf. One small part of Org mode: its Perl support. A game, started with others, that runs dungeon crawls in Emacs. An add-on, [card-games](https://melpa.org/#/card-games), on MELPA. The method is the same each time. Ask what a new user needs. Write it down. Test the text against what takes place.
+
+As of 2026-11-01, most of the time goes to inputloop. inputloop is a small free software shop. Bryant Frankford and Corwin Brust keep it. The shop also holds Brigidt's NextTime, an app for Nextcloud for trade in time. It holds Bryant's Quantum 3D5 as well. The shop has a site of its own, corwin.cloud. The [source is public](https://github.com/inputloop/corwin.cloud). The site holds a map of the machines, a list of what runs, and a few chosen tools.
+
+One thread runs through the work: to join things up. Tool joins tool. A project joins the people who can use it. Each new project starts with a test: who does it let in? Each report states what is done and what is not.
+
+The prompt at the foot of the page takes questions, such as “what does Corwin work on?”, “is he on Emacs?”, “how do I reach him?” or “what is inputloop?” It reads the cards on this page and no more. Below are the places the time goes. Each has the same short form: what it is, the work done there, and where to look. inputloop comes last, as it opens into the rest of the page.
+
+== about / warm 8 ==
+I'm a systems engineer and software developer. I've written software for a living for about twenty-five years, most of it in Emacs (yes, really, all of it, more or less). I volunteer for GNU and the Free Software Foundation, and I'm one of the Savannah Hackers, the volunteers who keep GNU's project hosting running. I'm also a volunteer site reliability engineer with the FSF's sysops team, and I help maintain Worg, the Org mode community's documentation site. These days, most of what I do is help you and people like you get the same tools working on machines you keep.
+
+[[keep]]
+
+My work covers a few things that look different from the outside. I build the Windows release of GNU Emacs. I help organize EmacsConf. I look after one small corner of Org mode, its Perl support. I co-founded a game engine for tabletop dungeon crawls that runs inside Emacs. And I publish [card-games](https://melpa.org/#/card-games), an Emacs package you can install from MELPA. What ties it together? A habit: I ask what a newcomer needs, I write that down, and then I check the written thing against what really happens.
+
+As of 2026-11-01, most of my time goes to inputloop, the small free software shop I keep with Bryant Frankford. We also carry Brigidt's NextTime, a time-banking app for Nextcloud, and Bryant's Quantum 3D5. The shop's got its own site now, corwin.cloud, and its [source is public](https://github.com/inputloop/corwin.cloud): a diagram of how our machines connect, a directory of what we run, and a few packages we like.
+
+If there's one thread through all of this, it's joining things up: one tool to another, one project to the people who could use it. When I start something, I ask who it lets in, and I try to say plainly what's finished and what isn't. Or, as I put it in a poem, [Cupcakes](https://corwin.bru.st/2026-03-19-cupcakes/): “People are cupcakes. / Or maybe muffins.” (Yours to share, like every word here, under CC-BY-SA-4.0.)
+
+The prompt at the foot of the page answers your questions about all this. Ask it “what does Corwin work on?”, “is he on Emacs?”, “how do I reach him?” or “what is inputloop?”, the way you'd ask a friend. It searches the cards on this page and knows nothing they don't say. Below are the places I put my time, each in the same short form: what it is, what I do there, and where to look. inputloop comes last because it opens into the rest of the page.
+
+== about / formal 8 ==
+Corwin Brust is a systems engineer and software developer, with about twenty-five years of paid software work, most of it in Emacs. Volunteer roles: GNU and the Free Software Foundation, as one of the Savannah Hackers, the volunteers who keep GNU's project hosting running; site reliability engineer with the FSF's sysops team; and co-maintainer of Worg, the Org mode community's documentation site. The present focus: helping others put the same tools to work on machines they run.
+
+[[keep]]
+
+The work spans several areas. Release builds of GNU Emacs for Windows. Help with EmacsConf. Care of one small corner of Org mode, its Perl support. A co-founded game engine for tabletop dungeon crawls, running inside Emacs. The [card-games](https://melpa.org/#/card-games) package for Emacs, on MELPA. The common method: find what a newcomer needs, write it down, and then test the text against real use.
+
+As of 2026-11-01, the main commitment is inputloop, a small free software shop kept with Bryant Frankford. The shop also carries Brigidt's NextTime, a time-banking application for Nextcloud, and Bryant's Quantum 3D5. Its own site, corwin.cloud, has a [public source](https://github.com/inputloop/corwin.cloud): a diagram of how the shop's machines connect, a directory of its services, and a small set of curated packages.
+
+The thread through it all is joining things up: one tool with another, one project with the people who could use it. Each new project starts with the question of who it lets in, and each report states plainly what is finished and what is not.
+
+The prompt at the foot of the page answers questions about this work, such as “what does Corwin work on?”, “is he on Emacs?”, “how do I reach him?” or “what is inputloop?” It searches the cards on this page and knows nothing more. Below are the areas of work, each in the same short form: what it is, the work done there, and where to look further. inputloop comes last because it opens into the rest of the page.
+
+== about / warm 12 ==
+I'm a systems engineer and software developer, and I've been writing software for a living for about twenty-five years, nearly all of it inside Emacs, which by now feels less like an editor than like a comfortable, permanent residence. I volunteer for GNU and the Free Software Foundation: I'm one of the Savannah Hackers, the volunteers who keep GNU's project hosting running, I'm a volunteer site reliability engineer with the FSF's sysops team, and I help maintain Worg, the Org mode community's documentation site. Honestly, though, most of what I do these days is help you, and people like you, get those identical tools functioning on machines you administer yourselves.
+
+[[keep]]
+
+My work covers several things that look unrelated from the outside, so let me connect them for you. I build the Windows release of GNU Emacs; I help organize EmacsConf; I look after one small, peculiar corner of Org mode, its Perl support; I co-founded a game engine for tabletop dungeon crawls that runs inside Emacs; and I publish [card-games](https://melpa.org/#/card-games), an Emacs package you can install from MELPA. What do they share? A habit I'd happily recommend to anyone: ask what a newcomer actually needs, write that down carefully, and then check the written thing against what really happens when someone follows it.
+
+As of 2026-11-01, most of my time goes to inputloop, the small free software shop I keep with Bryant Frankford, and I'm glad of it. We also carry Brigidt's NextTime, a time-banking application for Nextcloud, and Bryant's Quantum 3D5. The shop now has its own site, corwin.cloud, and its [source is public](https://github.com/inputloop/corwin.cloud): a diagram of how our machines connect, a directory of what we run, and a handful of carefully curated packages we're particularly fond of.
+
+If there's a single thread running through all of this, it's joining things up: connecting one tool to another, and one project to the people who could genuinely use it. Whenever I start something, I ask who it lets in, and I try to say plainly, without decoration, what's finished and what isn't. I once put the underlying feeling into a poem, [Cupcakes](https://corwin.bru.st/2026-03-19-cupcakes/): “People are cupcakes. / Or maybe muffins.” (It's yours to share, like every word on this page, under CC-BY-SA-4.0.)
+
+The prompt at the foot of the page answers your questions about all of this, whether you'd phrase them as “what does Corwin work on?”, “is he on Emacs?”, “how do I reach him?” or “what is inputloop?”, the way a curious visitor naturally would. It searches exclusively the cards on this page, so it can't tell you anything they don't already contain. Below are the places I put my time, each described in the same compact, consistent format: what it is, what I contribute there, and where you can investigate further. inputloop comes last, because it opens outward into everything else on the page.
+
+== about / plain 12 ==
+I am a systems engineer and software developer, and I have written software professionally for about twenty-five years, the great majority of it within Emacs. I volunteer for GNU and the Free Software Foundation, where I am one of the Savannah Hackers, the volunteers responsible for keeping GNU's project hosting operational; I am also a volunteer site reliability engineer with the FSF's sysops team, and I help maintain Worg, the Org mode community's documentation site. At present, most of my effort goes toward helping other people establish the same tools on machines they administer themselves.
+
+[[keep]]
+
+My work encompasses several activities that appear unrelated from the outside. I build the Windows release of GNU Emacs; I help organize EmacsConf; I maintain one specialized corner of Org mode, its Perl support; I co-founded a game engine for tabletop dungeon crawls that operates inside Emacs; and I publish [card-games](https://melpa.org/#/card-games), an Emacs package available for installation from MELPA. The common thread is a deliberate practice: determining what a newcomer requires, documenting it, and then verifying the documentation against what actually happens in use.
+
+As of 2026-11-01, the majority of my time is devoted to inputloop, the small free software shop I operate with Bryant Frankford. The shop also carries Brigidt's NextTime, a time-banking application for Nextcloud, and Bryant's Quantum 3D5. It now maintains its own site, corwin.cloud, whose [source is public](https://github.com/inputloop/corwin.cloud): a diagram of how our machines are interconnected, a directory of the services we operate, and a modest collection of curated packages.
+
+If a single principle unifies these activities, it is integration: connecting one tool to another, and one project to the people who could benefit from it. Whenever I begin something, I consider whom it includes, and I try to state plainly what is complete and what remains unfinished.
+
+The prompt at the foot of the page answers questions about all of this, such as “what does Corwin work on?”, “is he on Emacs?”, “how do I reach him?” or “what is inputloop?”, phrased as an ordinary visitor might phrase them. It searches the cards on this page and possesses no knowledge beyond what they contain. Below are the places I devote my time, each presented in the same concise format: what it is, what I contribute, and where to look further. inputloop appears last because it opens into the remainder of the page.
+
+== about / formal 12 ==
+Corwin Brust is a systems engineer and software developer whose professional software career spans approximately twenty-five years, conducted predominantly within Emacs. Volunteer commitments include GNU and the Free Software Foundation. Corwin Brust is one of the Savannah Hackers, the volunteers responsible for the operation of GNU's project hosting, and serves as a volunteer site reliability engineer on the FSF's sysops team. Further work includes the maintenance of Worg, the Org mode community's documentation site. The current aim is to help others set up the same tools on machines they run themselves.
+
+[[keep]]
+
+Areas of responsibility include the Windows release of GNU Emacs and organizational work for EmacsConf. Others are a specialized component of Org mode, its Perl support, and a co-founded game engine for tabletop dungeon crawls within Emacs. Publications include [card-games](https://melpa.org/#/card-games), an Emacs package available from MELPA. The unifying method is the identification of newcomer requirements, their documentation, and the verification of that documentation against practice.
+
+As of 2026-11-01, the principal commitment is inputloop, a small free software shop operated in partnership with Bryant Frankford. The shop's catalogue additionally includes Brigidt's NextTime, a time-banking application for Nextcloud, and Bryant's Quantum 3D5. Its dedicated site, corwin.cloud, has a [public source](https://github.com/inputloop/corwin.cloud). It comprises a diagram of infrastructure, a directory of operational services, and a collection of curated packages.
+
+The governing principle is integration: the link of one tool with another, and of each project with the people who could use it. Every new project begins with an assessment of who it lets in, and each status report says plainly what is done and what is not.
+
+The prompt at the foot of the page takes questions about this work, such as “what does Corwin work on?”, “is he on Emacs?”, “how do I reach him?” or “what is inputloop?”, phrased as a typical visitor would phrase them. Its retrieval is confined to the cards on this page. The sections below present each area of involvement in a consistent format: its identity, the contribution made, and references for further reading. inputloop is positioned last because it opens into the remainder of the page.
+
+== about / warm 16 ==
+I'm a systems engineer and software developer, and I've been writing software for a living for about twenty-five years, an embarrassingly large proportion of it inside Emacs, which at this point functions less as an editor than as a kind of permanent residence I've furnished incrementally and would recommend, with affectionate reservations, to practically anybody. I volunteer for GNU and the Free Software Foundation, being one of the Savannah Hackers, the volunteers who keep GNU's project hosting operational, and also a volunteer site reliability engineer with the FSF's sysops team; I additionally help maintain Worg, the Org mode community's documentation site. Honestly, though, the majority of my effort nowadays goes toward helping you, and people like you, get those identical tools functioning dependably on machines you administer yourselves.
+
+[[keep]]
+
+My work encompasses several undertakings that probably look unrelated from the outside, so permit me to connect them. I build the Windows release of GNU Emacs; I help organize EmacsConf; I look after one specialized, rather particular corner of Org mode, its Perl support; I co-founded a game engine for tabletop dungeon crawls that operates entirely inside Emacs; and I publish [card-games](https://melpa.org/#/card-games), an Emacs package you're welcome to install from MELPA. What unites them? A methodical habit I'd enthusiastically recommend to anybody: identify what a newcomer genuinely requires, document it conscientiously, and then verify the documentation against whatever actually happens when somebody follows it, which is invariably humbling.
+
+As of 2026-11-01, the majority of my time is devoted, quite happily, to inputloop, the small free software shop I operate alongside Bryant Frankford. We additionally carry Brigidt's NextTime, a time-banking application for Nextcloud, and Bryant's Quantum 3D5. The shop now maintains its own site, corwin.cloud, whose [source is public](https://github.com/inputloop/corwin.cloud): a diagram illustrating how our machines interconnect, a directory documenting everything we operate, and a modest, affectionately curated collection of packages.
+
+If a single principle genuinely unifies these activities, it's integration: connecting one tool to another, and one project to the particular people who could legitimately benefit from it. Whenever I initiate something, I deliberately consider whom it accommodates, and I endeavour to articulate plainly, without decorative embellishment, what's finished and what isn't. I once compressed the underlying sentiment into a poem, [Cupcakes](https://corwin.bru.st/2026-03-19-cupcakes/): “People are cupcakes. / Or maybe muffins.” (You're welcome to share it, like every word on this page, under CC-BY-SA-4.0.)
+
+The prompt at the foot of the page will happily answer your questions regarding all of this, whether you'd formulate them as “what does Corwin work on?”, “is he on Emacs?”, “how do I reach him?” or “what is inputloop?”, exactly the way an inquisitive visitor naturally would. It searches exclusively the cards on this page, consequently it can't communicate anything they don't already articulate. Below are the places I dedicate my time, each presented in an identical, deliberately compact format: what it is, what I contribute there, and where you're able to investigate further. inputloop appears last, because it opens outward into everything else on the page.
+
+== about / plain 16 ==
+I am a systems engineer and software developer, and I have written software professionally for approximately twenty-five years, predominantly within Emacs, an environment that over that interval has become considerably more than an editor. I volunteer for GNU and the Free Software Foundation, participating as one of the Savannah Hackers, the volunteers responsible for maintaining the operational integrity of GNU's project hosting; I additionally serve as a volunteer site reliability engineer with the FSF's sysops team, and I contribute to the maintenance of Worg, the Org mode community's documentation site. Presently, the preponderance of my effort is directed toward enabling other people to establish those identical tools on machines they administer independently.
+
+[[keep]]
+
+My work encompasses several undertakings that superficially appear unrelated. I construct the Windows release of GNU Emacs; I contribute to organizing EmacsConf; I maintain one specialized component of Org mode, its Perl support; I co-founded a game engine for tabletop dungeon crawls that operates entirely within Emacs; and I publish [card-games](https://melpa.org/#/card-games), an Emacs package available for installation from MELPA. The unifying characteristic is a deliberate methodology: identifying what a newcomer genuinely requires, documenting it systematically, and subsequently verifying the documentation against what actually transpires in practice.
+
+As of 2026-11-01, the majority of my time is dedicated to inputloop, the small free software shop I operate collaboratively with Bryant Frankford. The shop additionally distributes Brigidt's NextTime, a time-banking application for Nextcloud, and Bryant's Quantum 3D5. It now maintains its own site, corwin.cloud, whose [source is public](https://github.com/inputloop/corwin.cloud): a diagram illustrating how our machines interconnect, a directory documenting the services we operate, and a selective collection of curated packages.
+
+If a single principle unifies these activities, it is integration: connecting one tool to another, and one project to the particular communities positioned to benefit from it. Whenever I initiate an undertaking, I deliberately consider whom it accommodates, and I endeavour to articulate plainly, without embellishment, what is complete and what remains unfinished.
+
+The prompt at the foot of the page responds to questions concerning all of this, such as “what does Corwin work on?”, “is he on Emacs?”, “how do I reach him?” or “what is inputloop?”, formulated as an ordinary visitor would formulate them. It searches exclusively the cards on this page and possesses no information beyond what they contain. Below are the areas to which I dedicate my time, each presented in an identical, deliberately concise format: its identity, my particular contribution, and opportunities for further investigation. inputloop appears last because it opens into the remainder of the page.
+
+== about / formal 16 ==
+Corwin Brust is a systems engineer and software developer whose professional software career encompasses approximately twenty-five years, conducted predominantly within Emacs. Volunteer commitments encompass GNU and the Free Software Foundation, including membership among the Savannah Hackers, the volunteers responsible for the operational continuity of GNU's project hosting; service as a volunteer site reliability engineer on the FSF's sysops team; and participation in the ongoing maintenance of Worg, the Org mode community's documentation site. The contemporary emphasis is the facilitation of independent administration, enabling organizations and individuals to establish those identical tools on infrastructure under their own governance.
+
+[[keep]]
+
+Areas of responsibility encompass the production of the Windows release of GNU Emacs; organizational contributions to EmacsConf; maintenance responsibility for a specialized component of Org mode, its Perl support; the co-founding of a game engine for tabletop dungeon crawls operating within Emacs; and the publication of [card-games](https://melpa.org/#/card-games), an Emacs package available for installation from MELPA. The unifying methodology consists of the systematic identification of newcomer requirements, their comprehensive documentation, and the subsequent verification of that documentation against empirically observed practice.
+
+As of 2026-11-01, the principal professional commitment is inputloop, a small free software shop operated in partnership with Bryant Frankford. The organization's catalogue additionally incorporates Brigidt's NextTime, a time-banking application for Nextcloud, and Bryant's Quantum 3D5. Its dedicated site, corwin.cloud, maintains a [publicly available source](https://github.com/inputloop/corwin.cloud) comprising a diagrammatic representation of infrastructure interconnection, a comprehensive directory of operational services, and a selective collection of curated packages.
+
+The governing principle is integration: the interconnection of complementary technologies, and the alignment of each project with the communities positioned to derive benefit from it. Every new undertaking commences with a deliberate evaluation of its inclusiveness, and each status communication distinguishes unambiguously between completed and incomplete deliverables.
+
+The prompt at the foot of the page responds to enquiries regarding these activities, such as “what does Corwin work on?”, “is he on Emacs?”, “how do I reach him?” or “what is inputloop?”, formulated as a representative visitor would formulate them. Its retrieval capability is confined exclusively to the cards on this page. The subsequent sections present each area of involvement in a consistent, deliberately abbreviated format: its identity, the contribution rendered, and references facilitating further investigation. inputloop is positioned last because it opens into the remainder of the page.

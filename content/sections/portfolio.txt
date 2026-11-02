@@ -1,0 +1,115 @@
+section: portfolio
+unit: portfolio
+unit: work
+unit: ideas
+extra: portfolio | Corwin Brust
+extra: work | Corwin Brust
+extra: ideas | Corwin Brust
+
+== portfolio ==
+The last of the places I put my time, and the one the rest of this page is about. It has the same short form as the others.
+
+== work ==
+Only what is public. Each card says whose work it is; not all of it is mine.
+
+== ideas ==
+These are not products. They are the habits behind the products, written down so you can hold us to them.
+
+== portfolio / warm 4 ==
+Here's the last place I put my time. It's the one the rest of the page is all about. It looks just like the others!
+
+== portfolio / plain 4 ==
+This is the last place I put my time. The rest of the page is about it. It looks like the others.
+
+== portfolio / formal 4 ==
+This is the last area of work. The rest of the page is about it. It has the same short form as the rest.
+
+== portfolio / warm 8 ==
+Here's the last of the places I put my time, and the one the rest of this page is really about. It's in the same short form as the others, I promise.
+
+== portfolio / formal 8 ==
+This is the last of the areas of involvement, and the subject of the rest of this page. It follows the same short form as the others.
+
+== portfolio / warm 12 ==
+Here's the last of the places I put my time, and honestly the one the remainder of this page is about. It's written in the same compact format as the others, I promise.
+
+== portfolio / plain 12 ==
+This is the last of the places where I invest my time, and the one the remainder of this page describes. It follows the same concise format as the others.
+
+== portfolio / formal 12 ==
+This is the final area of involvement, and the subject of the remainder of this page. It follows the same concise presentation as the preceding entries.
+
+== portfolio / warm 16 ==
+Here's the final destination among the places where I invest my time, and, honestly, the organization the remainder of this page describes; it's presented in the identical compact format you've encountered above, I promise.
+
+== portfolio / plain 16 ==
+This is the final destination among the places where I invest my time, and the organization the remainder of this page describes in considerable detail; it follows the identical concise format established above.
+
+== portfolio / formal 16 ==
+This constitutes the final area of professional involvement and the principal subject of the remainder of this page; its presentation adheres to the identical concise format established by the preceding entries.
+
+== work / warm 4 ==
+Only stuff that's out in the open. Each card says who made it. Not all of it's mine!
+
+== work / plain 4 ==
+Only what is out in the open. Each card says who made it. Not all of it is mine.
+
+== work / formal 4 ==
+Only what is public is here. Each card names who made it. Some of it is not by Corwin Brust.
+
+== work / warm 8 ==
+Only what's public, so you can pick it up. Each card says whose work it is; not all of it's mine.
+
+== work / formal 8 ==
+Only public work is listed. Each card states whose work it is; not all of it is by Corwin Brust.
+
+== work / warm 12 ==
+Only work that's publicly available appears here, so you can actually use it. Each card tells you whose work it is; not all of it's mine.
+
+== work / plain 12 ==
+Only work that is publicly available appears here. Each card identifies whose work it is; not all of it is mine.
+
+== work / formal 12 ==
+Only publicly available work is listed. Each card identifies its author; not all of the work is attributable to Corwin Brust.
+
+== work / warm 16 ==
+Only publicly available work appears in this collection, so you're genuinely able to use everything. Each card identifies its author, since honestly, not everything here originated with me.
+
+== work / plain 16 ==
+Only publicly available work appears in this collection. Each card identifies its author explicitly, since not everything presented here originated with me.
+
+== work / formal 16 ==
+Only publicly available work is catalogued in this collection. Each card identifies its originator explicitly, since attribution is not uniformly assignable to Corwin Brust.
+
+== ideas / warm 4 ==
+These aren't things to buy. They're the habits behind what we make. We wrote them down so you can keep us honest!
+
+== ideas / plain 4 ==
+These are not things to buy. They are the habits behind what we make. We wrote them down so you can hold us to them.
+
+== ideas / formal 4 ==
+These are not things for sale. They are the rules of work behind the shop's tools. They are set down here so that each can be checked.
+
+== ideas / warm 8 ==
+These aren't products. They're the habits behind the products, written down so you can hold us to them. Please do!
+
+== ideas / formal 8 ==
+These are not products. They are the working principles behind the products, recorded so that the shop can be held to them.
+
+== ideas / warm 12 ==
+These aren't products. They're the everyday habits behind our products, written down deliberately so you can hold us accountable. Please do!
+
+== ideas / plain 12 ==
+These are not products. They are the working habits behind our products, written down deliberately so that you can hold us accountable to them.
+
+== ideas / formal 12 ==
+These are not products. They are the operating principles behind the shop's products, documented so that its conduct can be evaluated against them.
+
+== ideas / warm 16 ==
+These aren't products. They're the underlying everyday practices behind our products, documented deliberately so you can hold us accountable whenever necessary. Honestly, please do!
+
+== ideas / plain 16 ==
+These are not products. They are the underlying working practices behind our products, documented deliberately so that readers can hold us accountable to them consistently.
+
+== ideas / formal 16 ==
+These are not products. They constitute the operational principles underlying the organization's products, documented explicitly to enable systematic evaluation of institutional conduct against them.

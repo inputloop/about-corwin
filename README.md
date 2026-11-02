@@ -12,10 +12,11 @@ It is one page of HTML and CSS that reads well with scripts turned off. The scri
 labelled for GNU LibreJS, add moving windows on each card, a parallax portfolio, cards that grow
 into index cards, an Emacs-style
 mode-line, and a prompt that searches the cards by meaning with no
-server behind it. A second page, `cast/index.html` (the second act), holds the dramatis personae:
+server behind it. Tone pads, a page pad at the top and one per section, move the introductions
+between warm and formal and between grade 4 and college reading (DESIGN.md, "The tone d-pad"). A second page, `cast/index.html` (the second act), holds the dramatis personae:
 people and the agents' personas in two columns that slide past each other.
 
-- `content/`: the words. One plain text file per card (`about/` for the two cards about Corwin, then
+- `content/`: the words. `sections/` holds the introductions' tone versions. One plain text file per card (`about/` for the two cards about Corwin, then
   `involvements/`, `projects/`, `concepts/`; `personae/` for the people and personas), plus `site.txt` (About and footer words, and the cast page's top line) and `vocabulary.txt`.
 - `src/`: the page template, the stylesheet, the scripts, the logos, `.htaccess`.
 - `build.py`: turns the two into `public/`. Python 3.8 or later, standard library only.

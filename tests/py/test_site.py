@@ -490,7 +490,9 @@ class Wording(unittest.TestCase):
                 with open(path, encoding="utf-8") as f:
                     for i, line in enumerate(f, 1):
                         if line.startswith("== "):
-                            prose = True
+                            # A formal tone version may speak of "Corwin Brust" (Corwin, 2026-11-01:
+                            # "no holds barred"); tests/py/test_tone.py holds it to no he, him or his.
+                            prose = "/ formal" not in line
                             continue
                         if not prose:
                             continue
@@ -670,7 +672,7 @@ class SecondAct(unittest.TestCase):
         home, cast = read("index.html"), read("cast", "index.html")
         self.assertIn('id="personae"', cast)
         self.assertIn('href="../index.html"', cast)
-        grab = lambda t, a, b: t[t.index(a):t.index(b)]
+        grab = lambda t, a, b: re.sub(r"\s+", " ", re.sub(r"<!--tone-->.*?<!--/tone-->", "", t[t.index(a):t.index(b)], flags=re.S))
         self.assertEqual(grab(cast, '<div class="custom" id="custom">', '<header'),
                          grab(home, '<div class="custom" id="custom">', '<header'), "Customize differs")
         self.assertEqual(grab(cast, '<div class="modeline"', '<footer'), grab(home, '<div class="modeline"', '<footer'))

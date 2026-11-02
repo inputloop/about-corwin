@@ -24,6 +24,8 @@ import re
 import shutil
 import sys
 
+import build_tone
+
 ROOT = os.path.dirname(os.path.abspath(__file__))
 CONTENT = os.path.join(ROOT, "content")
 SRC = os.path.join(ROOT, "src")
@@ -43,7 +45,7 @@ PUBLIC_REPOS = {".github", "fourSwordsFromThePast", "NextTime-Dev", "quantum3d5"
                 "suit-crm-6-5-php-sec-backport", "vibrobeast", "vibrobeast-skills", "corwin.cloud",
                 "topology", "about-corwin", "gitcha", "ta", "three-phase-transcription", "journal"}
 # The scripts each page loads; jslicense.html lists every script either page loads (JS_FILES).
-HOME_JS = ("chamber.model.js", "taxonomy.js", "windows.js", "site.js", "customize.js")
+HOME_JS = ("chamber.model.js", "taxonomy.js", "windows.js", "site.js", "customize.js", "tone.model.js", "dpad.js")
 CAST_JS = ("chamber.model.js", "taxonomy.js", "site.js", "customize.js", "personae.js")
 JS_FILES = HOME_JS + tuple(n for n in CAST_JS if n not in HOME_JS)
 # The second act: the cast (Corwin, 2026-11-01 18:06: "we want the cast page to be its own page").
@@ -242,8 +244,13 @@ def load(content_dir=CONTENT):
     slugs = [c["slug"] for c in cards]
     if len(slugs) != len(set(slugs)):
         raise ContentError("two cards share a slug")
+    try:
+        sections = build_tone.load_sections(content_dir, site["layers"])
+    except build_tone.ToneError as err:
+        raise ContentError(str(err))
     return {"vocab": vocab, "site": site, "cards": cards, "views": views, "windows": windows,
-            "snap": load_snapshots(content_dir), "personae": load_personae(content_dir)}
+            "snap": load_snapshots(content_dir), "personae": load_personae(content_dir),
+            "sections": sections}
 
 
 # ---- dramatis personae -------------------------------------------------------------------------
@@ -669,7 +676,7 @@ def json_for_html(obj):
     return s.replace("</", "<\\/").replace("<!--", "<\\!--")
 
 
-def render(data, template):
+def render(data, template, tone=True):
     site = data["site"]
     windows = {w["id"]: w for w in data["windows"]}
     about_cards = [c for c in data["cards"] if c["kind"] == "about"]
@@ -680,6 +687,7 @@ def render(data, template):
     views_dl, windows_dl = render_legend(data)
     filters, used = render_filters(data)
     about = "".join("<p>%s</p>" % inline(p) for p in site["layers"]["about"])
+    units = {n: u for s in data["sections"].values() for n, u in s["units"].items()}
     index = build_index(data)
     subs = {
         "TITLE": e(one(site, "title")),
@@ -687,7 +695,7 @@ def render(data, template):
         "TAGLINE": e(one(site, "tagline")),
         "PRONOUNCE": e(one(site, "pronounce")),
         "PRONOUNS": e(one(site, "pronouns")),
-        "ABOUT": about,
+        "ABOUT": tone_about(units["about"], site, about) if tone else about,
         "FINDME": render_site_links(site),
         "BLOG": render_blog(data["snap"]),
         "CI": render_ci(data["snap"]),
@@ -707,6 +715,7 @@ def render(data, template):
         "COUNT_TAGS": str(len(data["vocab"])),
         "INDEX_JSON": json_for_html(index),
     }
+    subs.update(render_tone(data, units, tone))
     return fill(template, subs), index, used
 
 
@@ -725,6 +734,98 @@ def stitch_html(site):
     if not text.endswith(mail):
         raise ContentError("%s: the stitch line ends with the contact address" % site["path"])
     return e(text[:-len(mail)]) + '<a href="mailto:%s">%s</a>' % (e(mail), e(mail))
+
+
+# ---- the tone d-pad ---------------------------------------------------------------------------------
+# build_tone.py reads the texts and checks them; here they are written into the page. The base (the
+# words already written) is live HTML; every other version is a <template>. Everything the tone work
+# adds sits between <!--tone--> and <!--/tone-->, or is a data-unit, data-section or
+# data-tone-section attribute, or the <div class="tone-text"> around the About, so a check can take
+# it all away and find the page the build writes with tone=False (tests/py/test_tone.py).
+
+TONE_SCOPES = (("about", "the About"), ("involvements", "Where I put my time"),
+               ("portfolio", "the inputloop introductions"))
+ARMS = (("up", "▲", "Harder words"), ("left", "◀", "Warmer"), ("reset", "", "As written"),
+        ("right", "▶", "More formal"), ("down", "▼", "Simpler words"))
+
+
+def tone_paras(u, cell, site):
+    out = []
+    for p in u["cells"][cell]:
+        if p == build_tone.KEEP:
+            p = u["base"][u["keep"] - 1]
+        out.append("<p>%s</p>" % inline(p))
+    return "".join(out)
+
+
+def tone_templates(u, render_one):
+    return "".join('<template data-unit="%s" data-cell="%s">%s</template>' % (u["name"], c, render_one(c))
+                   for c in sorted(u["cells"]) if c != build_tone.cell_name(*build_tone.BASE))
+
+
+def tone_about(u, site, live):
+    return ('<div class="tone-text" data-unit="%s" data-section="about">%s</div><!--/tone-text-->'
+            '<!--tone-->%s<!--/tone-->' % (u["name"], live, tone_templates(u, lambda c: tone_paras(u, c, site))))
+
+
+def tone_lede(u, section, tone):
+    live = e(" ".join(u["base"]))
+    if not tone:
+        return '<p class="lede">%s</p>' % live
+    return ('<p class="lede" data-unit="%s" data-section="%s">%s</p><!--tone-->%s<!--/tone-->'
+            % (u["name"], section, live, tone_templates(u, lambda c: e(" ".join(u["cells"][c])))))
+
+
+def tone_pad(scope, name, cls):
+    arms = "".join('<button type="button" class="%s dp-%s" data-move="%s" aria-label="%s: %s">%s</button>'
+                   % ("dp-centre" if d == "reset" else "dp-arm", d, d, e(w), e(name),
+                      '<span aria-hidden="true">%s</span>' % g if g else "")
+                   for d, g, w in ARMS)
+    return ('<div class="dpad %s" role="group" data-scope="%s" data-name="%s" aria-label="Tone of %s" '
+            'aria-describedby="dp-%s-say">%s<span class="dp-glow" aria-hidden="true"></span></div>'
+            '<p class="dp-say" id="dp-%s-say">plain, about grade 8</p>' % (cls, scope, e(name), e(name), scope, arms, scope))
+
+
+TONE_ROWS = ('<fieldset class="c-tone"><legend>Warmth of the introductions:</legend>'
+             '<label><input type="radio" name="tone-w" value="warm"><span class="box"></span>Warm</label>'
+             '<label><input type="radio" name="tone-w" value="plain"><span class="box"></span>Plain (as written)</label>'
+             '<label><input type="radio" name="tone-w" value="formal"><span class="box"></span>Formal</label></fieldset>\n'
+             '    <fieldset class="c-tone"><legend>Reading level:</legend>'
+             '<label><input type="radio" name="tone-g" value="4"><span class="box"></span>About grade 4</label>'
+             '<label><input type="radio" name="tone-g" value="8"><span class="box"></span>About grade 8 (as written)</label>'
+             '<label><input type="radio" name="tone-g" value="12"><span class="box"></span>About grade 12</label>'
+             '<label><input type="radio" name="tone-g" value="16"><span class="box"></span>College</label></fieldset>\n'
+             '    <fieldset class="c-tone"><legend>Tone pads (these three rows save as you go):</legend>'
+             '<label><input type="checkbox" name="tone-invert" value="1"><span class="box"></span>Up makes the words simpler (inverted)</label></fieldset>\n')
+
+TONE_KEYS = ('<li><kbd>Ctrl</kbd>+arrows: the tone of the introduction in the section you are in (left warmer, '
+             'right more formal, up harder words, down simpler); <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+arrows: the whole page; '
+             '<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Home</kbd>: everything as written. On a focused pad: the arrows, '
+             '<kbd>h</kbd> <kbd>j</kbd> <kbd>k</kbd> <kbd>l</kbd>, <kbd>Home</kbd>, and <kbd>Ctrl</kbd>+<kbd>f</kbd>, '
+             '<kbd>b</kbd>, <kbd>p</kbd> as in Emacs. On a Mac, where <kbd>Ctrl</kbd>+arrows switch Spaces, press '
+             '<kbd>Tab</kbd> to reach a pad and use the keys there. Customize can turn up and down around.</li>')
+
+
+def render_tone(data, units, tone):
+    keys = ["PAD_" + s.upper() for s, _ in TONE_SCOPES] + ["TS_" + s.upper() for s, _ in TONE_SCOPES]
+    if not tone:
+        out = {k: "" for k in keys + ["TONE_DOCK", "TONE_ROWS", "TONE_KEYS", "TONE_TABLE", "TONE_SCRIPTS"]}
+    else:
+        out = {}
+        for s, name in TONE_SCOPES:
+            out["PAD_" + s.upper()] = '<!--tone--><div class="dpad-wrap">%s</div><!--/tone-->' % tone_pad(s, name, "dp-sec")
+            out["TS_" + s.upper()] = ' data-tone-section="%s"' % s
+        out["TONE_DOCK"] = ('<!--tone--><div class="tone-dock" id="tone-dock" tabindex="-1">%s</div>'
+                            '<p class="visually-hidden" id="tone-say" role="status" aria-live="polite"></p><!--/tone-->'
+                            % tone_pad("page", "the whole page", "dp-global"))
+        out["TONE_ROWS"] = "<!--tone-->" + TONE_ROWS + "    <!--/tone-->"
+        out["TONE_KEYS"] = "<!--tone-->" + TONE_KEYS + "<!--/tone-->"
+        out["TONE_TABLE"] = ('<!--tone--><script type="application/json" id="tone-table">%s</script><!--/tone-->'
+                             % json_for_html(build_tone.table(data["sections"])))
+        out["TONE_SCRIPTS"] = '<!--tone--><script src="js/tone.model.js" defer></script><script src="js/dpad.js" defer></script><!--/tone-->'
+    for name, sec in (("involvements", "involvements"), ("portfolio", "portfolio"), ("work", "portfolio"), ("ideas", "portfolio")):
+        out["LEDE_" + name.upper()] = tone_lede(units[name], sec, tone)
+    return out
 
 
 def render_cast(data, template, index):
@@ -816,11 +917,11 @@ def check_js_labels(src_js):
             raise ContentError("src/js/%s: must end with // @license-end" % n)
 
 
-def build(out_dir, content_dir=CONTENT, src_dir=SRC):
+def build(out_dir, content_dir=CONTENT, src_dir=SRC, tone=True):
     data = load(content_dir)
     check_js_labels(os.path.join(src_dir, "js"))
     with open(os.path.join(src_dir, "index.html"), encoding="utf-8") as f:
-        page, index, used = render(data, f.read())
+        page, index, used = render(data, f.read(), tone)
     with open(os.path.join(src_dir, "cast.html"), encoding="utf-8") as f:
         cast = render_cast(data, f.read(), index)
     with open(os.path.join(src_dir, "jslicense.html"), encoding="utf-8") as f:

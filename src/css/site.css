@@ -33,6 +33,7 @@
   --read-scale: 1;
   --read-lh: 1.6;
   --gutter: 16px;
+  --pad-body: #d9d2c3; --pad-arm: #f7f2e7; --pad-ink: #3b2370; --pad-rim: #9b927f; --pad-glow: #e69f00; --pad-g-arm: #43216e;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
@@ -53,10 +54,12 @@
     --focus: #7fb8ff;
     --shadow: 0 1px 2px rgb(0 0 0 / 0.5), 0 8px 22px rgb(0 0 0 / 0.35);
     --px-ink: rgb(200 173 255 / 0.09);
+    --pad-body: #2a2d34; --pad-arm: #3d414b; --pad-ink: #e6dcff; --pad-rim: #5a5f6b; --pad-glow: #e69f00; --pad-g-arm: #9d7fe0;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
+  --pad-body: #2a2d34; --pad-arm: #3d414b; --pad-ink: #e6dcff; --pad-rim: #5a5f6b; --pad-glow: #e69f00; --pad-g-arm: #9d7fe0;
   --bg: #121316; --surface: #1c1e23; --ink: #ebe8e1; --muted: #b0aaa0; --accent: #c8adff;
   --accent-ink: #1a1030; --rule: #33363d; --card-rule: #263345; --card-margin: #5a3434;
   --ml-bg: #34373f; --ml-ink: #f0ede6; --ml-active: #4a4e58; --mb-bg: #17181c; --focus: #7fb8ff;
@@ -68,6 +71,7 @@
 /* High contrast: the egad vivendi pair read from Modus (black, white, bg-dim #1e1e1e, blue-warmer
    #79a8ff), with a yellow focus ring. Picked in Customize; not follow-the-system. */
 :root[data-theme="hc"] {
+  --pad-body: #1e1e1e; --pad-arm: #000000; --pad-ink: #ffffff; --pad-rim: #ffffff; --pad-glow: #ffd400; --pad-g-arm: #4d7fd6;
   --bg: #000000; --surface: #1e1e1e; --ink: #ffffff; --muted: #d0d0d0; --accent: #79a8ff;
   --accent-ink: #000000; --rule: #9f9f9f; --card-rule: #535353; --card-margin: #8a4a4a;
   --ml-bg: #1e1e1e; --ml-ink: #ffffff; --ml-active: #535353; --mb-bg: #000000; --focus: #ffd400;
@@ -317,6 +321,78 @@ html:not(.js) .v-featured { display: none; }
 }
 /* While the mode-line flies the page down, cards lean with the speed. */
 .flying .card .face { transform: rotate(calc(var(--tilt) + var(--vel, 0) * 1deg)) scale(calc(1 - var(--vel-abs, 0) * 0.02)); transition: none; }
+
+/* ---- the tone d-pads ------------------------------------------------------------------------
+   dpad.js swaps each introduction between its written versions; these rules draw the pads. A
+   pad is a cross of four arms and a centre on a domed plastic body: a radial gradient for the
+   dome, an inset rim, a gloss band across the top, and a soft drop shadow; a pressed arm sinks.
+   A glow follows the pointer (--gx, --gy, set by dpad.js with CSSOM, which the CSP allows) and
+   lights the arm in its quadrant. The page pad lives in a fixed dock under Customize and drifts
+   by --dx and --dy (DESIGN.md, "The tone d-pad"); the section pads float at the head of their
+   sections. Without scripts there are no pads and the text is the text as written. */
+.prose > .tone-text > p { max-width: var(--measure); }
+.keys { overflow-wrap: anywhere; }   /* "Ctrl+Shift+Home" has no break of its own at 175% text */
+.dpad-wrap, .tone-dock { display: none; }
+.js .dpad-wrap { display: block; float: right; margin: 0.15rem 0 0.6rem 1rem; width: min-content; text-align: center; }
+.dpad {
+  --cell: 1.55rem;
+  position: relative; display: grid; grid-template-columns: repeat(3, var(--cell)); grid-template-rows: repeat(3, var(--cell));
+  width: max-content; margin: 0 auto; padding: 0.3rem; border-radius: 50%;
+  background: radial-gradient(circle at 38% 30%, var(--pad-arm) 0, var(--pad-body) 58%, var(--pad-rim) 100%);
+  box-shadow: inset 0 2px 2px rgb(255 255 255 / 0.45), inset 0 -3px 5px rgb(0 0 0 / 0.22), 0 3px 8px rgb(30 20 0 / 0.28);
+  touch-action: manipulation;
+}
+.dpad::after {
+  content: ""; position: absolute; left: 20%; right: 20%; top: 7%; height: 30%; border-radius: 50%;
+  background: linear-gradient(rgb(255 255 255 / 0.5), rgb(255 255 255 / 0)); pointer-events: none;
+}
+.dp-arm, .dp-centre {
+  margin: 0; padding: 0; min-width: 0; font: 700 0.7rem/1 var(--sans); color: var(--pad-ink); cursor: pointer;
+  border: 1px solid var(--pad-rim);
+  background: linear-gradient(180deg, var(--pad-arm), var(--pad-body));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5), 0 1px 1px rgb(0 0 0 / 0.25);
+}
+.dp-up { grid-area: 1 / 2; border-radius: 45% 45% 3px 3px; }
+.dp-left { grid-area: 2 / 1; border-radius: 45% 3px 3px 45%; }
+.dp-centre { grid-area: 2 / 2; border-radius: 50%; margin: 2px; background: radial-gradient(circle at 50% 60%, var(--pad-body), var(--pad-arm)); }
+.dp-right { grid-area: 2 / 3; border-radius: 3px 45% 45% 3px; }
+.dp-down { grid-area: 3 / 2; border-radius: 3px 3px 45% 45%; }
+.dp-arm:active, .dp-centre:active { transform: translateY(1px); box-shadow: inset 0 2px 4px rgb(0 0 0 / 0.35); }
+.dp-arm[aria-disabled="true"] { opacity: 0.4; cursor: default; }
+.dp-arm:focus-visible, .dp-centre:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; position: relative; z-index: 2; }
+.dp-glow {
+  position: absolute; inset: 0; border-radius: 50%; pointer-events: none; opacity: 0; z-index: 1;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), var(--pad-glow) 0, rgb(0 0 0 / 0) 1.6rem);
+  mix-blend-mode: screen; transition: opacity 0.15s;
+}
+.dpad[data-hot] .dp-glow { opacity: 0.75; }
+.dpad[data-hot="up"] .dp-up, .dpad[data-hot="down"] .dp-down, .dpad[data-hot="left"] .dp-left,
+.dpad[data-hot="right"] .dp-right, .dpad[data-hot="reset"] .dp-centre { box-shadow: 0 0 0 2px var(--pad-glow), inset 0 1px 0 rgb(255 255 255 / 0.5); }
+.dpad.is-own { box-shadow: inset 0 2px 2px rgb(255 255 255 / 0.45), inset 0 -3px 5px rgb(0 0 0 / 0.22), 0 0 0 2px var(--pad-glow), 0 3px 8px rgb(30 20 0 / 0.28); }
+.dp-say { margin: 0.3rem 0 0; font: 0.7rem/1.3 var(--mono); color: var(--muted); max-width: 9rem; overflow-wrap: anywhere; }
+/* The page pad: bigger, an accent bezel, accent arms; it floats in the dock and dodges. */
+.js .tone-dock {
+  display: block; position: fixed; z-index: 39; top: 2.4rem;
+  right: max(var(--gutter), calc((100vw - 72rem) / 2 + var(--gutter)));
+  text-align: center; font-family: var(--sans);
+  transform: translate(var(--dx, 0px), var(--dy, 0px)) rotate(var(--tilt, 0deg));
+}
+/* The dock's caption stays out of the way of the text until the pad is hovered or focused; it is
+   always there for screen readers (the pad's aria-describedby). */
+.tone-dock .dp-say { position: absolute; left: 50%; top: 100%; translate: -50% 0; width: max-content; max-width: 12rem;
+  background: var(--surface); border: 1px solid var(--rule); border-radius: 3px; padding: 0.1rem 0.35rem;
+  clip-path: inset(50%); opacity: 0; pointer-events: none; }
+.tone-dock.is-home .dp-say { clip-path: none; opacity: 1; }
+.dp-global { --cell: 1.75rem; box-shadow: 0 0 0 3px var(--accent), inset 0 2px 2px rgb(255 255 255 / 0.45), inset 0 -3px 5px rgb(0 0 0 / 0.25), 0 4px 12px rgb(30 20 0 / 0.35); }
+.dp-global .dp-arm { color: var(--accent-ink); background: linear-gradient(180deg, var(--accent), var(--pad-g-arm)); border-color: var(--pad-g-arm); }
+html.motion-off .dp-glow { display: none; }
+@media (max-width: 40rem) {
+  .js .tone-dock { right: var(--gutter); }
+  .dpad { --cell: 1.5rem; }
+  .dp-global { --cell: 1.6rem; }
+}
+@media (forced-colors: active) { .dp-arm, .dp-centre { border: 2px solid ButtonText; } .dpad { border: 1px solid CanvasText; } }
+@media print { .dpad-wrap, .tone-dock { display: none !important; } }
 
 /* ---- the display area ----------------------------------------------------------------------- */
 .stage { border-top: 1px solid var(--rule); padding-bottom: 1.5rem; }

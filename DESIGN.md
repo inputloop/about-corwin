@@ -138,6 +138,123 @@ The fly-down stops the moment you use the wheel, touch the screen or press a key
 The CSS and script URLs carry a hash of the file (`site.css?v=...`), so after a deploy no browser
 runs yesterday's script against today's page.
 
+## The tone d-pad
+
+Corwin, 2026-11-01 17:07: a two-direction pad, plastic to look at, that moves "the principle
+introductory texts globally or section by section along two lines: more personal/intimate/warm to
+more professional/formal/dry, and 4th grade/equiv. native language proficiency up to collage+"; a
+glow that follows the pointer by quadrant; Ctrl with the arrows doing what clicks do; and a pad at
+the top for the whole page that stays put and dodges the section pads as they scroll by, "floating
+slightly out of place ... don't go for symmetry: dodge". His answers of 17:53 settled the rest: up
+is harder ("break that down for me" is down), with an option to turn that around; grade 4 means
+friendly to a child in 4th grade; the formal end may say "Corwin Brust"; lines of his poems may
+appear, offered CC-BY-SA-4.0; reading level does not follow the browser's language (English only
+for now); and the page pad may "be where it wants", pushed by an anti-gravity worked out from a
+rectangle set slightly inside each other button, with related but different rules for up-down and
+left-right.
+
+**The two lines.** Warmth has three steps (warm, plain, formal) and reading four (about grade 4,
+grade 8, grade 12, college). The words already on the page are "plain, grade 8": measured on
+2026-11-01, the About read grade 6.4 by Flesch-Kincaid and 6.7 by Coleman-Liau, not the grade 12
+the plan guessed, so the pad goes one step simpler and two harder from what is written. His own
+writing sits at grade 5 to 9 (the voice palace's REGISTERS.md), so this is his voice's middle.
+
+**Coverage, and why.** The About and the four lead-ins of the sections with a pad (Where I put my
+time; inputloop, What you can pick up today, Ideas): five texts, twelve versions each, all written,
+so no reader ever meets a fallback. Chosen (Corwin: "leaving this to your artistic take") because
+these are the texts that introduce; the cards already have their own short form, and 25 cards times
+eleven versions would be hard to keep true. The About's family paragraph stays word for word in
+every version (`[[keep]]`): it describes four other people, he has said he will reword it himself,
+and eleven rewrites would be eleven chances to describe someone wrongly. Lines from "Cupcakes" (his
+published poem) close the warm versions of the About, credited and under CC-BY-SA-4.0; once in a
+version, no more.
+
+**The store.** `content/sections/<id>.txt`, the same one-file-per-thing store as the cards: a
+header (`unit:`, `keep:`, `fact:`, `extra:`) and `== UNIT / WARMTH STEP ==` layers beside the base.
+The About's base stays in `site.txt`; the lead-ins' bases moved out of `src/index.html` word for
+word. `build_tone.py` reads and checks them; `build.py` writes the base as live HTML and every
+other version into a `<template>` (allowed by the CSP, out of the accessibility tree, found by no
+search until shown). With scripts off there are no pads and the text is the text as written.
+
+**Keeping the versions honest** (`tests/spec/TONE.txt` says each rule in plain words; Python and
+JavaScript each follow it, separately):
+
+- Same facts: every version holds every `fact:` exactly, and adds no link, number or name the base
+  and its `extra:` lines do not already have.
+- Reading rises: Flesch-Kincaid in Python (syllables, copied from the voice palace's fk.py) and
+  Coleman-Liau in JavaScript (letters; no method shared). At each warmth the four steps must rise on
+  both; the About must also sit in each step's band on both. A lead-in of one or two sentences is
+  held to order only.
+- Warmth falls: a count of contractions, "you", "I/we", a few feeling words and question marks,
+  less nouns made of verbs (-tion, -ment); warm > plain > formal at every step by at least 1. It
+  measures direction only; whether a version sounds like him is his read.
+- The voice rule: "I" and "we"; only formal versions may say "Corwin Brust"; no he, him or his.
+- The page's base is untouched: take away what the tone work adds and the page is the page the
+  build writes with tone switched off.
+
+Measured on 2026-11-01 (Flesch-Kincaid / Coleman-Liau), the About: warm 1.3/1.3, 5.5/6.2, 9.9/9.4,
+14.5/14.1; plain 1.6/1.9, 6.4/6.7 (as written), 11.7/11.3, 16.0/15.6; formal 2.6/4.4, 6.7/8.4,
+10.9/12.7, 18.3/19.6. `python3 build_tone.py` prints every version's numbers.
+
+**The pads.** A cross of four arms and a centre, each a real button with a name in words ("Warmer:
+the About"); an arm at the end of its line is `aria-disabled`; one polite status line says what
+changed. Left warmer, right more formal, up harder, down simpler. On a section pad the centre means
+"same as the whole page"; on the page pad it means "as written". A section set back to the page's
+tone stops being different and follows the page again. The look is CSS only, from egad-style tokens
+in every theme (`--pad-*`): a domed radial gradient, an inset rim, a gloss band, a soft shadow; a
+pressed arm sinks. The glow: on pointer move, the angle from the centre picks the arm (the
+quadrants turned 45 degrees to line up with the arms; the middle is the centre button), and a
+radial glow sits at the pointer through `--gx` and `--gy`, set with CSSOM, which the CSP allows (a
+check runs under the real header). No glow on touch, with Motion off, or with reduced motion.
+
+**Keys.** Ctrl+arrows: the section that holds focus, or the one across the upper third of the
+window, or else the page. Ctrl+Shift+arrows: the page (left alone while text is selected, so a
+selection can grow). Ctrl+Shift+Home: everything as written. On a focused pad: the arrows, h j k l,
+Home, and C-f, C-b, C-p as in Emacs (not C-n: browsers keep Ctrl+N for a new window). Never in a
+text field; nothing with Alt; every shortcut has a modifier or needs focus (WCAG 2.1.4). macOS
+takes Ctrl+arrows for Spaces, so the page says to Tab to a pad there.
+
+**Customize.** Two rows, Warmth and Reading, share the page pad's state, and a third holds the
+inverted option: "Up makes the words simpler", like an inverted mouse. These rows save as you go
+under their own key, `aboutcorwin.tone` (`{global, sections, invert}`, cleaned on reading);
+Customize's own Apply and key are untouched. Storage refused still works for the visit.
+
+**The drift: where the page pad wants to be.** It lives in a fixed dock under Customize and sits
+where the pushes on it balance, so it moves around a little and never mirrors. Every frame while
+anything moves (scroll, resize, pinch zoom through `visualViewport`, a text-size change through a
+`ResizeObserver`), `dpad.js` measures, live, the page pad's box P and each obstacle: the section
+pads and the other controls nearby (Motion). Customize is not an obstacle but the dock's ceiling.
+For an obstacle, take its button box and set it in on every side by 15% of its smaller side; d is
+the gap from P to that inner rectangle (negative when they overlap, by that depth); s is the page
+pad's width; an obstacle farther than 2.5 s away does not push.
+
+- Up and down: **Fy = s × e^(−d / (s/2))**, with d no less than −s/2, pointing away from the
+  obstacle's centre. It falls off fast: strong close by, gone within a pad or so.
+- Left and right: **Fx = 0.9 s × ((0.6 s) / (0.6 s + d))²**, with d no less than −0.3 s, pointing
+  left unless the pad's centre is more than a quarter pad right of the obstacle's. It falls off
+  slowly, as the square of a distance, so the sideways dodge begins first and lasts longest; and it
+  prefers one side, so the pad dodges rather than mirrors.
+- A spring pulls it home with K = 0.5. Each frame: v = 0.7 × (v + 0.12 × (F − K·x)); x = x + v.
+  Then x is held inside the dock region (up to 3 pads left, 2.5 pads down, never above home) and
+  inside the visible frame; an axis held at an edge stops there. It settles, and stops working,
+  once what is left of the speed and the push is small, so it does not jitter.
+
+No position is written down anywhere: home comes from the stylesheet's dock rule beside Customize,
+and everything else is measured. Hover or focus on the page pad brings it fully home at once and
+holds it there, so a focused arm is never covered (WCAG 2.4.11); its caption shows then too. With
+reduced motion (or Motion off) it works out where it would settle and jumps there, with no glide
+and no tilt; otherwise it tilts with its sideways speed, up to 4 degrees. The open Customize palette
+may cover it: the palette's own Warmth and Reading rows do the same job.
+
+**Checks.** `tests/py/test_tone.py`, `tests/js/tone.test.mjs` and `tests/browser/dpad.test.mjs`
+(served with the real CSP header): every rule above; the arms, a section apart from the page and
+back, the keys, text fields and selections left alone, the inverted option kept across a reload,
+one storage key and nothing fetched, the glow under the CSP, reduced motion, and the page pad clear
+of every section pad at 17 scroll stops per pad, at 1280, 768, 640, 390 and 320 pixels (the last
+three also stand for 1280 at 200%, about 330% and 400% zoom), at 100% and 175% text, inside the
+frame each time, and focus bringing it home uncovered. Each promise has a planted fault in
+`tests/run.sh --prove-red`.
+
 ## Dramatis personae: the second act
 
 **Its own page.** Corwin, 2026-11-01 18:06: "we really want the cast page to be it's own page: what

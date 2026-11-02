@@ -1,0 +1,39 @@
+section: involvements
+unit: involvements
+extra: involvements | Corwin Brust
+
+== involvements ==
+Each card is a business card: a name, one line, and a window. The window has a picture in it; the rest of the card opens into a short introduction.
+
+== involvements / warm 4 ==
+Each card is like a business card. You get a name, a line, and a window. There's a picture in the window. Tap the card, and it'll tell you more!
+
+== involvements / plain 4 ==
+Each card is like a business card. It has a name, a line, and a window. The window shows a picture. Open the card to read more.
+
+== involvements / formal 4 ==
+Each card is a business card. It shows a name, a line, and a window. The window holds a picture. The rest of the card opens to a short introduction.
+
+== involvements / warm 8 ==
+Think of each card as a business card: a name, one line, and a window. There's a picture in the window, and the rest of the card opens into a short hello. Go ahead, you can't break it.
+
+== involvements / formal 8 ==
+Each card follows the convention of a business card: a name, one line, and a window. The window displays an illustration; the remainder of the card expands into a short introduction.
+
+== involvements / warm 12 ==
+Think of each card as a business card you'd hand across a table: a name, a single line, and a window. The window holds a little picture, and the rest of the card unfolds into a short, friendly introduction.
+
+== involvements / plain 12 ==
+Each card here works like a business card: a name, a single descriptive line, and a window. The window contains an illustration, and the remainder of the card expands into a brief introduction.
+
+== involvements / formal 12 ==
+Each card adopts the conventions of a business card: a name, a single descriptive line, and a window. The window presents an illustration, and the remainder of the card expands into a concise introduction.
+
+== involvements / warm 16 ==
+Think of each card as the business card I'd hand you across a crowded conference table: a name, a single descriptive line, and a window containing a small illustration; the remainder unfolds, if you'd like, into a brief, informal introduction.
+
+== involvements / plain 16 ==
+Every card in this section functions as a business card, presenting a name, a single descriptive sentence, and an illustrated window; the remainder of each card unfolds into a concise introduction to the work it represents.
+
+== involvements / formal 16 ==
+Each card adopts the conventions of professional business correspondence, presenting an identifying name, a single descriptive statement, and an illustrative window; the remainder of the card expands into a concise introductory presentation.

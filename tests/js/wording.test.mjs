@@ -40,7 +40,7 @@ test('card and About prose speak as I or we; third person only in quoted visitor
   for (const p of cards(path.join(ROOT, 'content'))) {
     let prose = false;
     readFileSync(p, 'utf8').split('\n').forEach((line, i) => {
-      if (line.startsWith('== ')) { prose = true; return; }
+      if (line.startsWith('== ')) { prose = !line.includes('/ formal'); return; }  // formal tone versions may say Corwin Brust
       if (!prose) return;
       const t = line.replace(/“[^”]*”/g, '').replace('I am Corwin Brust', '').replace('Corwin Brust and Contributors', '');
       assert.ok(!third.test(t), `${p}:${i + 1} speaks of Corwin in the third person`);

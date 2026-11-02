@@ -226,6 +226,9 @@ test('the browser code never reaches the network or stores more than Motion', ()
       if (f === 'customize.js') {
         assert.match(s, /\(KEY,$/, `${f}: ${s}`);
         assert.match(src, /var KEY = 'aboutcorwin\.customize';/);
+      } else if (f === 'dpad.js') {
+        assert.match(s, /\(KEY,$/, `${f}: ${s}`);
+        assert.match(src, /var KEY = 'aboutcorwin\.tone';/);
       } else assert.match(s, /aboutcorwin\.motion/, `${f}: ${s}`);
     }
   }
