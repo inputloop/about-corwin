@@ -24,6 +24,15 @@ SPDX-License-Identifier: CC-BY-SA-4.0
   are set aside first (`tests/spec/TONE.txt`, 2). The palace's awk twin, fk.awk, was not copied:
   here the second reading meter is Coleman-Liau in JavaScript, which shares no method with it.
 
+## src/fonts/league-gothic-latin-400-normal.woff2
+
+- From: the npm package `@fontsource/league-gothic` 5.3.0 (`files/league-gothic-latin-400-normal.woff2`),
+  which repackages League Gothic by The League of Moveable Type (https://github.com/theleagueof/league-gothic).
+- Licence: SIL Open Font License 1.1, Copyright 2020 The League Gothic Project Authors; the licence
+  is beside the font (`src/fonts/OFL-1.1.txt`) and in `LICENSES/OFL-1.1.txt`.
+- Changes: none. sha256 `44dceee4d918f5928d05ad0711d17e1edd421ce7fd7bed91d05642d8d693a8b1`.
+- Used by: the links area (`src/css/site.css`, "Links: the end credits").
+
 ## Ideas, not code
 
 The window pictures in `src/js/windows.js` were written for this site; their ideas come from C4's

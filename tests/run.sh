@@ -75,6 +75,7 @@ prove_red() {
   # The tone pads' browser check (with its long drift sweep) runs for the tone pads' own plants;
   # every plant still has to turn its own check red.
   brd="\"$py\" build.py --out pub >/dev/null && SITE_OUT=pub \"$node\" --test --test-concurrency=1 tests/browser/dpad.test.mjs"
+  brl="\"$py\" build.py --out pub >/dev/null && SITE_OUT=pub \"$node\" --test --test-concurrency=1 tests/browser/links.test.mjs"
   plant "a script loses its LibreJS label"   src/js/windows.js  '1s/^.*$/\/\/ no label/'                 "$pyc"
   plant "an inline style attribute"          build.py           's/<article class="card/<article style="x" class="card/' "$pyc"
   plant "a logo without words"               build.py           's/alt="" width="64"/width="64"/'       "$pyc"
@@ -130,7 +131,21 @@ prove_red() {
   plant "a formal version says he"           content/sections/about.txt 's/^Corwin Brust is a systems engineer and software developer\. Paid work/He is a systems engineer and software developer. Paid work/' "$pyc"
   plant "the build shows a variant as the base" build.py 's/^    live = e(" ".join(u\["base"\]))$/    live = e(" ".join(u["cells"]["warm-4"]))/' "$pyc"
   plant "the Python fallback skips warmth"   build_tone.py 's/^        w2 = toward(WARMTH, w, BASE\[0\])$/        w2 = w/' "$pyc"
-  plant "the About loses its kept paragraph" content/sections/about.txt '0,/^\[\[keep\]\]$/{/^\[\[keep\]\]$/d}' "$pyc"
+  plant "a version drops the family paragraph" content/sections/about.txt '/^== about \/ warm 8 ==$/,/^== about \/ formal 8 ==$/{/^I come from a family of educators/d}' "$pyc"
+  # Corwin's hand edits (content/ABOUT-EDITS.md): each one undone in one version must turn red.
+  plant "edit 1: the old family list comes back" content/sections/about.txt '/^== about \/ warm 8 ==$/,/^== about \/ formal 8 ==$/s/educators and writers, fans and scientists who organize/writers, organizers and fans/' "$pyc"
+  plant "edit 2: his dad loses the second link" content/sections/about.txt '/^== about \/ warm 8 ==$/,/^== about \/ formal 8 ==$/s#\[Steven\](https://dreamcafe.com/) \[Brust\](https://en.wikipedia.org/wiki/Steven_Brust)#[Steven Brust](https://dreamcafe.com/)#' "$pyc"
+  plant "edit 3: my grandparents come back" content/sections/about.txt '/^== about \/ warm 8 ==$/,/^== about \/ formal 8 ==$/s/Their parents/My grandparents/' "$pyc"
+  plant "edit 4: Bill before Jean, full names linked" content/sections/about.txt '/^== about \/ warm 8 ==$/,/^== about \/ formal 8 ==$/s#\[Jean\](\([^)]*\)) and \[Bill\](\([^)]*\)) Brust#[Bill Brust](\2) and [Jean Brust](\1)#' "$pyc"
+  plant "edit 5: the marriage loses his words" content/sections/about.txt "/^== about \/ warm 8 ==$/,/^== about \/ formal 8 ==$/s/I'm married to \\[Dee Brust\\]/I am married to [Dee Brust]/" "$pyc"
+  plant "edit 6: a version forgets the kids" content/sections/about.txt '/^== about \/ warm 8 ==$/,/^== about \/ formal 8 ==$/s/ We.ve got five kids: one.s out of college, one.s just starting college, and the rest are in primary school\.//' "$pyc"
+  plant "edit 7: Minicon goes back to 'ran a Minicon'" content/sections/about.txt '/^== about \/ warm 8 ==$/,/^== about \/ formal 8 ==$/s#co-chaired \[Minicon 37\](https://mnstf.org/minicon/) in 2002#ran a [Minicon](https://mnstf.org/minicon/)#' "$pyc"
+  plant "edit 7: the Minicon sentence names someone" content/site.txt 's/and I co-chaired \[Minicon 37\]/and with Pat Example I co-chaired [Minicon 37]/' "$pyc"
+  # The links area (DESIGN.md, "The links area: end credits").
+  plant "a links-area link is plain http"   content/links.txt  's#https://sdf.org/#http://sdf.org/#' "$pyc"
+  plant "a donate widget script in the links area" build.py 's#<div class="credits-panel">#<div class="credits-panel"><script src="https://liberapay.com/corwin/widgets/button.js"></script>#' "$pyc"
+  plant "the credits font from another host" src/css/site.css 's#url("../fonts/league-gothic-latin-400-normal.woff2")#url("https://fonts.example/lg.woff2")#' "$pyc"
+  plant "the support line joins the giving roll" content/links.txt 's/^support: Patreon | /role: Support my work | Patreon | /' "$pyc"
   plant "the Python reader takes en-GB for foreign" build_tone.py 's/ or head in ("und", "en"):$/ or head in ("und",):/' "$pyc"
   plant "the Follow row leaves the palette"  build.py 's/name="tone-lang" value="1" checked>/name="tone-lang" value="1">/' "$pyc"
   plant "heading levels skip"                build.py           's/render_card(c, windows, 4) for c in projects/render_card(c, windows, 5) for c in projects/' "$pyc"
@@ -155,6 +170,8 @@ prove_red() {
     plant "presentation words pick subjects" src/js/taxonomy.js 's/var PRESENTATION_ON_CARDS = 0.3;/var PRESENTATION_ON_CARDS = 1;/' "$nodec"
     plant "the second reader's search fills out of order" tests/js/personae.test.mjs 's/^    const rest = column.filter((c) => !paired.includes(c));$/    const rest = column.filter((c) => !paired.includes(c)).reverse();/' "$nodec"
     plant "Coleman-Liau no longer rises"     content/sections/about.txt 's/^== about \/ plain 4 ==$/== about \/ plainX 16 ==/;s/^== about \/ plain 16 ==$/== about \/ plain 4 ==/;s/^== about \/ plainX 16 ==$/== about \/ plain 16 ==/' "$nodec"
+    plant "edit 3: my grandparents come back (node reader)" content/sections/about.txt '/^== about \/ warm 8 ==$/,/^== about \/ formal 8 ==$/s/Their parents/My grandparents/' "$nodec"
+    plant "edit 4: Bill before Jean (node reader)" content/sections/about.txt '/^== about \/ warm 8 ==$/,/^== about \/ formal 8 ==$/s#\[Jean\](\([^)]*\)) and \[Bill\](\([^)]*\)) Brust#[Bill Brust](\2) and [Jean Brust](\1)#' "$nodec"
     plant "the JavaScript fallback skips warmth" src/js/tone.model.js 's/^      var w2 = toward(WARMTH, w, BASE\[0\]);$/      var w2 = w;/' "$nodec"
     plant "the invert option does nothing"   src/js/tone.model.js "s/      var harder = (dir === 'up') !== !!invert;/      var harder = dir === 'up';/" "$nodec"
     plant "a German browser starts as written" src/js/tone.model.js "s/    if (sub === 'en') return null;/    if (sub) return null;/" "$nodec"
@@ -193,6 +210,11 @@ prove_red() {
       plant "a pad move is not the reader's choice" src/js/dpad.js 's/^    choose();$/    void 0;/' "$brd"
       plant "the Follow row does not turn it off" src/js/dpad.js 's/      state.lang = t.checked; startFromLanguage();/      startFromLanguage();/' "$brd"
       plant "the language line never shows"   src/js/dpad.js     's/    line.hidden = !started;/    line.hidden = true;/' "$brd"
+      plant "the links tab covers Customize" src/css/site.css   's/ + 9ch + 2.1rem); }$/); }/' "$brl"
+      plant "the links fetch their font late" src/index.html     '/rel="preload" href="fonts\//d' "$brl"
+      plant "Escape leaves the links open"   src/js/customize.js "s/      if (ev.key !== 'Escape' || !credits.open) return;/      return;/" "$brl"
+      plant "the links hide without scripts" src/css/site.css   's/^\.credits { position: fixed;/.credits { display: none; } .js .credits { display: block; } .credits { position: fixed;/' "$brl"
+      plant "the credits run off a phone"    src/css/site.css   's/width: min(30rem, calc(100vw - 2 \* var(--gutter)));/width: 30rem;/' "$brl"
       plant "reduced motion ignored"         src/js/site.js     "s/: !reduce.matches;/: true;/" "$brc"
     fi
   fi

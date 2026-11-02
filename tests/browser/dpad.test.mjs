@@ -27,7 +27,7 @@ try { ({ chromium } = require('playwright')); } catch (e) {
 }
 const skip = chromium ? false : 'playwright is not installed (npm install, then npx playwright install chromium)';
 const opts = process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {};
-const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.json': 'application/json' };
+const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.json': 'application/json', '.woff2': 'font/woff2' };
 let browser, server, BASE;
 before(async () => {
   if (!chromium) return;

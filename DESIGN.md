@@ -164,8 +164,9 @@ time; inputloop, What you can pick up today, Ideas): five texts, twelve versions
 so no reader ever meets a fallback. Chosen (Corwin: "leaving this to your artistic take") because
 these are the texts that introduce; the cards already have their own short form, and 25 cards times
 eleven versions would be hard to keep true. The About's family paragraph stays word for word in
-every version (`[[keep]]`): it describes four other people, he has said he will reword it himself,
-and eleven rewrites would be eleven chances to describe someone wrongly. Lines from "Cupcakes" (his
+every version (`[[keep]]`) until 2026-11-02: it describes other people, and he had said he would
+reword it himself. He did (see "His hand edits" below), so it is now written in every version like
+the rest, from his words, held to them by facts and rules. Lines from "Cupcakes" (his
 published poem) close the warm versions of the About, credited and under CC-BY-SA-4.0; once in a
 version, no more.
 
@@ -195,6 +196,24 @@ JavaScript each follow it, separately):
 Measured on 2026-11-01 (Flesch-Kincaid / Coleman-Liau), the About: warm 1.3/1.3, 5.5/6.2, 9.9/9.4,
 14.5/14.1; plain 1.6/1.9, 6.4/6.7 (as written), 11.7/11.3, 16.0/15.6; formal 2.6/4.4, 6.7/8.4,
 10.9/12.7, 18.3/19.6. `python3 build_tone.py` prints every version's numbers.
+Measured again on 2026-11-02, after the family paragraph joined every version (his hand edits):
+warm 1.7/2.0, 5.9/6.6, 9.7/9.1, 13.9/13.5; plain 2.0/2.5, 6.5/7.0 (as written), 11.1/10.9,
+15.0/14.9; formal 3.3/5.4, 7.4/9.2, 10.8/12.7, 17.1/18.7. Warmth, warm to formal: grade 4 24.5,
+9.4, 0.4; grade 8 18.9, 7.1, -2.5; grade 12 19.8, 1.7, -9.1; college 11.5, -4.0, -18.1.
+
+**His hand edits, kept as rules.** Corwin, 2026-11-02: "my sense is you understand my hand edits
+to your work but we're less likely to repeat the correction without my mentioning it again next
+time: that's the opportunity space." So a correction of his never lives only in the words on the
+page. It goes into the source the About is built from (`site.txt` and every version in
+`content/sections/about.txt`), onto the About's `fact:` list, and into `content/ABOUT-EDITS.md`,
+one heading per correction with his words and `rule:` lines (`has`, `match`, `never`) that
+`build_tone.py` and `tests/js/tone.test.mjs` each read and hold every version to. Anyone (person or
+model) who regenerates the About reads that file first; a version that undoes a correction fails the
+checks, and `tests/py/test_about_edits.py` has one test per correction, each with a planted fault.
+The first seven: the family list ("educators and writers, fans and scientists who organize"), two
+links for his dad (Dream Café and Wikipedia), "their parents" (not "my grandparents"), "Jean and
+Bill Brust" with a link on each, the marriage in his words with the year, the five kids as he said
+it and no more, and "I co-chaired Minicon 37 in 2002", in a sentence that names no one else.
 
 **The pads.** A cross of four arms and a centre, each a real button with a name in words ("Warmer:
 the About"); an arm at the end of its line is `aria-disabled`; one polite status line says what
@@ -285,6 +304,67 @@ of every section pad at 17 scroll stops per pad, at 1280, 768, 640, 390 and 320 
 three also stand for 1280 at 200%, about 330% and 400% zoom), at 100% and 175% text, inside the
 frame each time, and focus bringing it home uncovered. Each promise has a planted fault in
 `tests/run.sh --prove-red`.
+
+## The links area: end credits
+
+Corwin, 2026-11-02: a links area "in the right floating cluster", listing where he gives (Libera
+Chat, GNU, the FSF, the EFF, SDF, the Software Freedom Conservancy, the ACLU, two animal places he
+named in San Diego, the Como Zoo in St. Paul, and Liberapay), and the style: "run/smoosh the
+categories and names together into a single stream, force-align, and pick a font that makes it look
+like movie credits; the last I used like that was called Steel Tongs."
+
+**Intention.** One small tab, "Links", hangs from the top edge just left of Customize, so the right
+cluster reads Links, Customize, then the page's tone pad below. It opens a dark panel like the end
+of a film: a small heading ("Where I give"), then every category and name in one justified stream,
+force-aligned edge to edge (`text-align-last: justify`), category words small and spaced, names
+large in a condensed gothic. Under it, his own figure with its date ("I give $4 a week through
+Liberapay, as of 2026-11-02"), a note that these are plain links, and, set apart by a rule, one
+quiet line: "Support my work: Liberapay · Patreon".
+
+- **Where the links live.** `content/links.txt`: `role: CATEGORY | NAME | URL` lines in order (the
+  same category on adjacent lines makes one group), one `give:` line, and `support:` lines. The
+  build refuses anything but a plain `https://` link. Deleting the `support:` lines removes the
+  support line and nothing else.
+- **Nothing from another host.** Plain links only: no widget, badge, button script or image from
+  Liberapay, Patreon or anyone (their own snippets load scripts and images from their hosts, which
+  the CSP forbids). The CSP is unchanged.
+- **The font.** League Gothic (The League of Moveable Type; SIL Open Font License 1.1), the Latin
+  subset, 10 KB, served from this site (`src/fonts/`, its licence beside it and in `LICENSES/`), so
+  `font-src 'self'` holds. It is preloaded with the page, so opening the links fetches nothing after
+  load (the page's promise). Why this one: Steel Tongs (TracerTong) has no licence we could find, so
+  it cannot be served; the Adobe Fonts in Corwin's Creative Cloud may only be served from Adobe's
+  own host, which the CSP and the LibreJS promise rule out. Of the free ones, League Gothic is the
+  revival of Alternate Gothic No. 1, the face of a century of title cards, with lower case and
+  narrow enough that "Software Freedom Conservancy" fits a phone line; Bebas Neue (OFL) has only
+  capitals; Oswald (OFL) is wider and rounder, more poster than credits.
+- **Works without scripts.** It is a `<details>`: with scripts off it still opens and closes. With
+  scripts on, opening it closes Customize and the other way round, and Escape closes it and puts
+  focus back on its tab.
+- **Accessible.** Underneath the look it is a real list: a list of categories, each holding a list of
+  names, so a screen reader hears "Free software, list, 3 items". Colours are fixed for the panel
+  in every theme (light text on near black), far past AA; focus rings are visible on the dark.
+  Nothing in it moves, so reduced motion has nothing to stop. At 390 pixels it fits with no sideways
+  scroll; names wrap between words.
+- **Checks.** `tests/py/test_links.py` (the links, plain https only, nothing from another host, the
+  vendored font and its licence, the preload, the list structure, the support line apart from the
+  giving roll) and `tests/browser/links.test.mjs` (served with the real CSP header at 1280 and 390
+  pixels, light and dark, en-US and de-DE: the tab clear of Customize, the panel in the frame,
+  nothing fetched when it opens, Escape, one panel at a time, without scripts, the font in use).
+  Each has a planted fault in `tests/run.sh --prove-red`.
+
+**Whether to ask for support at all.** Corwin was unsure. Recommendation: keep one quiet line,
+apart from the organizations he gives to, because a visitor who wants to help should find out how
+without hunting, and keeping it apart and small means the page still reads as his giving, not his
+asking. Removing it is deleting two lines of `content/links.txt`.
+
+**Names checked, 2026-11-02.** Corwin first wrote "Nature by Nature", then corrected it to
+"Nature by Nurture" (San Diego). No organization by that name turned up: naturebynurture.org is a
+parked domain with no organization behind it, and searches found none in San Diego. The closest
+real match is Nurtured by Nature, an animal sanctuary and otter rescue that gives its home as San
+Diego (mail at Valley Center, CA), so it is listed under its own name until Corwin confirms or
+names the right one. "Cabrillo Aquarium" is Cabrillo Marine Aquarium, in San Pedro, Los Angeles
+(Corwin accepted this), and its category says so; each animal place carries its city in its
+category words.
 
 ## Dramatis personae: the second act
 
@@ -387,7 +467,8 @@ Each has a planted fault in `tests/run.sh --prove-red`.
 
 - **A framework or a bundler.** Nothing here needs one, and either would put minified code between
   a reader and the source.
-- **Web fonts.** A request to another host for every visitor, for a small gain.
+- **Web fonts from another host.** A request to another host for every visitor, for a small gain.
+  (One font is served from this site since 2026-11-02, for the links area only; see "The links area".)
 - **A search server or an AI model behind the prompt.** It would need the network, go down, and
   learn what people type. If one is added later, this offline taxonomy stays as the fallback.
 - **Hiding non-matching cards behind `aria-hidden`.** Hidden cards are `display: none`, so they are

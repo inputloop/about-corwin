@@ -216,3 +216,38 @@ test('dpad.js never talks to the network and stores under its own key only', () 
   assert.ok(keys.length >= 2 && keys.every((k) => k === 'KEY'));
   assert.match(js, /var KEY = 'aboutcorwin\.tone';/);
 });
+
+// ---- Corwin's hand edits to the About (content/ABOUT-EDITS.md), read here a second time -----------
+// The file's own words are the spec: `rule: has | TEXT` (every version holds TEXT exactly),
+// `rule: match | RE` (every version matches, ignoring case), `rule: never | RE` (none does).
+function editRules() {
+  const out = []; let heading = '';
+  for (const line of readFileSync(path.join(ROOT, 'content', 'ABOUT-EDITS.md'), 'utf8').split('\n')) {
+    if (line.startsWith('## ')) heading = line.slice(3).trim();
+    const m = line.match(/^rule:\s*(\w+)\s*\|\s(.+)$/);
+    if (line.startsWith('rule:')) assert.ok(m && ['has', 'match', 'never'].includes(m[1]), `bad rule line: ${line}`);
+    if (m) out.push({ heading, kind: m[1], text: m[2].trimEnd() });
+  }
+  return out;
+}
+
+test('Corwin\'s hand edits hold in the About and in all eleven tone versions (the JavaScript reader)', () => {
+  const rules = editRules();
+  const heads = new Set(rules.map((r) => r.heading));
+  assert.ok(heads.size >= 7, 'one heading per edit, each with a rule');
+  const u = U.about;
+  for (const [c, paras] of Object.entries(u.cells)) {
+    const text = paras.join('\n');
+    for (const r of rules) {
+      if (r.kind === 'has') assert.ok(text.includes(r.text), `${c} undoes "${r.heading}": lacks ${r.text}`);
+      else if (r.kind === 'match') assert.ok(new RegExp(r.text, 'i').test(text), `${c} undoes "${r.heading}": nothing matches ${r.text}`);
+      else assert.ok(!new RegExp(r.text, 'i').test(text), `${c} undoes "${r.heading}": matches ${r.text}`);
+    }
+    // Edit 7: the sentence that says he co-chaired Minicon 37 names no one else.
+    const bare = plain(paras);
+    const sent = bare.split(/(?<=[.!?;])\s+/).find((s) => s.includes('Minicon 37'));
+    assert.ok(sent, `${c} has no Minicon 37 sentence`);
+    const names = (sent.match(/\b[A-Z][a-z]+\b/g) || []).filter((w) => !['I', 'A', 'In', 'Minicon', 'Minneapolis', 'Corwin', 'Brust'].includes(w));
+    assert.deepEqual(names, [], `${c}: the Minicon sentence names ${names}`);
+  }
+});

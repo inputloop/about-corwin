@@ -196,6 +196,48 @@ html[data-leading="looser"] { --read-lh: 2.1; }
 @media (forced-colors: active) { .custom-btn, .custom-panel { border: 2px solid CanvasText; } }
 @media print { .custom { display: none !important; } }
 
+/* ---- Links: the end credits, beside Customize in the right floating cluster ------------------
+   Corwin, 2026-11-02: categories and names run together in one stream, force-aligned, in a font
+   that looks like movie credits. League Gothic (SIL OFL 1.1, src/fonts/) is served from this site,
+   so the CSP's font-src 'self' holds; it is preloaded with the page, so opening the links fetches
+   nothing. A <details>: it opens and closes with scripts off too. The tab sits left of Customize:
+   Customize's tab is 9ch + 1.8rem wide in the same 0.8rem mono, so the offset is that plus a gap. */
+@font-face { font-family: "League Gothic"; src: url("../fonts/league-gothic-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+.custom-btn { width: calc(9ch + 1.8rem); }
+.credits { position: fixed; top: 0; z-index: 41; font: 0.8rem var(--mono); right: max(var(--gutter), calc((100vw - 72rem) / 2 + var(--gutter))); }
+.js .credits { right: calc(max(var(--gutter), calc((100vw - 72rem) / 2 + var(--gutter))) + 9ch + 2.1rem); }
+.credits-btn {
+  list-style: none; color: var(--ml-ink); background: var(--ml-bg); border: 1px solid var(--rule); border-top: 0;
+  border-radius: 0 0 8px 8px; padding: 0.2rem 0.8rem; min-height: 1.6rem; line-height: 1.2rem; cursor: pointer; opacity: 0.85;
+}
+.credits-btn::-webkit-details-marker { display: none; }
+.credits-btn:hover, .credits[open] > .credits-btn, .credits-btn:focus-visible { opacity: 1; background: var(--ml-active); }
+.credits-btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.credits-panel {
+  --cr-bg: #121110; --cr-ink: #f4efe4; --cr-role: #c9c1b0; --cr-focus: #7fb8ff;
+  position: fixed; top: 1.6rem; right: max(var(--gutter), calc((100vw - 72rem) / 2 + var(--gutter)));
+  width: min(30rem, calc(100vw - 2 * var(--gutter))); max-height: calc(100vh - 3.5rem); overflow: auto;
+  box-sizing: border-box; background: var(--cr-bg); color: var(--cr-ink); border: 2px solid var(--ml-bg);
+  border-radius: 0 0 8px 8px; padding: 0.9rem 1.2rem 1rem; box-shadow: var(--shadow); font: 0.9rem/1.45 var(--sans);
+}
+.cr-title { margin: 0 0 0.6rem; text-align: center; font: 0.75rem var(--sans); letter-spacing: 0.3em; text-transform: uppercase; color: var(--cr-role); }
+.cr-roll, .cr-names { list-style: none; margin: 0; padding: 0; }
+.cr-roll { text-align: justify; text-align-last: justify; line-height: 1.1; hyphens: none; overflow-wrap: anywhere; }
+.cr-group, .cr-names, .cr-names li { display: inline; }
+.cr-role { display: inline-block; text-align: left; font: 0.7rem var(--sans); letter-spacing: 0.14em; text-transform: uppercase; color: var(--cr-role); white-space: nowrap; }
+.cr-names a {
+  font-family: "League Gothic", "Oswald", "Arial Narrow", "Liberation Sans Narrow", Impact, sans-serif; font-weight: 400;
+  font-size: clamp(1.45rem, 6vw, 2rem); letter-spacing: 0.02em; text-transform: uppercase; color: var(--cr-ink); text-decoration: none;
+}
+.cr-names a:hover { text-decoration: underline; text-underline-offset: 0.12em; }
+.credits-panel a:focus-visible { outline: 3px solid var(--cr-focus); outline-offset: 2px; }
+.cr-give, .cr-note, .cr-support { margin: 0.8rem 0 0; text-align: center; }
+.cr-note { color: var(--cr-role); font-size: 0.8rem; margin-top: 0.3rem; }
+.cr-support { border-top: 1px solid #3a3733; padding-top: 0.6rem; }
+.cr-give a, .cr-support a { color: var(--cr-ink); text-decoration: underline; text-underline-offset: 0.15em; }
+@media (forced-colors: active) { .credits-btn, .credits-panel { border: 2px solid CanvasText; } }
+@media print { .credits { display: none !important; } }
+
 /* ---- cards ---------------------------------------------------------------------------------- */
 .deck {
   display: grid; gap: 1.4rem;

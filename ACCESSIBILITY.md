@@ -81,6 +81,18 @@ of the reading text only, line length, line spacing, colour theme (follow system
 contrast) and reduce motion. Settings stay in the browser's localStorage and are never sent.
 tests/browser checks the keyboard path, that only reading text scales, and that nothing is fetched.
 
+## The links area (2026-11-02)
+
+- A native `<details>` ("Links") left of Customize: it opens and closes with scripts off, by mouse,
+  and by keyboard (Tab to it, Enter); with scripts on, Escape closes it and returns focus to its tab,
+  and only one of Links and Customize is open at a time.
+- The credits look is CSS over a real list: a list of categories, each with a list of names, so a
+  screen reader hears the structure, not a run of words.
+- Light text on a near-black panel in every theme, measured at well over 4.5:1 in the browser check;
+  focus rings stay visible on the dark. Nothing moves. At 390 pixels it fits without sideways scroll.
+- tests/browser/links.test.mjs checks these at 1280 and 390 pixels, light and dark, en-US and de-DE,
+  under the real CSP header.
+
 ## Tone pads (2026-11-01)
 
 - Every arm and centre is a `<button>` named in words ("Simpler words: the About"), in a

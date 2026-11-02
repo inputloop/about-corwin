@@ -34,7 +34,9 @@ async function page(context = {}) {
   const p = await ctx.newPage();
   p.errors = [];
   p.on('pageerror', (e) => p.errors.push(e.message));
-  p.on('console', (m) => { if (m.type() === 'error') p.errors.push(m.text()); });
+  // A file:// page cannot load a web font (Chrome blocks fonts across file: origins); the served
+  // page can, and tests/browser/links.test.mjs proves it over http with the real CSP header.
+  p.on('console', (m) => { if (m.type() === 'error' && !(String(m.location().url).startsWith('file:') && /\/fonts\//.test(m.location().url + ' ' + m.text()))) p.errors.push(m.text()); });
   await p.goto(URL);
   if (context.javaScriptEnabled !== false) await p.waitForSelector('html[data-ready]');
   return p;

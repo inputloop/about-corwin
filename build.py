@@ -250,7 +250,59 @@ def load(content_dir=CONTENT):
         raise ContentError(str(err))
     return {"vocab": vocab, "site": site, "cards": cards, "views": views, "windows": windows,
             "snap": load_snapshots(content_dir), "personae": load_personae(content_dir),
-            "sections": sections}
+            "sections": sections, "links": load_links(content_dir)}
+
+
+# ---- the links area: end credits in the right floating cluster (DESIGN.md, "The links area") -----
+# Corwin, 2026-11-02: a links area "in the right floating cluster"; "run/smoosh the categories and
+# names together into a single stream, force-align, and pick a font that makes it look like movie
+# credits". content/links.txt holds the links; the support line is its own `support:` lines, so
+# deleting them takes it off the page. Only plain https links: nothing is loaded from their sites.
+
+def load_links(content_dir=CONTENT):
+    path = os.path.join(content_dir, "links.txt")
+    if not os.path.isfile(path):
+        return None
+    rec = parse_file(path)
+    out = {"title": one(rec, "title"), "note": one(rec, "note"), "give": one(rec, "give", required=False),
+           "roles": [], "support": []}
+    for v in rec["header"].get("role", []):
+        role, name, href = pipes(v, 3, path)
+        out["roles"].append((role, name, href))
+    for v in rec["header"].get("support", []):
+        name, href = pipes(v, 2, path)
+        out["support"].append((name, href))
+    hrefs = ([r[2] for r in out["roles"]] + [s[1] for s in out["support"]]
+             + [m[1] for m in INLINE_LINK.findall(out["give"] or "")])
+    for href in hrefs:
+        if not href.startswith("https://"):
+            raise ContentError("%s: %s is not a plain https link" % (path, href))
+    if not out["roles"]:
+        raise ContentError("%s: no role: lines" % path)
+    return out
+
+
+def render_credits(links):
+    """One stream of roles and names, justified edge to edge like end credits, written as a real
+    list (a list of roles, each with its list of names) so a screen reader hears it as one."""
+    if not links:
+        return ""
+    groups = []
+    for role, name, href in links["roles"]:
+        if not groups or groups[-1][0] != role:
+            groups.append((role, []))
+        groups[-1][1].append((name, href))
+    roll = "".join('<li class="cr-group"><span class="cr-role">%s</span> <ul class="cr-names">%s</ul></li> '
+                   % (e(role), "".join('<li><a href="%s">%s</a></li> ' % (e(h), e(n)) for n, h in names))
+                   for role, names in groups)
+    give = '<p class="cr-give">%s</p>' % inline(links["give"]) if links["give"] else ""
+    support = ('<p class="cr-support">Support my work: %s</p>'
+               % " · ".join('<a href="%s">%s</a>' % (e(h), e(n)) for n, h in links["support"])
+               if links["support"] else "")
+    return ('<details class="credits" id="credits"><summary class="credits-btn">Links</summary>'
+            '<div class="credits-panel"><p class="cr-title" id="credits-h">%s</p>'
+            '<ul class="cr-roll" aria-labelledby="credits-h">%s</ul>%s<p class="cr-note">%s</p>%s</div></details>'
+            % (e(links["title"]), roll.rstrip(), give, e(links["note"]), support))
 
 
 # ---- dramatis personae -------------------------------------------------------------------------
@@ -714,6 +766,7 @@ def render(data, template, tone=True):
         "COUNT_CARDS": str(len(data["cards"])),
         "COUNT_TAGS": str(len(data["vocab"])),
         "INDEX_JSON": json_for_html(index),
+        "CREDITS": render_credits(data.get("links")),
     }
     subs.update(render_tone(data, units, tone))
     return fill(template, subs), index, used
@@ -933,7 +986,7 @@ def build(out_dir, content_dir=CONTENT, src_dir=SRC, tone=True):
     if os.path.isdir(out_dir):
         shutil.rmtree(out_dir)
     os.makedirs(out_dir)
-    for sub in ("css", "js", "logos"):
+    for sub in ("css", "js", "logos", "fonts"):
         shutil.copytree(os.path.join(src_dir, sub), os.path.join(out_dir, sub))
     for name in (".htaccess", "robots.txt", "404.html", "favicon.svg"):
         shutil.copy2(os.path.join(src_dir, name), os.path.join(out_dir, name))

@@ -1,0 +1,15 @@
+title: Where I give
+note: Plain links: nothing here is loaded from their sites.
+role: Chat | Libera.Chat | https://libera.chat/
+role: Free software | The GNU Project | https://www.gnu.org/
+role: Free software | Free Software Foundation | https://www.fsf.org/
+role: Free software | Software Freedom Conservancy | https://sfconservancy.org/
+role: Public-access Unix | SDF Public Access UNIX System | https://sdf.org/
+role: Digital rights | Electronic Frontier Foundation | https://www.eff.org/
+role: Civil liberties | ACLU | https://www.aclu.org/
+role: Animal sanctuary, San Diego | Nurtured by Nature | https://nurturedbynature.org/
+role: Aquarium, San Pedro, Los Angeles | Cabrillo Marine Aquarium | https://cma.recreation.parks.lacity.gov/
+role: Zoo, St. Paul | Como Park Zoo & Conservatory | https://comozooconservatory.org/
+give: I give $4 a week through [Liberapay](https://liberapay.com/corwin/) (as of 2026-11-02).
+support: Liberapay | https://liberapay.com/corwin/donate
+support: Patreon | https://www.patreon.com/c/mplscorwin

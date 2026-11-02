@@ -17,7 +17,7 @@ between warm and formal and between grade 4 and college reading (DESIGN.md, "The
 people and the agents' personas in two columns that slide past each other.
 
 - `content/`: the words. `sections/` holds the introductions' tone versions. One plain text file per card (`about/` for the two cards about Corwin, then
-  `involvements/`, `projects/`, `concepts/`; `personae/` for the people and personas), plus `site.txt` (About and footer words, and the cast page's top line) and `vocabulary.txt`.
+  `involvements/`, `projects/`, `concepts/`; `personae/` for the people and personas), plus `site.txt` (About and footer words, and the cast page's top line), `vocabulary.txt`, `links.txt` (the links area beside Customize) and `ABOUT-EDITS.md` (Corwin's hand edits to the About, as rules every rewrite must keep; read it before rewriting the About).
 - `src/`: the page template, the stylesheet, the scripts, the logos, `.htaccess`.
 - `build.py`: turns the two into `public/`. Python 3.8 or later, standard library only.
 - `deploy/`, `scripts/make-dist`, `scripts/access-card`: the shared-hosting deploy (stage, go-live,
@@ -97,11 +97,12 @@ Refreshed 2026-11-01.
   a directory, curated packages) and links the repository. The GitHub API reported the repository
   empty on 2026-11-01, so correct the card once there is more to say, and say if the site itself has
   an address to link. Its state is "careful" (not yet reviewed outside the shop).
-- The family and fandom paragraph in `content/site.txt` (Steven, Bill and Jean Brust, Dee Brust,
-  Minicon) was written from what you said in the session; trim or reword it as you like. Jean's link
-  is *Defending Principles*, the book of Bill's writing she edited and introduced (no WSWS page about
-  her own life turned up). Minicon links to mnstf.org/minicon/, because minicon.org's https
-  certificate does not verify (it redirects there over plain http).
+- The family and fandom paragraph in `content/site.txt` now follows your hand edits of 2026-11-02,
+  kept as rules in `content/ABOUT-EDITS.md` so a rewrite cannot drop them. Jean's link is now her
+  page in the University of Minnesota's Minnesota Election Archive (her own record, not Bill's
+  book); *Defending Principles*, the book of Bill's writing she edited and introduced, is the other
+  public page about her if you prefer it. Minicon links to mnstf.org/minicon/, because minicon.org's
+  https certificate does not verify (it redirects there over plain http).
 - fourSwordsFromThePast's credit is "not yet written in its README", as the shop page has it.
 - The other cards' numbers are dated 2026-10-29; only the public-repository count (14) was
   recounted on 2026-11-01. Recount the rest when you next look.

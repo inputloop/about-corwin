@@ -8,6 +8,7 @@ DirectoryIndex index.html
 ErrorDocument 404 /404.html
 AddType image/svg+xml .svg
 AddType application/json .json
+AddType font/woff2 .woff2
 AddDefaultCharset utf-8
 
 # Send everyone to https, once the certificate is on (Dreamhost panel: Websites, Secure Certificates).
@@ -25,7 +26,7 @@ AddDefaultCharset utf-8
   Header always set Referrer-Policy "no-referrer"
   Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), interest-cohort=()"
   Header always set Cross-Origin-Opener-Policy "same-origin"
-  <FilesMatch "\.(css|js|svg|png)$">
+  <FilesMatch "\.(css|js|svg|png|woff2)$">
     Header set Cache-Control "public, max-age=86400"
   </FilesMatch>
   <FilesMatch "\.html$">

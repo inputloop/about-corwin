@@ -122,6 +122,19 @@
   });
   panel.addEventListener('submit', function (ev) { ev.preventDefault(); });
 
+  // ---- the links area beside it (a <details>, so it works without scripts): one open at a time ------
+  var credits = doc.getElementById('credits');
+  if (credits) {
+    credits.addEventListener('toggle', function () { if (credits.open) { pinned = false; hovering = false; sync(); } });
+    wrap.addEventListener('mouseenter', function () { credits.open = false; });
+    btn.addEventListener('click', function () { if (pinned) credits.open = false; });
+    doc.addEventListener('keydown', function (ev) {
+      if (ev.key !== 'Escape' || !credits.open) return;
+      credits.open = false;
+      credits.querySelector('summary').focus();
+    });
+  }
+
   saved = load();
   cur = valid(saved);
   if (saved) saved = copy(cur);

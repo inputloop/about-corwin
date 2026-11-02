@@ -261,6 +261,45 @@ def warmth(paras):
     return round(pts * 100.0 / len(toks), 1)
 
 
+# ---- Corwin's hand edits to the About, kept as rules (content/ABOUT-EDITS.md) ---------------------
+
+EDITS_FILE = "ABOUT-EDITS.md"
+EDIT_KINDS = ("has", "match", "never")
+
+
+def edit_rules(content_dir):
+    """[(heading, kind, text)] from content/ABOUT-EDITS.md; [] when there is no such file."""
+    path = os.path.join(content_dir, EDITS_FILE)
+    if not os.path.isfile(path):
+        return []
+    out, heading = [], ""
+    with open(path, encoding="utf-8") as f:
+        for n, line in enumerate(f, 1):
+            line = line.rstrip("\n")
+            if line.startswith("## "):
+                heading = line[3:].strip()
+            m = re.match(r"^rule:\s*(\w+)\s*\|\s(.+)$", line)
+            if line.startswith("rule:") and (not m or m.group(1) not in EDIT_KINDS):
+                raise ToneError("%s:%d: a rule is 'rule: has|match|never | TEXT'" % (path, n))
+            if m:
+                out.append((heading, m.group(1), m.group(2).rstrip()))
+    return out
+
+
+def edit_problems(rules, cells, where):
+    out = []
+    for c, paras in sorted(cells.items()):
+        text = "\n".join(paras)
+        for heading, kind, words in rules:
+            if kind == "has" and words not in text:
+                out.append("%s %s undoes Corwin's edit %r: it lacks %r" % (where, c, heading, words))
+            elif kind == "match" and not re.search(words, text, re.I):
+                out.append("%s %s undoes Corwin's edit %r: nothing matches %r" % (where, c, heading, words))
+            elif kind == "never" and re.search(words, text, re.I):
+                out.append("%s %s undoes Corwin's edit %r: it matches %r" % (where, c, heading, words))
+    return out
+
+
 # ---- the checks (TONE.txt, 3 to 6) ---------------------------------------------------------------
 
 CAP = re.compile(r"(?<![\w-])[A-Z][\w.'’-]*")
@@ -312,6 +351,9 @@ def problems(sections):
                 if not c.startswith("formal") and "Corwin Brust" in bare:
                     out.append("%s %s names Corwin Brust in the third person; only formal cells may" % (where, c))
             cells = u["cells"]
+            if name == "about":
+                rules = edit_rules(os.path.dirname(os.path.dirname(u["path"])))
+                out.extend(edit_problems(rules, cells, where))
             for w in WARMTH:
                 row = [cell_name(w, g) for g in STEPS]
                 if all(r in cells for r in row):

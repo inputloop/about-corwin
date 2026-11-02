@@ -49,11 +49,16 @@ class Texts(unittest.TestCase):
         for n, u in units.items():
             self.assertEqual(len(u["cells"]), 12, n)
 
-    def test_the_about_keeps_the_family_paragraph_as_written_in_every_version(self):
+    def test_the_about_family_paragraph_is_written_in_every_version_from_his_own_words(self):
+        # Until 2026-11-02 the family paragraph was kept word for word ([[keep]]) because it describes
+        # other people and Corwin meant to word it himself. He did (content/ABOUT-EDITS.md), so it is
+        # now one more paragraph each version writes in its own voice, held to his words as facts and
+        # rules. The [[keep]] mechanism stays in build_tone.py for any text that needs it later.
         u = DATA["sections"]["about"]["units"]["about"]
-        self.assertEqual(u["keep"], 2)
+        self.assertIsNone(u["keep"])
         for c, paras in u["cells"].items():
-            self.assertEqual(paras.count(T.KEEP), 1, c)
+            self.assertNotIn(T.KEEP, paras, c)
+            self.assertEqual(sum(1 for p in paras if "educators and writers, fans and scientists who organize" in p), 1, c)
 
     def test_the_meters_know_their_answers(self):
         # 18 words, 4 sentences, 18 syllables: 0.39 x 4.5 + 11.8 x 1 - 15.59 = -2.035, printed -2.03.
