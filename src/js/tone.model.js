@@ -11,7 +11,9 @@
 //   - a missing cell falls back: one warmth step toward plain, then one reading step toward 8,
 //     then the base (resolve);
 //   - left is warmer, right more formal; up is harder words and down simpler, unless the reader
-//     asked in Customize for up to mean simpler (move, with invert).
+//     asked in Customize for up to mean simpler (move, with invert);
+//   - a reader with no saved choice whose browser's first language is not English starts one
+//     reading step simpler, plain grade 4 (langStart; TONE.txt, 8).
 (function (root) {
   'use strict';
   var WARMTH = ['warm', 'plain', 'formal'];
@@ -62,7 +64,7 @@
   function okCell(v) { return Array.isArray(v) && WARMTH.indexOf(v[0]) >= 0 && STEPS.indexOf(v[1]) >= 0; }
   // What was stored, cleaned: anything unknown is dropped, never trusted.
   function valid(v, sectionIds) {
-    var out = { global: BASE.slice(), sections: {}, invert: false };
+    var out = { global: BASE.slice(), sections: {}, invert: false, lang: true, chosen: false };
     if (!v || typeof v !== 'object') return out;
     if (okCell(v.global)) out.global = [v.global[0], v.global[1]];
     if (v.sections && typeof v.sections === 'object') {
@@ -73,12 +75,26 @@
       });
     }
     out.invert = v.invert === true;
+    out.lang = v.lang !== false;
+    // A saved choice: written by a pad or a row. Older saves had no flag; a saved global was a choice.
+    out.chosen = v.chosen === true || (v.chosen === undefined && okCell(v.global));
     return out;
+  }
+  // The browser's language (TONE.txt, 8). langs: navigator.languages, or [navigator.language].
+  // Only the first language counts, and every English (en, en-GB, en-IN ...) is English. Returns
+  // null to start as written, or { lang, tag, cell } to start one reading step simpler.
+  function langStart(langs) {
+    var tag = String((langs && langs.length && langs[0]) || '').trim();
+    var sub = tag.split(/[-_]/)[0].toLowerCase();
+    if (!/^[a-z]{2,3}$/.test(sub) || sub === 'und') return null;   // unknown: as written
+    if (sub === 'en') return null;
+    return { lang: sub, tag: tag, cell: [BASE[0], STEPS[STEPS.indexOf(BASE[1]) - 1]] };
   }
   function describe(cell) { return cell[0] + ', ' + (STEP_NAMES[cell[1]] === 'college' ? 'college level' : 'about ' + STEP_NAMES[cell[1]]); }
 
   var M = { WARMTH: WARMTH, STEPS: STEPS, BASE: BASE, STEP_NAMES: STEP_NAMES, name: name, toward: toward,
-            resolve: resolve, table: table, move: move, same: same, valid: valid, describe: describe };
+            resolve: resolve, table: table, move: move, same: same, valid: valid, describe: describe,
+            langStart: langStart };
   if (typeof module !== 'undefined' && module.exports) module.exports = M;
   root.ToneModel = M;
 })(typeof self !== 'undefined' ? self : this);

@@ -369,6 +369,9 @@ html:not(.js) .v-featured { display: none; }
 .dpad[data-hot="up"] .dp-up, .dpad[data-hot="down"] .dp-down, .dpad[data-hot="left"] .dp-left,
 .dpad[data-hot="right"] .dp-right, .dpad[data-hot="reset"] .dp-centre { box-shadow: 0 0 0 2px var(--pad-glow), inset 0 1px 0 rgb(255 255 255 / 0.5); }
 .dpad.is-own { box-shadow: inset 0 2px 2px rgb(255 255 255 / 0.45), inset 0 -3px 5px rgb(0 0 0 / 0.22), 0 0 0 2px var(--pad-glow), 0 3px 8px rgb(30 20 0 / 0.28); }
+/* The quiet line that says the browser's language started the reader simpler. */
+.tone-lang { margin: 0 0 0.6rem; font: 0.8rem/1.4 var(--mono); color: var(--muted); }
+.tone-lang[hidden] { display: none; }
 .dp-say { margin: 0.3rem 0 0; font: 0.7rem/1.3 var(--mono); color: var(--muted); max-width: 9rem; overflow-wrap: anywhere; }
 /* The page pad: bigger, an accent bezel, accent arms; it floats in the dock and dodges. */
 .js .tone-dock {

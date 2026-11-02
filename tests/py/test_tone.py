@@ -129,6 +129,25 @@ class Page(unittest.TestCase):
         self.assertEqual(len(re.findall(r'name="tone-w"', rows.group(0))), 3)
         self.assertEqual(len(re.findall(r'name="tone-g"', rows.group(0))), 4)
         self.assertIn('name="tone-invert"', rows.group(0))
+        self.assertRegex(rows.group(0), r'<input type="checkbox" name="tone-lang" value="1" checked>',
+                         "Follow my browser's language: a row, on unless the reader turns it off")
+
+    def test_the_language_line_is_there_hidden_until_scripts_fill_it(self):
+        text = page()
+        self.assertRegex(text, r'<h2 id="about-h">About</h2>\s*<!--tone--><p class="tone-lang" id="tone-lang" hidden></p><!--/tone-->')
+
+
+class Language(unittest.TestCase):
+    """TONE.txt, 8: the browser's first language picks where a reader with no saved choice starts.
+    The cases are read from the spec itself, so the JavaScript reader checks the very same ones."""
+
+    def test_the_cases_in_the_spec(self):
+        spec = open(os.path.join(ROOT, "tests", "spec", "TONE.txt"), encoding="utf-8").read()
+        cases = re.findall(r"^\s*case: (.+?) -> (grade 4|as written)\s*$", spec, re.M)
+        self.assertGreaterEqual(len(cases), 12)
+        for langs, want in cases:
+            given = [] if langs == "(none)" else [x.strip() for x in langs.split(",")]
+            self.assertEqual(T.lang_start(given), 4 if want == "grade 4" else None, langs)
 
 
 def strip(text):

@@ -62,3 +62,28 @@ TONE: the rules the tone d-pad's checks share. build_tone.py (Python) and tests/
    written, move g one step toward 8 and try again the same way. Reaching (plain, 8), use the base.
    No cell can show empty. The build writes this table into the page; tone.model.js works it out
    again in the browser, and a check holds that the two agree for every text and every cell.
+
+8. THE BROWSER'S LANGUAGE (Corwin, 2026-11-02: "Browser Language: SOLD. Default ON")
+   Only a reader with no saved choice is affected. Take the browser's list of languages (in the
+   browser, navigator.languages; if that is empty, navigator.language) and look at the FIRST one
+   only. Its language is the part before the first - or _, in lower case. If there is no first
+   language, or its language is not two or three letters a-z, or it is "und" (undetermined),
+   start as written. If it is "en", in any variety (en-US, en-GB, en-IN ...), start as written.
+   Otherwise start one reading step simpler at plain warmth: plain 4. There is no step below 4,
+   so "two steps" cannot happen. The page then says so in one quiet line, naming the language in
+   English. A saved choice always wins; moving a pad or a row makes the choice the reader's; the
+   Customize row "Follow my browser's language" (on unless turned off, kept in this browser) stops
+   it. Both readers check these cases, written "languages -> start":
+   case: de-DE -> grade 4
+   case: de -> grade 4
+   case: fr_CA -> grade 4
+   case: zh-Hant-TW -> grade 4
+   case: es-419, en -> grade 4
+   case: de, en -> grade 4
+   case: en-GB -> as written
+   case: en-IN -> as written
+   case: EN-us -> as written
+   case: en, de -> as written
+   case: en -> as written
+   case: und -> as written
+   case: (none) -> as written

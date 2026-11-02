@@ -130,8 +130,11 @@ class Content(unittest.TestCase):
                     for name in pat.findall(fh.read()):
                         self.assertIn(name, build.PUBLIC_REPOS, "%s links %s" % (f, name))
 
+    # "ghostwheel" left this list on 2026-11-02 (Corwin: "ghostwheel is OK public. falsifier:
+    # GHOSTWHEEL is someone else's registered trademark"; the USPTO trademark search found no mark
+    # by that name that day). If that falsifier ever fires, put it back here.
     PRIVATE = ("llama-bridge", "llama bridge", "topoforge", "theseus", "persona-engine",
-               "ghostwheel", "legendoflinks", "mariosworld", "mariospaint", "al2n", "kid-glove", "tavern",
+               "legendoflinks", "mariosworld", "mariospaint", "al2n", "kid-glove", "tavern",
                "inputloop/c4", "showroom", "hzpa", "research-lives-in", "business-research", "thickity")
 
     def test_private_project_names_stay_off_every_served_file(self):

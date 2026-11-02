@@ -173,6 +173,18 @@ def table(sections):
     return out
 
 
+# ---- the browser's language (TONE.txt, 8) ----------------------------------------------------------
+
+def lang_start(langs):
+    """The step a reader with no saved choice starts at, given the browser's languages in order:
+    None to start as written, or the reading step one simpler than the base (4)."""
+    first = (langs[0] if langs else "") or ""
+    head = first.strip().replace("_", "-").split("-", 1)[0].lower()
+    if not (2 <= len(head) <= 3 and all("a" <= ch <= "z" for ch in head)) or head in ("und", "en"):
+        return None
+    return STEPS[STEPS.index(BASE[1]) - 1]
+
+
 # ---- the meters (TONE.txt, 2 to 4) --------------------------------------------------------------
 
 LINK = re.compile(r"\[([^\]]+)\]\((https?://[^)\s]+|mailto:[^)\s]+)\)")

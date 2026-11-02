@@ -15,6 +15,10 @@
 //     Ctrl+Shift+Home to put everything back; on a focused pad, arrows, h j k l, Home, and C-f C-b
 //     C-p. Nothing fires inside a text field, and nothing uses Alt.
 //   - The choice is kept under one key, aboutcorwin.tone, in this browser; nothing is sent.
+//   - A reader with no saved choice whose browser's first language is not English starts one
+//     reading step simpler (plain, grade 4), and one quiet line above the About says so. A saved
+//     choice always wins; moving a pad or a row makes the choice the reader's; a Customize row,
+//     "Follow my browser's language", turns it off (Corwin, 2026-11-02: "Default ON").
 (function () {
   'use strict';
   var doc = document, html = doc.documentElement, M = window.ToneModel;
@@ -46,11 +50,38 @@
   function load() { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; } }
   function save() {
     try {
-      var empty = M.same(state.global, M.BASE) && !Object.keys(state.sections).length && !state.invert;
+      // Nothing to keep: no choice made (the start is worked out again each visit), or a choice
+      // that is the words as written where the language would not change the start anyway.
+      var empty = !state.invert && state.lang && (!state.chosen ||
+        (M.same(state.global, M.BASE) && !Object.keys(state.sections).length && !start));
       if (empty) localStorage.removeItem(KEY); else localStorage.setItem(KEY, JSON.stringify(state));
     } catch (e) { /* refused: the choice still holds for this visit */ }
   }
   var state = M.valid(load(), sectionIds);
+
+  // ---- the browser's language: where a reader with no saved choice starts ----------------------
+  var nav = window.navigator || {};
+  var start = M.langStart(nav.languages && nav.languages.length ? nav.languages : (nav.language ? [nav.language] : []));
+  var started = false;
+  function startFromLanguage() {
+    started = !state.chosen && state.lang && !!start;
+    if (!state.chosen) state.global = started ? start.cell.slice() : M.BASE.slice();
+  }
+  function choose() { state.chosen = true; started = false; }
+  function langName(code) {
+    try {
+      var n = new Intl.DisplayNames(['en'], { type: 'language' }).of(code);
+      if (n && n.toLowerCase() !== code.toLowerCase()) return n;
+    } catch (e) { /* no Intl.DisplayNames here: the code itself will do */ }
+    return code;
+  }
+  var line = doc.getElementById('tone-lang');
+  function showLine() {
+    if (!line) return;
+    if (started) line.textContent = 'Starting with simpler English because your browser prefers ' + langName(start.lang) + '; the pad changes it.';
+    line.hidden = !started;
+  }
+  startFromLanguage();
 
   function cellFor(scope) { return scope !== 'page' && state.sections[scope] ? state.sections[scope] : state.global; }
   function setScope(scope, cell) {
@@ -83,6 +114,7 @@
     });
     pads.forEach(drawPad);
     syncRows();
+    showLine();
   }
   var ARM_WORDS = { left: 'Warmer', right: 'More formal', up: 'Harder words', down: 'Simpler words' };
   function armWords(dir) {
@@ -122,6 +154,7 @@
   }
 
   function act(scope, dir) {
+    choose();
     if (dir === 'reset') {
       if (scope === 'page') setScope('page', M.BASE.slice()); else delete state.sections[scope];
     } else {
@@ -132,7 +165,7 @@
     save(); render(); announce(scope); drift.kick();
     return true;
   }
-  function resetAll() { state.global = M.BASE.slice(); state.sections = {}; save(); render(); announce('page'); }
+  function resetAll() { choose(); state.global = M.BASE.slice(); state.sections = {}; save(); render(); announce('page'); }
 
   // ---- the pads: clicks and the glow that follows the pointer -------------------------------------
   var reduce = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
@@ -199,15 +232,20 @@
     $$('input[name="tone-g"]', panel).forEach(function (r) { r.checked = +r.value === state.global[1]; });
     var inv = panel.querySelector('input[name="tone-invert"]');
     if (inv) inv.checked = state.invert;
+    var follow = panel.querySelector('input[name="tone-lang"]');
+    if (follow) follow.checked = state.lang;
   }
   if (panel) panel.addEventListener('change', function (ev) {
     var t = ev.target;
     if (t.name === 'tone-w' || t.name === 'tone-g') {
       var w = panel.querySelector('input[name="tone-w"]:checked'), g = panel.querySelector('input[name="tone-g"]:checked');
+      choose();
       setScope('page', [w ? w.value : state.global[0], g ? +g.value : state.global[1]]);
       save(); render(); announce('page'); drift.kick();
     } else if (t.name === 'tone-invert') {
       state.invert = t.checked; save(); render();
+    } else if (t.name === 'tone-lang') {
+      state.lang = t.checked; startFromLanguage(); save(); render(); drift.kick();
     }
   });
 
@@ -320,7 +358,8 @@
 
   render();
   drift.kick();
-  window.ToneDpad = { state: function () { return JSON.parse(JSON.stringify(state)); }, drift: drift };
+  window.ToneDpad = { state: function () { return JSON.parse(JSON.stringify(state)); }, drift: drift,
+                     start: function () { return started ? start.lang : null; } };
   html.setAttribute('data-tone-ready', 'yes');
 })();
 // @license-end

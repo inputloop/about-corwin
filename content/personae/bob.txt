@@ -1,4 +1,4 @@
 title: Bob
 kind: person
-role: Does system updates on the shop's machines too.
-with: corwin | Bob keeps the shop's machines up to date with me.
+role: Does system updates on the ghostwheel, the shop's machines, too.
+with: corwin | Bob keeps the ghostwheel up to date with me.

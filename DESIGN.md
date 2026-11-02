@@ -149,7 +149,7 @@ slightly out of place ... don't go for symmetry: dodge". His answers of 17:53 se
 is harder ("break that down for me" is down), with an option to turn that around; grade 4 means
 friendly to a child in 4th grade; the formal end may say "Corwin Brust"; lines of his poems may
 appear, offered CC-BY-SA-4.0; reading level does not follow the browser's language (English only
-for now); and the page pad may "be where it wants", pushed by an anti-gravity worked out from a
+for now; he changed this on 2026-11-02, see "The browser's language" below); and the page pad may "be where it wants", pushed by an anti-gravity worked out from a
 rectangle set slightly inside each other button, with related but different rules for up-down and
 left-right.
 
@@ -219,6 +219,35 @@ inverted option: "Up makes the words simpler", like an inverted mouse. These row
 under their own key, `aboutcorwin.tone` (`{global, sections, invert}`, cleaned on reading);
 Customize's own Apply and key are untouched. Storage refused still works for the visit.
 
+**The browser's language.** Corwin, 2026-11-02: "Browser Language: SOLD. Default ON (Text Density
+Follows Browser Language Selection: non-English is less dense, or please correct/revise and also
+clue me in)." The page stays English (his earlier answer stands); what follows the language is
+where a reader starts. The rule (`tests/spec/TONE.txt`, 8, with its cases): a reader with no saved
+choice whose browser's *first* language is not English starts at plain, grade 4, one reading step
+simpler than the words as written; every English (en, en-US, en-GB, en-IN ...) counts as English;
+an unknown or missing language starts as written. One quiet line under the About heading says so
+("Starting with simpler English because your browser prefers German; the pad changes it."), the
+language named in English by `Intl.DisplayNames` (or its code where that is missing); nothing is
+fetched. Why this mapping and not another:
+
+- *One step, not two.* The base already measures about grade 6.4, and grade 4 is the only step
+  below it; there is no second step to take. A step simpler is also the gentlest guess: it is one
+  click (or Ctrl+Shift+Up) away from the words as written.
+- *Plain, not warm.* Warmth stays where it is written. Warm versions lean on contractions and
+  feeling words, which are harder, not easier, in a second language.
+- *The first language only.* A browser listing English second (`["de", "en"]`) may well belong to
+  a fluent reader, but it says the reader *prefers* German, and many browsers add English to the
+  list on their own (Chrome in German often reports `de-DE, de, en-US, en`). A rule of "only when
+  English is missing" would almost never fire. Being wrong costs a fluent reader one look at a
+  simpler text and a line saying how to change it.
+- *A choice always wins.* Moving any pad or a Warmth or Reading row (or Ctrl+Shift+Home) makes the
+  tone the reader's and saves it, even if it is the words as written; the line then goes. The
+  start itself is never saved: it is worked out again on each visit, so a browser whose language
+  changes gets the new start.
+- *Off is one row.* Customize has "Follow my browser's language", on unless turned off, kept in
+  this browser under the same key (`{global, sections, invert, lang, chosen}`); turning it off with
+  no choice saved puts the words as written at once.
+
 **The drift: where the page pad wants to be.** It lives in a fixed dock under Customize and sits
 where the pushes on it balance, so it moves around a little and never mirrors. Every frame while
 anything moves (scroll, resize, pinch zoom through `visualViewport`, a text-size change through a
@@ -249,7 +278,9 @@ may cover it: the palette's own Warmth and Reading rows do the same job.
 **Checks.** `tests/py/test_tone.py`, `tests/js/tone.test.mjs` and `tests/browser/dpad.test.mjs`
 (served with the real CSP header): every rule above; the arms, a section apart from the page and
 back, the keys, text fields and selections left alone, the inverted option kept across a reload,
-one storage key and nothing fetched, the glow under the CSP, reduced motion, and the page pad clear
+one storage key and nothing fetched, the browser's language (German starts simpler with its
+line, British and American English do not, a saved choice wins, a pad makes it the reader's, the
+row turns it off and stays off; the TONE.txt cases in Python and in JavaScript), the glow under the CSP, reduced motion, and the page pad clear
 of every section pad at 17 scroll stops per pad, at 1280, 768, 640, 390 and 320 pixels (the last
 three also stand for 1280 at 200%, about 330% and 400% zoom), at 100% and 175% text, inside the
 frame each time, and focus bringing it home uncovered. Each promise has a planted fault in

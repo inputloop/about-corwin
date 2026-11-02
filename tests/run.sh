@@ -45,12 +45,20 @@ run_checks() {
 prove_red() {
   # Each fault: a file to break, a sed expression, and the check that must notice.
   tmp=$(mktemp -d 2>/dev/null || mktemp -d -t aboutcorwin)
-  trap 'rm -rf "$tmp"' EXIT INT TERM
-  bad=0
+  # A signal stops the run (and the EXIT trap tidies up); it must not tidy up and carry on.
+  trap 'rm -rf "$tmp"' EXIT
+  trap 'echo "PROVE-RED STOPPED by a signal during plant $n (rerun with PROVE_SKIP=$((n - 1)))"; exit 130' INT TERM HUP
+  bad=0 n=0
+  # PROVE_SKIP=N skips the first N plants, to finish a run a signal stopped (the stop names the count).
   plant() {
     name=$1 file=$2 expr=$3 check=$4
-    rm -rf "$tmp/w"; mkdir "$tmp/w"
-    (cd "$here" && tar cf - --exclude=./public --exclude=./node_modules --exclude=./dist --exclude=./.git .) | (cd "$tmp/w" && tar xf -)
+    n=$((n + 1)); [ "$n" -le "${PROVE_SKIP:-0}" ] && return
+    rm -rf "$tmp/w"
+    # A work copy that cannot be made is a failed plant, never a red check (2026-11-02: the temp
+    # directory vanished mid-run and every later plant "went red" on the missing copy).
+    if ! mkdir "$tmp/w" || ! (cd "$here" && tar cf - --exclude=./public --exclude=./node_modules --exclude=./dist --exclude=./.git .) | (cd "$tmp/w" && tar xf -) || [ ! -f "$tmp/w/$file" ]; then
+      printf 'PLANT FAILED  %s (no work copy in %s)\n' "$name" "$tmp"; bad=1; return
+    fi
     sed "$expr" "$tmp/w/$file" > "$tmp/x" && cp "$tmp/x" "$tmp/w/$file"
     if cmp -s "$here/$file" "$tmp/w/$file"; then
       printf 'PLANT FAILED  %s (the fault did not change %s)\n' "$name" "$file"; bad=1; return
@@ -112,7 +120,7 @@ prove_red() {
   plant "the cast page loses Customize"      src/cast.html  's#<button type="button" id="c-apply">\[Apply\]</button>#<button type="button" id="c-apply">[OK]</button>#' "$pyc"
   plant "the cast search fills out of order" build.py 's/^        rest = iter(s for s in column if s not in placed.values())$/        rest = iter(sorted((s for s in column if s not in placed.values()), reverse=True))/' "$pyc"
   plant "a with: line may join a persona"   build.py 's/^        if by\[w\["a"\]\]\["kind"\] != "person" or by\[w\["b"\]\]\["kind"\] != "person":$/        if False:/' "$pyc"
-  plant "a cast card names a key"           content/personae/logan.txt 's/^role: Helps with the shop.s machines\./role: Helps with the machines and holds a key./' "$pyc"
+  plant "a cast card names a key"           content/personae/logan.txt 's/^role: Helps with the ghostwheel, the shop.s machines\./role: Helps with the machines and holds a key./' "$pyc"
   plant "a with: line drops out of the list" build.py 's/^        for w in pp.get("with", \[\]))$/        for w in pp.get("with", [])[1:])/' "$pyc"
   plant "a tone version drops a fact"        content/sections/about.txt 's/I keep it with Bryant Frankford\. We carry/I keep it with a friend. We carry/' "$pyc"
   plant "a tone version adds a name"         content/sections/about.txt 's/I keep it with Bryant Frankford\. We carry/I keep it with Bryant Frankford and Richard. We carry/' "$pyc"
@@ -123,6 +131,8 @@ prove_red() {
   plant "the build shows a variant as the base" build.py 's/^    live = e(" ".join(u\["base"\]))$/    live = e(" ".join(u["cells"]["warm-4"]))/' "$pyc"
   plant "the Python fallback skips warmth"   build_tone.py 's/^        w2 = toward(WARMTH, w, BASE\[0\])$/        w2 = w/' "$pyc"
   plant "the About loses its kept paragraph" content/sections/about.txt '0,/^\[\[keep\]\]$/{/^\[\[keep\]\]$/d}' "$pyc"
+  plant "the Python reader takes en-GB for foreign" build_tone.py 's/ or head in ("und", "en"):$/ or head in ("und",):/' "$pyc"
+  plant "the Follow row leaves the palette"  build.py 's/name="tone-lang" value="1" checked>/name="tone-lang" value="1">/' "$pyc"
   plant "heading levels skip"                build.py           's/render_card(c, windows, 4) for c in projects/render_card(c, windows, 5) for c in projects/' "$pyc"
   if command -v "$node" >/dev/null 2>&1; then
     plant "Customize phones home"            src/js/customize.js 's#^  var doc = document, html = doc.documentElement;#  var doc = document, html = doc.documentElement; fetch("/x");#' "$nodec"
@@ -147,6 +157,9 @@ prove_red() {
     plant "Coleman-Liau no longer rises"     content/sections/about.txt 's/^== about \/ plain 4 ==$/== about \/ plainX 16 ==/;s/^== about \/ plain 16 ==$/== about \/ plain 4 ==/;s/^== about \/ plainX 16 ==$/== about \/ plain 16 ==/' "$nodec"
     plant "the JavaScript fallback skips warmth" src/js/tone.model.js 's/^      var w2 = toward(WARMTH, w, BASE\[0\]);$/      var w2 = w;/' "$nodec"
     plant "the invert option does nothing"   src/js/tone.model.js "s/      var harder = (dir === 'up') !== !!invert;/      var harder = dir === 'up';/" "$nodec"
+    plant "a German browser starts as written" src/js/tone.model.js "s/    if (sub === 'en') return null;/    if (sub) return null;/" "$nodec"
+    plant "en-GB counts as another language" src/js/tone.model.js "s/    if (sub === 'en') return null;/    if (tag === 'en') return null;/" "$nodec"
+    plant "an older saved choice is forgotten" src/js/tone.model.js 's/(v.chosen === undefined \&\& okCell(v.global))/false/' "$nodec"
     plant "the tone pads phone home"         src/js/dpad.js     's#^  var KEY = .aboutcorwin.tone.;#  var KEY = "aboutcorwin.tone"; fetch("/x");#' "$nodec"
     plant "the tone pads store under another key" src/js/dpad.js "s/var KEY = 'aboutcorwin.tone';/var KEY = 'x';/" "$nodec"
     plant "the personae tie-break turns around" build.py 's/score = (gaps, tuple(-ord(c)/score = (gaps, tuple(ord(c)/' "$nodec"
@@ -176,6 +189,10 @@ prove_red() {
       plant "Ctrl+Shift takes over a selection" src/js/dpad.js "s/      if (dir \&\& !selecting()) { ev.preventDefault(); act('page', dir); }/      if (dir) { ev.preventDefault(); act('page', dir); }/" "$brd"
       plant "the pads show without scripts"  src/css/site.css   's/^\.dpad-wrap, \.tone-dock { display: none; }/.dpad-wrap, .tone-dock { display: block; }/' "$brd"
       plant "a section pad moves the whole page" src/js/dpad.js "s/      if (b \&\& p.contains(b)) act(scope, b.getAttribute('data-move'));/      if (b \&\& p.contains(b)) act('page', b.getAttribute('data-move'));/" "$brd"
+      plant "a saved choice loses to the language" src/js/dpad.js "s/    started = !state.chosen \&\& state.lang \&\& !!start;/    started = state.lang \&\& !!start;/;s/    if (!state.chosen) state.global = started/    state.global = started/" "$brd"
+      plant "a pad move is not the reader's choice" src/js/dpad.js 's/^    choose();$/    void 0;/' "$brd"
+      plant "the Follow row does not turn it off" src/js/dpad.js 's/      state.lang = t.checked; startFromLanguage();/      startFromLanguage();/' "$brd"
+      plant "the language line never shows"   src/js/dpad.js     's/    line.hidden = !started;/    line.hidden = true;/' "$brd"
       plant "reduced motion ignored"         src/js/site.js     "s/: !reduce.matches;/: true;/" "$brc"
     fi
   fi

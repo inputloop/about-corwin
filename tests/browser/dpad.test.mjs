@@ -46,7 +46,7 @@ before(async () => {
 after(async () => { if (browser) await browser.close(); if (server) server.close(); });
 
 async function open(ctxOpts = {}) {
-  const ctx = await browser.newContext({ viewport: { width: 1280, height: 860 }, reducedMotion: 'no-preference', ...ctxOpts });
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 860 }, reducedMotion: 'no-preference', locale: 'en-US', ...ctxOpts });
   const p = await ctx.newPage();
   p.errors = []; p.late = [];
   p.on('pageerror', (e) => p.errors.push(e.message));
@@ -167,6 +167,56 @@ test('Customize: the rows follow the pad, and the invert option swaps up and dow
   assert.equal(await p.isChecked('input[name="tone-invert"]'), true);
   const keys = await p.evaluate(() => Object.keys(localStorage));
   assert.deepEqual(keys.filter((k) => k !== 'aboutcorwin.motion' && k !== 'aboutcorwin.customize'), ['aboutcorwin.tone']);
+  await p.context().close();
+});
+
+test('the browser\'s language: German starts simpler and says so; British English does not', { skip }, async () => {
+  const de = await open({ locale: 'de-DE' });
+  for (const u of ['about', 'involvements', 'portfolio', 'work', 'ideas']) assert.equal(await cell(de, u), 'plain-4', u);
+  assert.equal(await de.isVisible('#tone-lang'), true, 'the line is shown');
+  assert.equal(await de.textContent('#tone-lang'), 'Starting with simpler English because your browser prefers German; the pad changes it.');
+  assert.equal(await stored(de), null, 'starting simpler is not a saved choice');
+  await de.click('#custom-btn');
+  assert.equal(await de.isChecked('input[name="tone-g"][value="4"]'), true, 'the Reading row shows where it started');
+  assert.equal(await de.isChecked('input[name="tone-lang"]'), true, 'the row is on by default');
+  assert.deepEqual(de.errors, []);
+  assert.deepEqual(de.late, [], 'nothing fetched');
+  await de.context().close();
+  for (const locale of ['en-GB', 'en-US']) {
+    const en = await open({ locale });
+    assert.equal(await cell(en, 'about'), 'plain-8', locale);
+    assert.equal(await en.isVisible('#tone-lang'), false, locale + ': no line');
+    await en.context().close();
+  }
+});
+
+test('the browser\'s language: a saved choice wins, a pad makes it the reader\'s, and the row turns it off', { skip }, async () => {
+  const p = await open({ locale: 'de-DE' });
+  // Moving a pad: the choice is the reader's, kept, and the line goes.
+  await p.click('#tone-dock [data-move="up"]');
+  assert.equal(await cell(p, 'about'), 'plain-8');
+  assert.equal(await p.isVisible('#tone-lang'), false, 'the line goes once the reader chooses');
+  await p.reload(); await p.waitForSelector('html[data-tone-ready]');
+  assert.equal(await cell(p, 'about'), 'plain-8', 'a saved choice wins over the language, even the words as written');
+  assert.equal(await p.isVisible('#tone-lang'), false);
+  await p.evaluate(() => localStorage.clear());
+  await p.reload(); await p.waitForSelector('html[data-tone-ready]');
+  assert.equal(await cell(p, 'about'), 'plain-4', 'with nothing saved it starts simpler again');
+  // The row: off puts the words as written and stays off across a reload; on brings it back.
+  await p.click('#custom-btn');
+  await p.uncheck('input[name="tone-lang"]');
+  assert.equal(await cell(p, 'about'), 'plain-8');
+  assert.equal(await p.isVisible('#tone-lang'), false);
+  await p.reload(); await p.waitForSelector('html[data-tone-ready]');
+  assert.equal(await cell(p, 'about'), 'plain-8', 'the row stays off in this browser');
+  await p.click('#custom-btn');
+  assert.equal(await p.isChecked('input[name="tone-lang"]'), false);
+  await p.check('input[name="tone-lang"]');
+  assert.equal(await cell(p, 'about'), 'plain-4');
+  assert.equal(await stored(p), null, 'back on and nothing chosen: nothing kept');
+  const keys = await p.evaluate(() => Object.keys(localStorage));
+  assert.deepEqual(keys.filter((k) => k !== 'aboutcorwin.motion' && k !== 'aboutcorwin.customize'), []);
+  assert.deepEqual(p.errors, []);
   await p.context().close();
 });
 

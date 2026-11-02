@@ -1,4 +1,4 @@
 title: Pierre ("Peer")
 kind: person
-role: Does system updates on the shop's machines, smoothly and properly.
-with: corwin | Pierre keeps the shop's machines up to date with me.
+role: Does system updates on the ghostwheel, the shop's machines, smoothly and properly.
+with: corwin | Pierre keeps the ghostwheel up to date with me.

@@ -187,7 +187,26 @@ test('moves: left warmer, right formal, up harder unless inverted, and the ends 
   assert.equal(M.move(['formal', 16], 'right', false), null);
   assert.equal(M.move(['warm', 4], 'down', false), null);
   assert.deepEqual(M.valid({ global: ['warm', 4], sections: { about: ['warm', 4], nope: ['plain', 4], involvements: ['x', 9] }, invert: 'yes' }, ['about', 'involvements']),
-    { global: ['warm', 4], sections: {}, invert: false });
+    { global: ['warm', 4], sections: {}, invert: false, lang: true, chosen: true });
+  // A saved choice is flagged; an older save with a global and no flag was a choice too.
+  assert.equal(M.valid(null).chosen, false);
+  assert.equal(M.valid({ global: ['plain', 4], chosen: false }).chosen, false);
+  assert.equal(M.valid({ global: ['plain', 4] }).chosen, true);
+  assert.equal(M.valid({ lang: false }).lang, false);
+  assert.equal(M.valid({ lang: 'no' }).lang, true);
+});
+
+test('the browser\'s language: the cases in TONE.txt, 8 (the Python reader checks the same ones)', () => {
+  const spec = readFileSync(path.join(ROOT, 'tests', 'spec', 'TONE.txt'), 'utf8');
+  const cases = [...spec.matchAll(/^\s*case: (.+?) -> (grade 4|as written)\s*$/gm)];
+  assert.ok(cases.length >= 12);
+  for (const [, langs, want] of cases) {
+    const given = langs === '(none)' ? [] : langs.split(',').map((s) => s.trim());
+    const got = M.langStart(given);
+    if (want === 'as written') assert.equal(got, null, langs);
+    else { assert.ok(got, langs); assert.deepEqual(got.cell, ['plain', 4], langs); }
+  }
+  assert.equal(M.langStart(['de-DE']).lang, 'de');
 });
 
 test('dpad.js never talks to the network and stores under its own key only', () => {

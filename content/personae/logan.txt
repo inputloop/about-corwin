@@ -1,4 +1,4 @@
 title: Logan
 kind: person
-role: Helps with the shop's machines.
-with: corwin | Logan helps me with the shop's machines.
+role: Helps with the ghostwheel, the shop's machines.
+with: corwin | Logan helps me with the ghostwheel.

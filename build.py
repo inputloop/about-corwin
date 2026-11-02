@@ -795,8 +795,10 @@ TONE_ROWS = ('<fieldset class="c-tone"><legend>Warmth of the introductions:</leg
              '<label><input type="radio" name="tone-g" value="8"><span class="box"></span>About grade 8 (as written)</label>'
              '<label><input type="radio" name="tone-g" value="12"><span class="box"></span>About grade 12</label>'
              '<label><input type="radio" name="tone-g" value="16"><span class="box"></span>College</label></fieldset>\n'
-             '    <fieldset class="c-tone"><legend>Tone pads (these three rows save as you go):</legend>'
-             '<label><input type="checkbox" name="tone-invert" value="1"><span class="box"></span>Up makes the words simpler (inverted)</label></fieldset>\n')
+             '    <fieldset class="c-tone"><legend>Tone pads (these rows save as you go):</legend>'
+             '<label><input type="checkbox" name="tone-invert" value="1"><span class="box"></span>Up makes the words simpler (inverted)</label>'
+             '<label><input type="checkbox" name="tone-lang" value="1" checked><span class="box"></span>Follow my browser\'s language '
+             '(when its first language is not English and nothing is saved, start with simpler English, about grade 4)</label></fieldset>\n')
 
 TONE_KEYS = ('<li><kbd>Ctrl</kbd>+arrows: the tone of the introduction in the section you are in (left warmer, '
              'right more formal, up harder words, down simpler); <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+arrows: the whole page; '
@@ -809,7 +811,7 @@ TONE_KEYS = ('<li><kbd>Ctrl</kbd>+arrows: the tone of the introduction in the se
 def render_tone(data, units, tone):
     keys = ["PAD_" + s.upper() for s, _ in TONE_SCOPES] + ["TS_" + s.upper() for s, _ in TONE_SCOPES]
     if not tone:
-        out = {k: "" for k in keys + ["TONE_DOCK", "TONE_ROWS", "TONE_KEYS", "TONE_TABLE", "TONE_SCRIPTS"]}
+        out = {k: "" for k in keys + ["TONE_DOCK", "TONE_ROWS", "TONE_KEYS", "TONE_TABLE", "TONE_SCRIPTS", "TONE_LANG"]}
     else:
         out = {}
         for s, name in TONE_SCOPES:
@@ -819,6 +821,8 @@ def render_tone(data, units, tone):
                             '<p class="visually-hidden" id="tone-say" role="status" aria-live="polite"></p><!--/tone-->'
                             % tone_pad("page", "the whole page", "dp-global"))
         out["TONE_ROWS"] = "<!--tone-->" + TONE_ROWS + "    <!--/tone-->"
+        # The line that says when the browser's language started the reader simpler (dpad.js fills it).
+        out["TONE_LANG"] = '<!--tone--><p class="tone-lang" id="tone-lang" hidden></p><!--/tone-->'
         out["TONE_KEYS"] = "<!--tone-->" + TONE_KEYS + "<!--/tone-->"
         out["TONE_TABLE"] = ('<!--tone--><script type="application/json" id="tone-table">%s</script><!--/tone-->'
                              % json_for_html(build_tone.table(data["sections"])))
