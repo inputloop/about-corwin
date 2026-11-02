@@ -76,11 +76,59 @@ class Order(unittest.TestCase):
             return sorted(b - a for a, b in zip(marks, marks[1:]))
         mine = gaps(steps)
         L, R = order(pp)
-        for l in permutations(L):
-            for r in permutations(R):
-                st = [l.index(x["person"]) - r.index(x["persona"]) for x in pp["pairs"]]
+        # The steps depend only on where the paired people and personas stand, so trying every slot
+        # for each of them covers every arrangement's spacing.
+        lp = sorted({x["person"] for x in pp["pairs"]}); rp = sorted({x["persona"] for x in pp["pairs"]})
+        for ls in permutations(range(len(L)), len(lp)):
+            for rs in permutations(range(len(R)), len(rp)):
+                sl, sr = dict(zip(lp, ls)), dict(zip(rp, rs))
+                st = [sl[x["person"]] - sr[x["persona"]] for x in pp["pairs"]]
                 if len(set(st)) == len(st):
-                    self.assertLessEqual(gaps(st), mine, "a better spaced order exists: %s %s" % (l, r))
+                    self.assertLessEqual(gaps(st), mine, "a better spaced placement exists: %s %s" % (sl, sr))
+
+    def test_the_search_gives_what_trying_every_arrangement_gives(self):
+        # order_personae tries placements of the paired ones only; on casts small enough to try
+        # every arrangement, the two must agree exactly.
+        import random
+        from itertools import permutations
+
+        def brute(people, pairs):
+            left = sorted(p["slug"] for p in people if p["kind"] == "person")
+            right = sorted(p["slug"] for p in people if p["kind"] == "persona")
+            lo, hi = -len(right), len(left)
+            best = None
+            for L in permutations(left):
+                for R in permutations(right):
+                    st = sorted(L.index(x["person"]) - R.index(x["persona"]) for x in pairs)
+                    if len(set(st)) != len(st):
+                        continue
+                    marks = [lo] + st + [hi]
+                    score = (sorted(b - a for a, b in zip(marks, marks[1:])), tuple(-ord(c) for c in "\0".join(L + R)))
+                    if best is None or score > best[0]:
+                        best = (score, [list(L), list(R)])
+            return best and best[1]
+        rng = random.Random(4)   # the house seed
+        casts = []
+        names = ["ann", "bo", "cy", "di", "ed", "flo", "gus"]
+        for n in range(40):
+            k, m = rng.randint(2, 6), rng.randint(1, 3)
+            ppl = [{"slug": names[i], "kind": "person"} for i in range(k)] + [{"slug": "p%d" % j, "kind": "persona"} for j in range(m)]
+            prs, seen = [], set()
+            for _ in range(rng.randint(1, 3)):
+                a, b = names[rng.randrange(k)], "p%d" % rng.randrange(m)
+                if (a, b) not in seen:
+                    seen.add((a, b)); prs.append({"person": a, "persona": b, "words": "x", "href": "https://x"})
+            casts.append((ppl, prs))
+        agreed = 0
+        for ppl, prs in casts:
+            want = brute(ppl, prs)
+            try:
+                got = order(build.order_personae(copy.deepcopy(ppl), copy.deepcopy(prs)))
+            except build.ContentError:
+                got = None
+            self.assertEqual(got and [list(got[0]), list(got[1])], want, (ppl, prs))
+            agreed += 1
+        self.assertEqual(agreed, 40)
 
     def test_a_changed_relation_changes_the_order(self):
         pp = DATA["personae"]
@@ -167,14 +215,48 @@ class Words(unittest.TestCase):
             self.assertIn("%s and %s" % (by[r["person"]], by[r["persona"]]), li)
             self.assertIn(r["href"], li)
 
-    def test_the_cast_is_only_who_the_site_or_public_repositories_name(self):
-        # Corwin, 2026-11-01: add nobody new and no private names. Credit as the site and the
-        # public inputloop repositories give it: Brigidt by her GitHub handle for repository work.
+    def test_the_cast_is_who_corwin_has_named(self):
+        # Corwin, 2026-11-01: first, nobody new; at 19:39, "include some more of our labpartners and
+        # people who you know about on our cast page; I will ask you to take things down". One file
+        # each, so any one can come down by deleting a file. Brigidt is credited as she asks.
         self.assertEqual(sorted(p["title"] for p in DATA["personae"]["left"]),
-                         ["Brigidt", "Bryant Frankford", "Corwin Brust", "Dee Brust"])
+                         ["Bob", "Brigidt", "Bryant Frankford", "Corwin Brust", "David Dyer-Bennet (DD-B)",
+                          "Dee Brust", "Erik Elmshausertigger (tigersbite)", "Jon Lincicum", "Logan",
+                          'Pierre ("Peer")', "Rachel (Teachable)"])
+        self.assertIn("K. Smith as editor; definitelynotaspren for her repository work", page())
         self.assertEqual(sorted(p["title"] for p in DATA["personae"]["right"]),
                          ["Alfred", "Mentat", "Vibrobeast"])
         self.assertIn("definitelynotaspren", page())
+
+    def test_who_works_with_whom_writes_every_with_line_and_makes_no_postcard_of_it(self):
+        text = page()
+        pp = DATA["personae"]
+        items = re.findall(r'<li class="pp-with" data-people="([\w-]+) ([\w-]+)">(.*?)</li>', text, re.S)
+        self.assertEqual(len(items), len(pp["with"]))
+        self.assertEqual(len(items), 7)
+        for a, b, li in items:
+            self.assertIn(" and ", li)
+        self.assertNotIn("pp-with", open(os.path.join(ROOT, "src", "js", "personae.js"), encoding="utf-8").read())
+
+    def test_the_cast_says_nothing_private(self):
+        # 19:39: nothing about keys, secrets, sealing, emergency contacts or who can open what; no
+        # contact details, private repositories, health, family or personal details.
+        d = os.path.join(ROOT, "content", "personae")
+        for n in sorted(os.listdir(d)):
+            t = open(os.path.join(d, n), encoding="utf-8").read().lower()
+            for w in ("key", "secret", "seal", "emergency", "password", "phone", "@", "mailto", "health"):
+                self.assertNotIn(w, t.replace("keeps", "").replace("keep ", ""), "%s says %r" % (n, w))
+
+    def test_a_with_line_joins_two_people_only(self):
+        tmp = tempfile.mkdtemp()
+        try:
+            shutil.copytree(os.path.join(ROOT, "content"), os.path.join(tmp, "content"))
+            with open(os.path.join(tmp, "content", "personae", "logan.txt"), "a", encoding="utf-8") as f:
+                f.write("with: mentat | not a person\n")
+            with self.assertRaises(build.ContentError):
+                build.load(os.path.join(tmp, "content"))
+        finally:
+            shutil.rmtree(tmp)
 
     def test_relation_sources_are_public(self):
         for r in DATA["personae"]["pairs"]:

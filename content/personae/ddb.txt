@@ -1,0 +1,5 @@
+title: David Dyer-Bennet (DD-B)
+kind: person
+role: A long-time friend, a contributor focused on Steven Brust's books (SKZB), and one of the principal readers of the Dragaera work.
+credit: Named here with his yes, given on 2026-10-24
+with: corwin | DD-B and I read the Dragaera work together.

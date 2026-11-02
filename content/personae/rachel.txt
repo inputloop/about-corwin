@@ -1,0 +1,4 @@
+title: Rachel (Teachable)
+kind: person
+role: A lab partner since mid-October 2026, the lab's welcome coordinator, and a book reviewer for Model This Book.
+with: corwin | Rachel and I have been lab partners since mid-October 2026.

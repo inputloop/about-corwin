@@ -1,0 +1,4 @@
+title: Erik Elmshausertigger (tigersbite)
+kind: person
+role: Worked on the shared workstation's WireGuard and anonymous upload setup.
+with: corwin | Erik worked with me on the shared workstation.

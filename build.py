@@ -253,14 +253,16 @@ def load(content_dir=CONTENT):
 # personae", says the rule in words.
 
 PERSONA_KINDS = ("person", "persona")
-PERSONA_KEYS = {"title", "kind", "role", "credit", "source", "relation"}
-# The most arrangements the exhaustive sort will try before it says the cast has outgrown it.
+PERSONA_KEYS = {"title", "kind", "role", "credit", "source", "relation", "with"}
+# The most placements the search will try before it says the cast has outgrown it. Only the people
+# and personas in a pairing are placed by search (see order_personae), so this bounds the paired
+# ones, not the whole cast.
 MAX_ARRANGEMENTS = 2000000
 
 
 def load_personae(content_dir=CONTENT):
     d = os.path.join(content_dir, "personae")
-    people, relations = [], []
+    people, relations, withs = [], [], []
     for name in sorted(os.listdir(d)) if os.path.isdir(d) else []:
         if not name.endswith(".txt"):
             continue
@@ -287,7 +289,23 @@ def load_personae(content_dir=CONTENT):
             if not href.startswith("https://"):
                 raise ContentError("%s: a relation names its source as an https link" % path)
             relations.append({"a": slug, "b": other, "words": words, "href": href, "path": path})
+        for v in rec["header"].get("with", []):
+            parts = pipes(v, 2, path)
+            href = parts[2] if len(parts) > 2 else None
+            if href and not href.startswith("https://"):
+                raise ContentError("%s: a with: line's source is an https link" % path)
+            withs.append({"a": slug, "b": parts[0], "words": parts[1], "href": href, "path": path})
     by = {p["slug"]: p for p in people}
+    together = []
+    for w in withs:
+        # Two people who work together stand in the same column, so they never come level: their
+        # line is written out under the columns, makes no postcard, and plays no part in the order.
+        if w["b"] not in by:
+            raise ContentError("%s: with: names %r, who has no content/personae card" % (w["path"], w["b"]))
+        if by[w["a"]]["kind"] != "person" or by[w["b"]]["kind"] != "person":
+            raise ContentError("%s: a with: line joins two people; a person and a persona are a relation:"
+                               % w["path"])
+        together.append({"a": w["a"], "b": w["b"], "words": w["words"], "href": w["href"]})
     pairs, seen = [], set()
     for r in relations:
         if r["b"] not in by:
@@ -302,7 +320,9 @@ def load_personae(content_dir=CONTENT):
             raise ContentError("%s: the relation %s and %s is written twice" % (r["path"], key[0], key[1]))
         seen.add(key)
         pairs.append({"person": key[0], "persona": key[1], "words": r["words"], "href": r["href"]})
-    return order_personae(people, pairs)
+    out = order_personae(people, pairs)
+    out["with"] = sorted(together, key=lambda w: (w["b"], w["a"]))
+    return out
 
 
 def order_personae(people, pairs):
@@ -319,19 +339,35 @@ def order_personae(people, pairs):
       3. ties go to the arrangement whose names, read down the left column and then down the
          right, come first in alphabetical order of their file names.
 
-    Every arrangement is tried, so the answer is the best one and the same on every machine."""
+    The answer is the best one and the same on every machine, and it is exactly what trying every
+    arrangement would give, found faster: the meeting steps depend only on the slots of those in a
+    pairing, and for any placement of them the alphabetically first reading puts everyone else in
+    the free slots in alphabetical order. So the search tries every placement of the paired people
+    and personas, fills the rest in order, and compares as above (a test checks it against trying
+    every arrangement on smaller casts)."""
     from itertools import permutations
     left = sorted(p["slug"] for p in people if p["kind"] == "person")
     right = sorted(p["slug"] for p in people if p["kind"] == "persona")
-    n_arr = math.factorial(len(left)) * math.factorial(len(right))
+    lp = sorted({p["person"] for p in pairs})
+    rp = sorted({p["persona"] for p in pairs})
+    n_arr = (math.perm(len(left), len(lp)) * math.perm(len(right), len(rp)))
     if n_arr > MAX_ARRANGEMENTS:
-        raise ContentError("%d people and %d personas make %d arrangements; the exhaustive sort "
-                           "stops at %d" % (len(left), len(right), n_arr, MAX_ARRANGEMENTS))
+        raise ContentError("%d paired people and %d paired personas make %d placements; the search "
+                           "stops at %d" % (len(lp), len(rp), n_arr, MAX_ARRANGEMENTS))
     lo, hi = -(len(right) - 1) - 1, (len(left) - 1) + 1   # the run's ends, one step outside
+
+    def fill(column, placed):
+        rest = iter(s for s in column if s not in placed.values())
+        return tuple(placed.get(i) or next(rest) for i in range(len(column)))
+
+    def placements(column, paired):
+        for slots in permutations(range(len(column)), len(paired)):
+            yield fill(column, dict(zip(slots, paired)))
+
     best, best_score = None, None
-    for L in permutations(left):
+    for L in placements(left, lp):
         pl = {s: i for i, s in enumerate(L)}
-        for R in permutations(right):
+        for R in placements(right, rp):
             pr = {s: i for i, s in enumerate(R)}
             steps = sorted(pl[p["person"]] - pr[p["persona"]] for p in pairs)
             if len(set(steps)) != len(steps):
@@ -718,8 +754,17 @@ def render_personae(pp):
         % (e(r["person"]), e(r["persona"]), r["step"], e(by[r["person"]]["title"]),
            e(by[r["persona"]]["title"]), e(r["words"]), e(r["href"]),
            e(by[r["person"]]["title"]), e(by[r["persona"]]["title"])) for r in pp["pairs"])
+    pairs += "".join(
+        '<li class="pp-with" data-people="%s %s"><strong class="pp-names">%s and %s</strong>: '
+        '<span class="pp-words">%s</span>%s</li>'
+        % (e(w["a"]), e(w["b"]), e(by[w["a"]]["title"]), e(by[w["b"]]["title"]), e(w["words"]),
+           ' <a class="pp-src" href="%s">Source<span class="visually-hidden"> for %s and %s</span></a>'
+           % (e(w["href"]), e(by[w["a"]]["title"]), e(by[w["b"]]["title"])) if w["href"] else
+           ' <span class="pp-src">(Corwin\'s word)</span>')
+        for w in pp.get("with", []))
     alone = [p["title"] for p in pp["left"] + pp["right"]
-             if not any(p["slug"] in (r["person"], r["persona"]) for r in pp["pairs"])]
+             if not any(p["slug"] in (r["person"], r["persona"]) for r in pp["pairs"])
+             and not any(p["slug"] in (w["a"], w["b"]) for w in pp.get("with", []))]
     note = ('<p class="pp-alone">No persona is paired with %s yet, so %s no postcard.</p>'
             % (" or ".join(e(t) for t in alone), "these get" if len(alone) > 1 else "that card gets")
             if alone else "")

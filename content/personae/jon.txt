@@ -1,0 +1,4 @@
+title: Jon Lincicum
+kind: person
+role: Keeps the Lyorn Records and is one of the principal readers of the Dragaera work.
+with: corwin | Jon and I read the Dragaera work together.

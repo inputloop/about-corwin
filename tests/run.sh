@@ -107,6 +107,10 @@ prove_red() {
   plant "the cast page loses the top matter"  content/site.txt 's/^stitch: Copy anything here\./stitch: Copy most things here./' "$pyc"
   plant "T2 drifts down the cast page"       src/cast.html  's#^    <p class="stitch" id="stitch">{{STITCH}}</p>##;s#^  <section id="how"#  <p class="stitch" id="stitch">{{STITCH}}</p>\n  <section id="how"#' "$pyc"
   plant "the cast page loses Customize"      src/cast.html  's#<button type="button" id="c-apply">\[Apply\]</button>#<button type="button" id="c-apply">[OK]</button>#' "$pyc"
+  plant "the cast search fills out of order" build.py 's/^        rest = iter(s for s in column if s not in placed.values())$/        rest = iter(sorted((s for s in column if s not in placed.values()), reverse=True))/' "$pyc"
+  plant "a with: line may join a persona"   build.py 's/^        if by\[w\["a"\]\]\["kind"\] != "person" or by\[w\["b"\]\]\["kind"\] != "person":$/        if False:/' "$pyc"
+  plant "a cast card names a key"           content/personae/logan.txt 's/^role: Helps with the shop.s machines\./role: Helps with the machines and holds a key./' "$pyc"
+  plant "a with: line drops out of the list" build.py 's/^        for w in pp.get("with", \[\]))$/        for w in pp.get("with", [])[1:])/' "$pyc"
   plant "heading levels skip"                build.py           's/render_card(c, windows, 4) for c in projects/render_card(c, windows, 5) for c in projects/' "$pyc"
   if command -v "$node" >/dev/null 2>&1; then
     plant "Customize phones home"            src/js/customize.js 's#^  var doc = document, html = doc.documentElement;#  var doc = document, html = doc.documentElement; fetch("/x");#' "$nodec"
@@ -127,6 +131,7 @@ prove_red() {
     plant "the hub card teaches associations" src/js/taxonomy.js 's/var HUB = 1.5;/var HUB = 99;/' "$nodec"
     plant "spreading admits cards"           src/js/taxonomy.js 's/      if (!direct) score = 0;//' "$nodec"
     plant "presentation words pick subjects" src/js/taxonomy.js 's/var PRESENTATION_ON_CARDS = 0.3;/var PRESENTATION_ON_CARDS = 1;/' "$nodec"
+    plant "the second reader's search fills out of order" tests/js/personae.test.mjs 's/^    const rest = column.filter((c) => !paired.includes(c));$/    const rest = column.filter((c) => !paired.includes(c)).reverse();/' "$nodec"
     plant "the personae tie-break turns around" build.py 's/score = (gaps, tuple(-ord(c)/score = (gaps, tuple(ord(c)/' "$nodec"
     if [ "${SKIP_BROWSER:-}" != 1 ]; then
       plant "Customize is out of the tab order" src/index.html   's/id="custom-btn" class="custom-btn"/id="custom-btn" tabindex="-1" class="custom-btn"/' "$brc"

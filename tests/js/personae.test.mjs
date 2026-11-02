@@ -42,23 +42,44 @@ function* perms(xs) {
 }
 
 // The rule, as DESIGN.md says it: distinct meeting steps; gaps (with one step of margin at each
-// end) compared smallest first, larger wins; then the alphabetically first reading.
-function arrange({ cast, pairs }) {
-  const left = cast.filter((c) => c.kind === 'person').map((c) => c.slug).sort();
-  const right = cast.filter((c) => c.kind === 'persona').map((c) => c.slug).sort();
-  const lo = -right.length, hi = left.length;
+// end) compared smallest first, larger wins; then the alphabetically first reading. Trying every
+// arrangement (brute) is exact but grows as factorials; arrange() tries every slot for the paired
+// people and personas only and fills the rest alphabetically, which DESIGN.md says gives the same
+// answer, and the test below holds the two to it on small casts.
+const cmp = (a, b) => { for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return a[i] - b[i]; return 0; };
+function score(L, R, pairs, lo, hi) {
+  const steps = pairs.map(([p, q]) => L.indexOf(p) - R.indexOf(q)).sort((a, b) => a - b);
+  if (new Set(steps).size !== steps.length) return null;
+  const marks = [lo, ...steps, hi];
+  return { L, R, gaps: marks.slice(1).map((m, i) => m - marks[i]).sort((a, b) => a - b), name: L.concat(R).join('\0') };
+}
+function better(x, best) { return x && (!best || cmp(x.gaps, best.gaps) > 0 || (cmp(x.gaps, best.gaps) === 0 && x.name < best.name)); }
+function columns(cast) {
+  return [cast.filter((c) => c.kind === 'person').map((c) => c.slug).sort(), cast.filter((c) => c.kind === 'persona').map((c) => c.slug).sort()];
+}
+function brute({ cast, pairs }) {
+  const [left, right] = columns(cast), lo = -right.length, hi = left.length;
   let best = null;
-  const cmp = (a, b) => { for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return a[i] - b[i]; return 0; };
-  for (const L of perms(left)) {
-    for (const R of perms(right)) {
-      const steps = pairs.map(([p, q]) => L.indexOf(p) - R.indexOf(q)).sort((a, b) => a - b);
-      if (new Set(steps).size !== steps.length) continue;
-      const marks = [lo, ...steps, hi];
-      const gaps = marks.slice(1).map((m, i) => m - marks[i]).sort((a, b) => a - b);
-      const name = L.concat(R).join('\0');
-      if (!best || cmp(gaps, best.gaps) > 0 || (cmp(gaps, best.gaps) === 0 && name < best.name)) best = { L, R, gaps, name };
-    }
+  for (const L of perms(left)) for (const R of perms(right)) { const x = score(L, R, pairs, lo, hi); if (better(x, best)) best = x; }
+  return best;
+}
+function* slotsFor(n, k, used = []) {
+  if (used.length === k) { yield used.slice(); return; }
+  for (let i = 0; i < n; i++) if (!used.includes(i)) yield* slotsFor(n, k, used.concat([i]));
+}
+function* placed(column, paired) {
+  for (const slots of slotsFor(column.length, paired.length)) {
+    const out = new Array(column.length).fill(null);
+    slots.forEach((s, i) => { out[s] = paired[i]; });
+    const rest = column.filter((c) => !paired.includes(c));
+    yield out.map((x) => x === null ? rest.shift() : x);
   }
+}
+function arrange({ cast, pairs }) {
+  const [left, right] = columns(cast), lo = -right.length, hi = left.length;
+  const lp = [...new Set(pairs.map((x) => x[0]))].sort(), rp = [...new Set(pairs.map((x) => x[1]))].sort();
+  let best = null;
+  for (const L of placed(left, lp)) for (const R of placed(right, rp)) { const x = score(L, R, pairs, lo, hi); if (better(x, best)) best = x; }
   return best;
 }
 
@@ -99,4 +120,17 @@ test('a changed relation changes the order (the second reader agrees)', () => {
     if (t.L.join() !== base.L.join() || t.R.join() !== base.R.join()) moved++;
   }
   assert.ok(moved > 0, 'dropping any one relation left everyone where they were');
+});
+
+test('the placement search gives what trying every arrangement gives, on small casts', () => {
+  let seed = 9;   // a house number, so the casts are the same each run
+  const rnd = (n) => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed % n; };
+  for (let t = 0; t < 40; t++) {
+    const k = 2 + rnd(5), m = 1 + rnd(3);
+    const cast = [...Array(k).keys()].map((i) => ({ slug: 'n' + i, kind: 'person' })).concat([...Array(m).keys()].map((j) => ({ slug: 'p' + j, kind: 'persona' })));
+    const pairs = [], seen = new Set();
+    for (let r = 1 + rnd(3); r > 0; r--) { const a = 'n' + rnd(k), b = 'p' + rnd(m); if (!seen.has(a + b)) { seen.add(a + b); pairs.push([a, b]); } }
+    const x = arrange({ cast, pairs }), y = brute({ cast, pairs });
+    assert.deepEqual(x && [x.L, x.R], y && [y.L, y.R], JSON.stringify({ cast, pairs }));
+  }
 });

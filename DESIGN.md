@@ -165,17 +165,28 @@ postcard at a time; and the prompt stays at the foot of the page.
 
 **The data.** One header-only text file per person or persona in `content/personae/` (the same
 store as the cards, for the same reasons): `title`, `kind` (person or persona), `role`, `credit`,
-`source`, and one `relation: other | what joins them | https source` line per pairing. A relation
-always pairs a person with a persona, is written once, and names its public source. A card may not
-carry any other key, so nobody can be given a slot, an order or an offset by hand: the build stops
-and says positions are computed. The cast is only who the page or a public inputloop repository
-already names, credited the way those do (Brigidt with her GitHub handle, definitelynotaspren).
+`source`, one `relation: other | what joins them | https source` line per pairing, and any number
+of `with: other person | what joins them` lines. A relation always pairs a person with a persona,
+is written once, and names its public source. A `with:` line joins two people: both stand in the
+people's column, so they never come level; the line is written out under "Who works with whom"
+(marked as Corwin's word when it names no source), makes no postcard, and plays no part in the
+order. A card may not carry any other key, so nobody can be given a slot, an order or an offset by
+hand: the build stops and says positions are computed.
+
+**Who is in it.** At first only who the page or a public inputloop repository already named. Then
+Corwin, 2026-11-01 19:39: "I think we can include some more of our labpartners and people who you
+know about on our cast page; I will ask you to take things down you miss a beat." So the people's
+column also holds David Dyer-Bennet (DD-B, who said yes to being named, 2026-10-24), Rachel
+(Teachable), Pierre ("Peer"), Bob, Logan, Erik Elmshausertigger (tigersbite) and Jon Lincicum, each
+in one file, so any one comes down by deleting a file. Each card says only what Corwin gave: what
+they do with him, in plain words; nothing about keys or access, no contact details, no private
+repositories, nothing personal. Brigidt is credited as she asks: K. Smith as editor,
+definitelynotaspren for her repository work.
 
 **The rule that places everyone.** People go in the left column, personas in the right. The left
 column rises as you scroll and the right one falls, so the person in left slot *a* comes level with
 the persona in right slot *b* when the columns have slid *a* − *b* slots past each other; call that
-the pair's meeting step. `build.py` (`order_personae`) tries every order of both columns and keeps
-the one where:
+the pair's meeting step. `build.py` (`order_personae`) keeps the order of both columns where:
 
 1. no two related pairs have the same meeting step, so at most one is ever level;
 2. the meetings are as evenly spread as they can be: list the gaps between meeting steps, counting
@@ -185,7 +196,13 @@ the one where:
 3. any tie goes to the order whose file names, read down the left column and then the right, come
    first alphabetically.
 
-If no order keeps the pairs apart, the build stops and says so. The build writes each card's slot,
+If no order keeps the pairs apart, the build stops and says so. Trying every order stopped being
+possible when the cast grew (eleven people and three personas are 239 million orders), so the
+search is cut without changing its answer: the meeting steps depend only on where the paired
+people and personas stand, and for any such placement the alphabetically first reading has
+everyone else in the free slots in alphabetical order. The build tries every placement of the
+paired ones (5,940 here) and fills the rest in order; a check in each language holds that to trying
+every order, on 40 small casts. The build writes each card's slot,
 each pairing's step, and the first and last step of the run into the page; `src/js/personae.js`
 only turns the scroll position into a step and moves the two columns by half a step each, opposite
 ways. It has no names and no positions in it, and the stylesheet has no rule for any one card.
