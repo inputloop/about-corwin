@@ -276,9 +276,12 @@ test('dark scheme: the page is dark and the text light', { skip }, async () => {
 test('the licence page lists every script the page loads', { skip }, async () => {
   const p = await page();
   const scripts = await p.$$eval('script[src]', (s) => s.map((x) => x.getAttribute('src')));
+  // The second act (cast/index.html) loads some of the same scripts and one more; the table lists both pages'.
+  await p.goto(pathToFileURL(path.join(OUT, 'cast', 'index.html')).href);
+  const cast = await p.$$eval('script[src]', (s) => s.map((x) => x.getAttribute('src').replace(/^\.\.\//, '')));
   await p.goto(pathToFileURL(path.join(OUT, 'jslicense.html')).href);
   const rows = await p.$$eval('#jslicense-labels1 tbody tr td:first-child a', (a) => a.map((x) => x.getAttribute('href')));
-  assert.deepEqual(rows.sort(), scripts.sort());
+  assert.deepEqual(rows.sort(), [...new Set(scripts.concat(cast))].sort());
   await p.context().close();
 });
 

@@ -57,6 +57,11 @@
 
   // ---- windows ----------------------------------------------------------------------------------
   var cards = $$('.card');
+  // The cast page (cast/index.html) carries the same index but no cards: there the prompt counts the
+  // home page's cards and its answers lead back to them (html data-home names the way back).
+  var home = html.getAttribute('data-home');
+  var total = cards.length || (index ? index.items.filter(function (it) {
+    return ['about', 'involvements', 'projects', 'concepts'].indexOf(it.kind) >= 0; }).length : 0);
   cards.forEach(function (card) {
     var span = $('.face > .window', card);
     if (!span) return;
@@ -191,7 +196,7 @@
   var ml = $('#modeline'), pos = $('.ml-pos', ml), sec = $('.ml-sec', ml);
   var sections = $$('main > section[id], .portfolio-inner > h3[id]');
   var SECTION_NAMES = { about: 'about', involvements: 'involvements', portfolio: 'inputloop', work: 'work',
-                        ideas: 'ideas', personae: 'personae', how: 'how', stage: 'display' };
+                        ideas: 'ideas', how: 'how', stage: 'display' };
   var ticking = false;
   function where() {
     ticking = false;
@@ -299,7 +304,7 @@
 
   function runQuery(text, announce) {
     text = text.trim();
-    if (!text) { reset(); if (announce) say('Showing all ' + cards.length + ' cards.'); return; }
+    if (!text) { reset(); if (announce) say('Showing all ' + total + ' cards.'); return; }
     if (text !== '?' && !/^help$/i.test(text)) clearFilters();
     if (text === '?' || /^help$/i.test(text)) { say(HELP); return; }
     if (!model) { say('The search could not start, so every card stays shown.'); return; }
@@ -307,7 +312,7 @@
     if (!res.items.length) {
       reset();
       lastQuery = res.view ? { view: res.view } : null;
-      say(window.Taxonomy.describe(res, cards.length));
+      say(window.Taxonomy.describe(res, total));
       return;
     }
     lastQuery = res;
@@ -328,7 +333,7 @@
     });
     results.textContent = '';
     results.appendChild(ol);
-    say(window.Taxonomy.describe(res, cards.length));
+    say(window.Taxonomy.describe(res, total));
   }
 
   results.addEventListener('click', function (ev) {
@@ -336,6 +341,7 @@
     if (!b) return;
     var card = doc.getElementById(b.dataset.slug);
     if (card) openCard(card, preferred(card), true);
+    else if (home) window.location.href = home + '#' + encodeURIComponent(b.dataset.slug);
   });
 
   if (prompt) {

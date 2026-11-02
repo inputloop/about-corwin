@@ -30,7 +30,8 @@ def tearDownModule():
 
 
 def page():
-    with open(os.path.join(OUT, "public", "index.html"), encoding="utf-8") as f:
+    # The cast is the second act, a page of its own (Corwin, 2026-11-01 18:06).
+    with open(os.path.join(OUT, "public", "cast", "index.html"), encoding="utf-8") as f:
         return f.read()
 
 
@@ -136,10 +137,10 @@ class NoHandPlacedPositions(unittest.TestCase):
             shutil.rmtree(tmp)
 
     def test_no_stylesheet_or_script_names_anyone(self):
-        css = open(os.path.join(ROOT, "src", "css", "site.css"), encoding="utf-8").read()
+        css = "".join(open(os.path.join(ROOT, "src", "css", n), encoding="utf-8").read() for n in ("site.css", "cast.css"))
         js = open(os.path.join(ROOT, "src", "js", "personae.js"), encoding="utf-8").read()
         for s in self.slugs():
-            self.assertNotRegex(css, r"#pp-%s\b|data-slug=\"?%s" % (s, s), "site.css places %s by hand" % s)
+            self.assertNotRegex(css, r"#pp-%s\b|data-slug=\"?%s" % (s, s), "a stylesheet places %s by hand" % s)
             self.assertNotRegex(js, r"['\"]%s['\"]|pp-%s\b" % (s, s), "personae.js names %s" % s)
         self.assertNotRegex(css, r"\.pp-[\w-]+:nth-(child|of-type)", "a personae rule picks a card by its position")
         self.assertNotRegex(css, r"\[data-slot", "a personae rule picks a card by its slot")

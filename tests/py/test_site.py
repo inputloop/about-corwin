@@ -343,7 +343,13 @@ class LibreJS(unittest.TestCase):
         self.assertIn('rel="jslicense"', page)
         self.assertIn('id="jslicense-labels1"', labels)
         srcs = re.findall(r'<script src="([^"]+)"', page)
-        self.assertEqual(sorted(s.split("?")[0] for s in srcs), sorted("js/" + n for n in build.JS_FILES))
+        self.assertEqual(sorted(s.split("?")[0] for s in srcs), sorted("js/" + n for n in build.HOME_JS))
+        cast = re.findall(r'<script src="\.\./([^"]+)"', read("cast", "index.html"))
+        self.assertEqual(sorted(s.split("?")[0] for s in cast), sorted("js/" + n for n in build.CAST_JS))
+        listed = re.findall(r'<td><a href="(js/[\w.-]+)\?', labels)
+        self.assertEqual(sorted(set(listed)), sorted("js/" + n for n in build.JS_FILES),
+                         "jslicense.html lists exactly the scripts the two pages load")
+        srcs = srcs + cast
         for s in srcs:
             self.assertIn('href="%s"' % s, labels)
             js = read(s.split("?")[0])
@@ -639,3 +645,50 @@ class SecondReader(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SecondAct(unittest.TestCase):
+    """Corwin, 2026-11-01 18:06: the cast is a page of its own, the second act; the home page stays
+    as it was before the cast came (7fdb985^), with one quiet link to it."""
+
+    T2 = ("Copy anything here. When I build something, I ask who it lets in and who it leaves out. "
+          "If it left you out, tell me: corwin@bru.st")
+
+    def test_the_home_page_has_no_cast_section(self):
+        page = read("index.html")
+        for mark in ('id="personae"', 'class="pp-', "personae.js", "cast.css", "Dramatis personae"):
+            self.assertNotIn(mark, page, "the home page carries the cast (%s)" % mark)
+        self.assertNotIn(".pp-", read("css", "site.css"), "the cast's rules belong in cast.css")
+
+    def test_one_quiet_link_leads_from_the_home_page_to_the_cast(self):
+        page = read("index.html")
+        self.assertEqual(len(re.findall(r'href="cast/index.html"', page)), 1)
+        foot = page.split('<footer class="minibuffer-wrap"')[1]
+        self.assertIn('href="cast/index.html"', foot, "the link sits in the footer, out of the way")
+
+    def test_the_cast_page_has_the_section_and_the_home_pages_frame(self):
+        home, cast = read("index.html"), read("cast", "index.html")
+        self.assertIn('id="personae"', cast)
+        self.assertIn('href="../index.html"', cast)
+        grab = lambda t, a, b: t[t.index(a):t.index(b)]
+        self.assertEqual(grab(cast, '<div class="custom" id="custom">', '<header'),
+                         grab(home, '<div class="custom" id="custom">', '<header'), "Customize differs")
+        self.assertEqual(grab(cast, '<div class="modeline"', '<footer'), grab(home, '<div class="modeline"', '<footer'))
+        self.assertIn('id="prompt"', cast)
+        self.assertIn('rel="jslicense"', cast)
+        self.assertIn('id="taxonomy-index"', cast)
+        self.assertNotIn("style=", cast)
+        self.assertNotRegex(cast, r"<script(?![^>]*\bsrc=)(?![^>]*application/json)[^>]*>", "inline script")
+        self.assertNotRegex(cast, r'(src|href)="https?://(?!www\.gnu|github|hostux|corwin\.bru)', "")
+        self.assertIn('data-tone="none"', cast, "the cast page has no tone pad for now")
+
+    def test_t2_the_top_matter_is_at_the_top_of_the_cast_page_word_for_word(self):
+        cast = read("cast", "index.html")
+        head = cast.split("<main")[0]
+        m = re.search(r'<p class="stitch" id="stitch">(.*?)</p>', head)
+        self.assertIsNotNone(m, "T2 is not in the cast page's masthead")
+        text = re.sub(r"<[^>]+>", "", m.group(1))
+        self.assertEqual(html.unescape(text), self.T2)
+        self.assertIn('href="mailto:corwin@bru.st"', m.group(1))
+        self.assertLess(cast.index('id="stitch"'), cast.index('<h1>') + 400, "T2 sits right under the title")
+        self.assertNotIn(self.T2[:30], read("index.html"), "T2 belongs to the cast page, not the home page")

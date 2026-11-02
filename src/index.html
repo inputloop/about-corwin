@@ -20,7 +20,6 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
 <script src="js/windows.js" defer></script>
 <script src="js/site.js" defer></script>
 <script src="js/customize.js" defer></script>
-<script src="js/personae.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to the content</a>
@@ -132,34 +131,6 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
     </div>
   </section>
 
-  <section id="personae" class="personae" aria-labelledby="personae-h" data-lo="{{PP_LO}}" data-hi="{{PP_HI}}">
-    <div class="wrap">
-      <h2 id="personae-h">Dramatis personae</h2>
-      <p class="lede">Who makes this work: the people on the left, the agents' personas on the right. <span class="pp-moving">As you scroll, the two columns slide past each other, one up and one down, and when two who work together come level, their cards become one postcard.</span> Who stands where is worked out from who works with whom, not placed by hand.</p>
-    </div>
-    <div class="pp-track">
-      <div class="pp-stage">
-        <div class="wrap pp-cols">
-          <section class="pp-col pp-left" aria-labelledby="pp-left-h">
-            <h3 id="pp-left-h">People</h3>
-            <ol class="pp-list">{{PP_LEFT}}</ol>
-          </section>
-          <section class="pp-col pp-right" aria-labelledby="pp-right-h">
-            <h3 id="pp-right-h">Personas</h3>
-            <ol class="pp-list">{{PP_RIGHT}}</ol>
-          </section>
-        </div>
-        <div class="pp-postcard" tabindex="-1" hidden><p class="pp-pc-label">Postcard</p><p class="pp-pc-names"></p><p class="pp-pc-words"></p></div>
-      </div>
-    </div>
-    <div class="wrap">
-      <h3 id="pp-pairs-h">Who works with whom</h3>
-      <ul class="pp-pairs" aria-labelledby="pp-pairs-h">{{PP_PAIRS}}</ul>
-      {{PP_ALONE}}
-      <p class="visually-hidden" id="pp-say" role="status" aria-live="polite"></p>
-    </div>
-  </section>
-
   <section id="how" class="wrap prose reading" aria-labelledby="how-h">
     <h2 id="how-h">How this page works</h2>
     <p>It is one page of HTML and CSS that reads well with scripts turned off. The scripts add the moving windows, the parallax, the cards that grow, and the prompt; GNU LibreJS can check their <a href="jslicense.html" rel="jslicense">licence labels</a>. Nothing is fetched after the page loads and nothing is sent about you. Your Customize settings and whether you turned motion off stay in your own browser. The blog posts and build list were saved when the page was built.</p>
@@ -207,6 +178,7 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
   <div id="results" class="results"></div>
   <p id="echo" class="echo" role="status">End of buffer. <span class="nojs-only">The prompt needs JavaScript; the quick filters in the display area work without it.</span></p>
   {{FOOTER}}
+  <p class="colophon act2-link"><a href="cast/index.html">Second act: the cast</a>, the people and the agents' personas who make this work.</p>
 </footer>
 <script type="application/json" id="taxonomy-index">{{INDEX_JSON}}</script>
 </body>

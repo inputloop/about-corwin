@@ -63,7 +63,7 @@ function arrange({ cast, pairs }) {
 }
 
 function pageOrder() {
-  const html = readFileSync(path.join(OUT, 'index.html'), 'utf8');
+  const html = readFileSync(path.join(OUT, 'cast', 'index.html'), 'utf8');
   const col = (cls) => {
     const block = html.match(new RegExp(`<section class="pp-col ${cls}"[\\s\\S]*?</ol>`))[0];
     return [...block.matchAll(/data-slug="([\w-]+)" data-slot="(\d+)"/g)].map((m) => m[1]);

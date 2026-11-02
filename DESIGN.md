@@ -138,7 +138,25 @@ The fly-down stops the moment you use the wheel, touch the screen or press a key
 The CSS and script URLs carry a hash of the file (`site.css?v=...`), so after a deploy no browser
 runs yesterday's script against today's page.
 
-## Dramatis personae
+## Dramatis personae: the second act
+
+**Its own page.** Corwin, 2026-11-01 18:06: "we really want the cast page to be it's own page: what
+was on the home page before was absolutely perfect: we want a second act." So the cast lives at
+`cast/index.html` (aboutcorwin.com/cast/), built from `src/cast.html`, with its rules in
+`css/cast.css`; the home page is what it was before the cast came (the build at 7fdb985^), plus one
+quiet line at the very end of the footer: "Second act: the cast". The path is `cast/` because a
+playbill's second page is the cast list and the word is short to type; the links name
+`cast/index.html` and `../index.html` so the pages still work opened from disk, where a link to a
+folder shows a file listing. The cast page has the home page's frame, byte for byte where it can
+(Customize, the mode-line, the prompt; a test compares them), and the same CSP and LibreJS table,
+which lists every script either page loads (`build.HOME_JS`, `build.CAST_JS`). Its prompt
+searches the first page's cards and its answers lead back to them.
+
+**Its top line.** Under its title the cast page carries the line Corwin chose on 2026-11-01 18:03
+(T2, from c4 `q/2026-11-01-top-matter/TOP-MATTER.md`): "Copy anything here. When I build something,
+I ask who it lets in and who it leaves out. If it left you out, tell me: corwin@bru.st". It is the
+`stitch:` line of `content/site.txt`; the build makes the address a mail link and refuses a stitch
+that does not end with the contact address. A test holds the exact words and their place.
 
 Corwin, 2026-11-01: split the people and the agents' personas into two columns; as you scroll, one
 column comes up while the other goes down, like a strip; at most one pair we know to be related is

@@ -4,6 +4,7 @@ pronouns: he/him
 tagline: I build Emacs for Windows, help run EmacsConf, and keep a small free software shop called inputloop with Bryant Frankford.
 description: Corwin Brust: systems engineer and software developer, GNU and FSF volunteer (a Savannah Hacker), builder of GNU Emacs for Windows, EmacsConf organizer, Org Babel Perl maintainer, and co-owner of inputloop.
 contact: corwin@bru.st
+stitch: Copy anything here. When I build something, I ask who it lets in and who it leaves out. If it left you out, tell me: corwin@bru.st
 link: Mastodon | https://hostux.social/@corwin | rel=me
 link: inputloop on GitHub | https://github.com/inputloop
 link: The shop's own site, corwin.cloud (source) | https://github.com/inputloop/corwin.cloud

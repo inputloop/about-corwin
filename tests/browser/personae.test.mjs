@@ -16,7 +16,9 @@ const require = createRequire(import.meta.url);
 const here = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(here, '..', '..');
 const OUT = process.env.SITE_OUT || path.join(ROOT, 'public');
-const URL = pathToFileURL(path.join(OUT, 'index.html')).href;
+// The cast is the second act, a page of its own (Corwin, 2026-11-01 18:06).
+const URL = pathToFileURL(path.join(OUT, 'cast', 'index.html')).href;
+const HOME = pathToFileURL(path.join(OUT, 'index.html')).href;
 const SHOTS = process.env.SHOTS;
 
 let chromium = null;
@@ -31,13 +33,13 @@ after(async () => { if (browser) await browser.close(); });
 
 const WIDTHS = [{ width: 1280, height: 860 }, { width: 390, height: 780 }];
 
-async function page(context = {}) {
+async function page(context = {}, url = URL) {
   const ctx = await browser.newContext({ viewport: WIDTHS[0], reducedMotion: 'no-preference', ...context });
   const p = await ctx.newPage();
   p.errors = []; p.late = [];
   p.on('pageerror', (e) => p.errors.push(e.message));
   p.on('console', (m) => { if (m.type() === 'error') p.errors.push(m.text()); });
-  await p.goto(URL);
+  await p.goto(url);
   if (context.javaScriptEnabled !== false) await p.waitForSelector('html[data-ready]');
   p.on('request', (r) => p.late.push(r.url()));
   return p;
@@ -187,8 +189,8 @@ test('text size 175% from the palette: the slots stay even, and still one pair a
   await p.context().close();
 });
 
-test('the prompt at the foot still finds every card by its name', { skip }, async () => {
-  const p = await page();
+test('the prompt at the foot of the home page still finds every card by its name', { skip }, async () => {
+  const p = await page({}, HOME);
   const titles = await p.$$eval('.card', (cs) => cs.map((c) => [c.id, c.querySelector('.title').textContent]));
   assert.ok(titles.length > 20);
   const missed = [];
@@ -204,3 +206,26 @@ test('the prompt at the foot still finds every card by its name', { skip }, asyn
   await p.context().close();
 });
 function CSS_escape(s) { return s.replace(/([^\w-])/g, '\\$1'); }
+
+test('the cast page: its prompt finds a card on the first page and leads back to it', { skip }, async () => {
+  const p = await page();
+  await p.fill('#prompt', 'dungeon');
+  await p.press('#prompt', 'Enter');
+  await p.waitForSelector('#results button[data-slug="dungeon"]');
+  await p.waitForFunction(() => /of \d{2} cards/.test(document.getElementById('echo').textContent));
+  await Promise.all([p.waitForURL(/index\.html#dungeon$/), p.click('#results button[data-slug="dungeon"]')]);
+  assert.ok(await p.$('#dungeon.card'), 'the link lands on the card on the first page');
+  assert.deepEqual(p.errors, []);
+  await p.context().close();
+});
+
+test('the home page has no cast and one quiet link to it; the link opens the cast', { skip }, async () => {
+  const p = await page({}, HOME);
+  assert.equal(await p.$('#personae'), null);
+  assert.equal(await p.$$eval('a[href="cast/index.html"]', (a) => a.length), 1);
+  await Promise.all([p.waitForURL(/cast\/index\.html$/), p.click('a[href="cast/index.html"]')]);
+  await p.waitForSelector('html[data-ready]');
+  assert.ok(await p.$('#personae'));
+  assert.deepEqual(p.errors, []);
+  await p.context().close();
+});

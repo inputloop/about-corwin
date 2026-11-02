@@ -1,0 +1,137 @@
+<!doctype html>
+<!--
+SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+SPDX-License-Identifier: CC-BY-SA-4.0
+The second act: the cast. Built by build.py from content/personae/ and content/site.txt into
+public/cast/index.html. Same frame as the home page (Customize, mode-line, prompt); the scripts are
+free software (GPL-3.0-or-later); see ../jslicense.html.
+-->
+<html lang="en" data-home="../index.html" data-tone="none">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The cast · {{TITLE}}</title>
+<meta name="description" content="The people and the agents' personas who make aboutcorwin.com and inputloop work: who works with whom, worked out from public sources.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<link rel="stylesheet" href="../css/cast.css">
+<script src="../js/chamber.model.js" defer></script>
+<script src="../js/taxonomy.js" defer></script>
+<script src="../js/site.js" defer></script>
+<script src="../js/customize.js" defer></script>
+<script src="../js/personae.js" defer></script>
+</head>
+<body class="act2">
+<a class="skip" href="#main">Skip to the content</a>
+
+<div class="custom" id="custom">
+  <button type="button" id="custom-btn" class="custom-btn" aria-expanded="false" aria-controls="custom-panel">Customize</button>
+  <form class="custom-panel" id="custom-panel" aria-labelledby="custom-h" hidden>
+    <p id="custom-h" class="c-title">Customize: reading</p>
+    <p class="c-note">Changes the reading text and the colours, not the bars or buttons. Kept in this browser only; nothing is sent.</p>
+    <fieldset><legend>Text size:</legend>
+      <label><input type="radio" name="size" value="0"><span class="box"></span>100%</label>
+      <label><input type="radio" name="size" value="1"><span class="box"></span>115%</label>
+      <label><input type="radio" name="size" value="2"><span class="box"></span>130%</label>
+      <label><input type="radio" name="size" value="3"><span class="box"></span>150%</label>
+      <label><input type="radio" name="size" value="4"><span class="box"></span>175%</label>
+    </fieldset>
+    <fieldset><legend>Line length:</legend>
+      <label><input type="radio" name="measure" value="narrow"><span class="box"></span>Narrow</label>
+      <label><input type="radio" name="measure" value="normal"><span class="box"></span>Normal</label>
+      <label><input type="radio" name="measure" value="wide"><span class="box"></span>Wide</label>
+    </fieldset>
+    <fieldset><legend>Line spacing:</legend>
+      <label><input type="radio" name="leading" value="tight"><span class="box"></span>Tight</label>
+      <label><input type="radio" name="leading" value="normal"><span class="box"></span>Normal</label>
+      <label><input type="radio" name="leading" value="loose"><span class="box"></span>Loose</label>
+      <label><input type="radio" name="leading" value="looser"><span class="box"></span>Looser</label>
+    </fieldset>
+    <fieldset><legend>Colour theme:</legend>
+      <label><input type="radio" name="theme" value="auto"><span class="box"></span>Follow system</label>
+      <label><input type="radio" name="theme" value="light"><span class="box"></span>Light</label>
+      <label><input type="radio" name="theme" value="dark"><span class="box"></span>Dark</label>
+      <label><input type="radio" name="theme" value="hc"><span class="box"></span>High contrast (egad vivendi colours)</label>
+    </fieldset>
+    <fieldset><legend>Motion:</legend>
+      <label><input type="checkbox" name="calm" value="1"><span class="box"></span>Reduce motion</label>
+    </fieldset>
+    <p class="c-actions"><button type="button" id="c-apply">[Apply]</button> <button type="button" id="c-reset">[Reset]</button></p>
+    <p class="c-state" id="c-state" role="status">State: STANDARD SETTINGS.</p>
+  </form>
+</div>
+
+<header class="masthead" id="top">
+  <div class="wrap">
+    <p class="act-label">Second act</p>
+    <h1>The cast</h1>
+    <p class="stitch" id="stitch">{{STITCH}}</p>
+    <nav class="contents" aria-label="On this page">
+      <ul>
+        <li><a href="../index.html">First act: {{TITLE}}</a></li>
+        <li><a href="#personae">Dramatis personae</a></li>
+        <li><a href="#pp-pairs-h">Who works with whom</a></li>
+        <li><a href="#minibuffer">The prompt</a></li>
+      </ul>
+    </nav>
+    <p class="motion-control"><button type="button" id="motion" class="js-only" aria-pressed="true">Motion</button></p>
+  </div>
+</header>
+
+<main id="main">
+  <section id="personae" class="personae" aria-labelledby="personae-h" data-lo="{{PP_LO}}" data-hi="{{PP_HI}}">
+    <div class="wrap">
+      <h2 id="personae-h">Dramatis personae</h2>
+      <p class="lede">Who makes this work: the people on the left, the agents' personas on the right. <span class="pp-moving">As you scroll, the two columns slide past each other, one up and one down, and when two who work together come level, their cards become one postcard.</span> Who stands where is worked out from who works with whom, not placed by hand.</p>
+    </div>
+    <div class="pp-track">
+      <div class="pp-stage">
+        <div class="wrap pp-cols">
+          <section class="pp-col pp-left" aria-labelledby="pp-left-h">
+            <h3 id="pp-left-h">People</h3>
+            <ol class="pp-list">{{PP_LEFT}}</ol>
+          </section>
+          <section class="pp-col pp-right" aria-labelledby="pp-right-h">
+            <h3 id="pp-right-h">Personas</h3>
+            <ol class="pp-list">{{PP_RIGHT}}</ol>
+          </section>
+        </div>
+        <div class="pp-postcard" tabindex="-1" hidden><p class="pp-pc-label">Postcard</p><p class="pp-pc-names"></p><p class="pp-pc-words"></p></div>
+      </div>
+    </div>
+    <div class="wrap">
+      <h3 id="pp-pairs-h">Who works with whom</h3>
+      <ul class="pp-pairs" aria-labelledby="pp-pairs-h">{{PP_PAIRS}}</ul>
+      {{PP_ALONE}}
+      <p class="visually-hidden" id="pp-say" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section id="how" class="wrap prose reading" aria-labelledby="how-h">
+    <h2 id="how-h">How this page works</h2>
+    <p>This is the second page of aboutcorwin.com; <a href="../index.html">the first</a> is about me and the places I put my time. It is HTML and CSS that read well with scripts turned off, and the same free scripts as the first page, with <a href="../jslicense.html" rel="jslicense">licence labels</a> GNU LibreJS can check. Nothing is fetched after the page loads and nothing is sent about you. The prompt below searches the cards on the first page and takes you to them.</p>
+  </section>
+</main>
+
+<div class="modeline" id="modeline">
+  <a class="ml-link" href="#minibuffer" aria-label="aboutcorwin.com mode line: go to the prompt at the bottom of the page">
+    <span class="ml-flags" aria-hidden="true">-:%%-</span>
+    <span class="ml-buf">aboutcorwin.com</span>
+    <span class="ml-pos" aria-hidden="true"></span>
+    <span class="ml-sec" aria-hidden="true"></span>
+    <span class="ml-modes" aria-hidden="true">(HTML LibreJS)</span>
+  </a>
+</div>
+<footer class="minibuffer-wrap" id="minibuffer">
+  <form class="minibuffer js-only-flex" id="mb-form" role="search" autocomplete="off">
+    <label for="prompt" class="mb-prompt">Ask the page:</label>
+    <input id="prompt" name="q" type="search" spellcheck="false" aria-describedby="echo" placeholder="what does Corwin work on, is he on Emacs, how do I reach him…">
+  </form>
+  <div id="results" class="results"></div>
+  <p id="echo" class="echo" role="status">End of buffer. <span class="nojs-only">The prompt needs JavaScript; <a href="../index.html#stage">the quick filters on the first page</a> work without it.</span></p>
+  {{FOOTER}}
+</footer>
+<script type="application/json" id="taxonomy-index">{{INDEX_JSON}}</script>
+</body>
+</html>

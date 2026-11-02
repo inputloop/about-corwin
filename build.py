@@ -42,7 +42,12 @@ MAX_PROSE_WORDS = 500
 PUBLIC_REPOS = {".github", "fourSwordsFromThePast", "NextTime-Dev", "quantum3d5",
                 "suit-crm-6-5-php-sec-backport", "vibrobeast", "vibrobeast-skills", "corwin.cloud",
                 "topology", "about-corwin", "gitcha", "ta", "three-phase-transcription", "journal"}
-JS_FILES = ("chamber.model.js", "taxonomy.js", "windows.js", "site.js", "customize.js", "personae.js")
+# The scripts each page loads; jslicense.html lists every script either page loads (JS_FILES).
+HOME_JS = ("chamber.model.js", "taxonomy.js", "windows.js", "site.js", "customize.js")
+CAST_JS = ("chamber.model.js", "taxonomy.js", "site.js", "customize.js", "personae.js")
+JS_FILES = HOME_JS + tuple(n for n in CAST_JS if n not in HOME_JS)
+# The second act: the cast (Corwin, 2026-11-01 18:06: "we want the cast page to be its own page").
+CAST_DIR = "cast"
 GPL_MAGNET = "magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt"
 VIEW_ORDER = ("prose", "baseball", "scoreboard", "featured")
 VIEW_HEADINGS = {"prose": "Introduction", "baseball": "On the back",
@@ -666,16 +671,34 @@ def render(data, template):
         "COUNT_TAGS": str(len(data["vocab"])),
         "INDEX_JSON": json_for_html(index),
     }
-    subs.update(render_personae(data["personae"]))
+    return fill(template, subs), index, used
 
+
+def fill(template, subs):
     def sub(m):
         key = m.group(1)
         if key not in subs:
             raise ContentError("template asks for {{%s}}, which the build does not know" % key)
         return subs[key]
+    return re.sub(r"\{\{([A-Z0-9_]+)\}\}", sub, template)
 
-    out = re.sub(r"\{\{([A-Z0-9_]+)\}\}", sub, template)
-    return out, index, used
+
+def stitch_html(site):
+    """The top matter (T2, chosen by Corwin 2026-11-01 18:03), with its address as a mail link."""
+    text, mail = one(site, "stitch"), one(site, "contact")
+    if not text.endswith(mail):
+        raise ContentError("%s: the stitch line ends with the contact address" % site["path"])
+    return e(text[:-len(mail)]) + '<a href="mailto:%s">%s</a>' % (e(mail), e(mail))
+
+
+def render_cast(data, template, index):
+    """The second act (cast/index.html): the dramatis personae, in the home page's frame."""
+    site = data["site"]
+    subs = {"TITLE": e(one(site, "title")), "STITCH": stitch_html(site),
+            "FOOTER": "".join('<p class="colophon">%s</p>' % inline(p) for p in site["layers"]["footer"]),
+            "INDEX_JSON": json_for_html(index)}
+    subs.update(render_personae(data["personae"]))
+    return fill(template, subs)
 
 
 def render_personae(pp):
@@ -728,7 +751,13 @@ def versioned(text, out_dir):
         with open(path, "rb") as f:
             v = hashlib.sha256(f.read()).hexdigest()[:10]
         return '%s="%s?v=%s"' % (m.group(1), m.group(2), v)
-    return re.sub(r'(src|href)="((?:css|js)/[\w.-]+)"', tag, text)
+    def tag2(m):
+        path = os.path.join(out_dir, m.group(3))
+        with open(path, "rb") as f:
+            v = hashlib.sha256(f.read()).hexdigest()[:10]
+        return '%s="%s%s?v=%s"' % (m.group(1), m.group(2), m.group(3), v)
+    text = re.sub(r'(src|href)="((?:css|js)/[\w.-]+)"', tag, text)
+    return re.sub(r'(src|href)="(\.\./)((?:css|js)/[\w.-]+)"', tag2, text)
 
 
 def check_js_labels(src_js):
@@ -747,6 +776,8 @@ def build(out_dir, content_dir=CONTENT, src_dir=SRC):
     check_js_labels(os.path.join(src_dir, "js"))
     with open(os.path.join(src_dir, "index.html"), encoding="utf-8") as f:
         page, index, used = render(data, f.read())
+    with open(os.path.join(src_dir, "cast.html"), encoding="utf-8") as f:
+        cast = render_cast(data, f.read(), index)
     with open(os.path.join(src_dir, "jslicense.html"), encoding="utf-8") as f:
         labels = render_jslicense(f.read())
     if os.path.isdir(out_dir):
@@ -761,6 +792,9 @@ def build(out_dir, content_dir=CONTENT, src_dir=SRC):
         f.write(render_filter_css(used) + "\n")
     with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
         f.write(versioned(page, out_dir))
+    os.makedirs(os.path.join(out_dir, CAST_DIR))
+    with open(os.path.join(out_dir, CAST_DIR, "index.html"), "w", encoding="utf-8") as f:
+        f.write(versioned(cast, out_dir))
     with open(os.path.join(out_dir, "jslicense.html"), "w", encoding="utf-8") as f:
         f.write(versioned(labels, out_dir))
     with open(os.path.join(out_dir, "taxonomy.json"), "w", encoding="utf-8") as f:

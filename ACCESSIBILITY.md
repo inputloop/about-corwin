@@ -81,7 +81,7 @@ of the reading text only, line length, line spacing, colour theme (follow system
 contrast) and reduce motion. Settings stay in the browser's localStorage and are never sent.
 tests/browser checks the keyboard path, that only reading text scales, and that nothing is fetched.
 
-## Dramatis personae (2026-11-01)
+## Dramatis personae (2026-11-01; on its own page, cast/index.html, since 18:06)
 
 The people and the agents' personas are two ordinary lists (`ol`, under their own headings), and
 every pairing between them is written out beneath in a list with its source, scripts or not. The
