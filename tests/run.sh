@@ -76,6 +76,7 @@ prove_red() {
   # every plant still has to turn its own check red.
   brd="\"$py\" build.py --out pub >/dev/null && SITE_OUT=pub \"$node\" --test --test-concurrency=1 tests/browser/dpad.test.mjs"
   brl="\"$py\" build.py --out pub >/dev/null && SITE_OUT=pub \"$node\" --test --test-concurrency=1 tests/browser/links.test.mjs"
+  brp="\"$py\" build.py --out pub >/dev/null && SITE_OUT=pub \"$node\" --test --test-concurrency=1 tests/browser/privacy.test.mjs"
   plant "a script loses its LibreJS label"   src/js/windows.js  '1s/^.*$/\/\/ no label/'                 "$pyc"
   plant "an inline style attribute"          build.py           's/<article class="card/<article style="x" class="card/' "$pyc"
   plant "a logo without words"               build.py           's/alt="" width="64"/width="64"/'       "$pyc"
@@ -83,6 +84,12 @@ prove_red() {
   plant "the contact card loses its mail link" content/about/find-me.txt 's#^link: Mail me | mailto:corwin@bru.st#link: Mail me | corwin at bru.st#' "$pyc"
   plant "topology is not known public"      build.py           's/"topology", "about-corwin"/"about-corwin"/'                "$pyc"
   plant "corwin.cloud is not known public"   build.py           's/"vibrobeast-skills", "corwin.cloud",/"vibrobeast-skills",/'                "$pyc"
+  plant "pubs is not known public"          build.py           's/"journal",$/"journal"}/;/^                "pubs"}$/d'              "$pyc"
+  plant "a key written that the note does not name" src/js/site.js "s/  function store(v) { try { localStorage.setItem('aboutcorwin.motion', v); }/  function store(v) { try { localStorage.setItem('aboutcorwin.motion', v); localStorage.setItem('aboutcorwin.seen', '1'); }/" "$pyc"
+  plant "the note names a key nothing writes" build.py        's#^    ("aboutcorwin.motion", "site.js",#    ("aboutcorwin.extra", "site.js", "nothing."),\n    ("aboutcorwin.motion", "site.js",#' "$pyc"
+  plant "the request-log line gone"         build.py           's/^PRIVACY_LOG = ("The web server keeps its usual request log: /PRIVACY_LOG = ("The web server keeps a log: /' "$pyc"
+  plant "a script sets a cookie"            src/js/site.js     "s/^  html.classList.add('js');$/  html.classList.add('js'); document.cookie = 'seen=1';/" "$pyc"
+  plant "Customize no longer links to the note" src/index.html 's# Kept in this browser only; nothing is sent. <a href="\#privacy">What this site remembers</a>.</p># Kept in this browser only; nothing is sent.</p>#' "$pyc"
   plant "a private repository linked"        content/projects/nexttime.txt 's#^link: Repository | .*#link: Repository | https://github.com/inputloop/c4#' "$pyc"
   plant "a card's prose hidden from no-JS"   build.py           's/for layer in ("summary", "function", "practice")$/for layer in ("summary",)/' "$pyc"
   plant "low-contrast muted text"            src/css/site.css   's/--muted: #59544b;/--muted: #a8a397;/'   "$pyc"
@@ -153,6 +160,7 @@ prove_red() {
     plant "Customize phones home"            src/js/customize.js 's#^  var doc = document, html = doc.documentElement;#  var doc = document, html = doc.documentElement; fetch("/x");#' "$nodec"
     plant "Customize stores under another key" src/js/customize.js "s/var KEY = 'aboutcorwin.customize';/var KEY = 'x';/" "$nodec"
     plant "associations computed wrongly"    src/js/taxonomy.js 's/-Math.log(pab);/-Math.log(pab) * 0.9;/' "$nodec"
+    plant "a pair at chance kept as a zero edge" src/js/taxonomy.js 's/      if (w > 0) edges.push/      if (npmi > 0) edges.push/' "$nodec"
     plant "fuzzy matching too loose"         src/js/taxonomy.js 's/ && q\[0\] === term\[0\]//'          "$nodec"
     plant "the browser code phones home"     src/js/site.js     's#^  html.classList.add(.js.);#  html.classList.add("js"); fetch("/x");#' "$nodec"
     plant "the old GitLab dotfiles come back (node reader)" content/site.txt 's#https://git.sr.ht/~mplscorwin/dotfiles#https://gitlab.com/mplscorwin/dotfiles#' "$nodec"
@@ -216,6 +224,9 @@ prove_red() {
       plant "the links hide without scripts" src/css/site.css   's/^\.credits { position: fixed;/.credits { display: none; } .js .credits { display: block; } .credits { position: fixed;/' "$brl"
       plant "the credits run off a phone"    src/css/site.css   's/width: min(30rem, calc(100vw - 2 \* var(--gutter)));/width: 30rem;/' "$brl"
       plant "reduced motion ignored"         src/js/site.js     "s/: !reduce.matches;/: true;/" "$brc"
+      plant "the privacy keys run off a phone" src/css/site.css   '/^\.privacy-keys { overflow-wrap: anywhere; }/d' "$brd"
+      plant "Forget my settings clears nothing" src/js/site.js   's/        if (key \&\& key.indexOf(.aboutcorwin\..) === 0) { localStorage.removeItem(key); gone++; }/        if (key \&\& key.indexOf("aboutcorwin.") === 0) { gone++; }/' "$brp"
+      plant "the cast page's Motion link misses the note" src/cast.html 's#mc-note" href="\#privacy"#mc-note" href="\#how"#' "$brp"
     fi
   fi
   if [ $bad = 0 ]; then echo "PROVE-RED OK"; return 0; fi

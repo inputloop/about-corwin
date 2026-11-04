@@ -142,7 +142,9 @@
       var pair = k.split('\u0000'); a = pair[0]; b = pair[1];
       var pab = co[k] / n, pa = df[a] / n, pb = df[b] / n;
       var npmi = pab >= 1 ? 1 : Math.log(pab / (pa * pb)) / -Math.log(pab);
-      if (npmi > 0) edges.push({ a: a, b: b, w: Math.round(npmi * 1e6) / 1e6 });
+      // Round first, then keep: a pair at chance (npmi a hair above 0 from float error) is no edge.
+      var w = Math.round(npmi * 1e6) / 1e6;
+      if (w > 0) edges.push({ a: a, b: b, w: w });
     });
     return { df: df, edges: edges };
   }

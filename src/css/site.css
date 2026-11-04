@@ -189,8 +189,9 @@ html[data-leading="looser"] { --read-lh: 2.1; }
 .custom-panel input:checked + .box::before { content: "[*]"; font-weight: bold; }
 .custom-panel input:focus-visible + .box { outline: 3px solid var(--focus); outline-offset: 2px; }
 .c-actions { display: flex; gap: 0.6rem; margin: 0.6rem 0 0.2rem; }
-.c-actions button { font: 0.95rem var(--mono); color: var(--ink); background: var(--surface); border: 1px solid var(--ink); border-radius: 4px; padding: 0.3rem 0.8rem; min-height: 2.2rem; cursor: pointer; }
-.c-actions button:hover { background: var(--ml-active); }
+.c-actions button, .forget button { font: 0.95rem var(--mono); color: var(--ink); background: var(--surface); border: 1px solid var(--ink); border-radius: 4px; padding: 0.3rem 0.8rem; min-height: 2.2rem; cursor: pointer; }
+.c-actions button:hover, .forget button:hover { background: var(--ml-active); }
+.mc-note { margin-left: 0.6rem; font-size: 0.9rem; }
 .c-state { font: 0.85rem var(--mono); color: var(--muted); margin: 0.4rem 0 0; }
 @media (max-width: 40rem) { .js .custom { right: var(--gutter); } }
 @media (forced-colors: active) { .custom-btn, .custom-panel { border: 2px solid CanvasText; } }
@@ -374,6 +375,7 @@ html:not(.js) .v-featured { display: none; }
    sections. Without scripts there are no pads and the text is the text as written. */
 .prose > .tone-text > p { max-width: var(--measure); }
 .keys { overflow-wrap: anywhere; }   /* "Ctrl+Shift+Home" has no break of its own at 175% text */
+.privacy-keys { overflow-wrap: anywhere; }   /* nor has "aboutcorwin.customize", at 175% on a phone */
 .dpad-wrap, .tone-dock { display: none; }
 .js .dpad-wrap { display: block; float: right; margin: 0.15rem 0 0.6rem 1rem; width: min-content; text-align: center; }
 .dpad {

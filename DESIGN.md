@@ -52,7 +52,7 @@ navigation works once, matter-of-factly, in its introduction.
 
 ## What is on the page, and what is not
 
-Only what is public. Of inputloop's repositories, GitHub reported seven public on 2026-10-29, corwin.cloud was public by 2026-11-01, and on 2026-11-01 so were topology (branch corwin), about-corwin, gitcha, ta, three-phase-transcription and journal; those
+Only what is public. Of inputloop's repositories, GitHub reported seven public on 2026-10-29, corwin.cloud was public by 2026-11-01, on 2026-11-01 so were topology (branch corwin), about-corwin, gitcha, ta, three-phase-transcription and journal, and on 2026-11-04 so was pubs (the picture book's folder, linked from its card beside the page ghostlights.theater serves); those
 are the only ones the page links, and `build.PUBLIC_REPOS` plus a test enforce it. Corwin's
 involvements are taken from public sources: the EmacsConf talk pages (2020, 2023), the
 `Maintainer:` line of `ob-perl.el` in Emacs, the Dungeon repository on Savannah, and Corwin's own
@@ -365,6 +365,32 @@ Diego (mail at Valley Center, CA), so it is listed under its own name until Corw
 names the right one. "Cabrillo Aquarium" is Cabrillo Marine Aquarium, in San Pedro, Los Angeles
 (Corwin accepted this), and its category says so; each animal place carries its city in its
 category words.
+
+## What this site remembers
+
+Corwin, 2026-11-04, on whether a rule of "no session or cookies until someone touches a 'more data'
+control" covers a page remembering a person's own choices in their own browser: "Keep it, disclose
+it: keep on-device remembering, and say so in each page's privacy note with a one-press 'forget my
+settings'."
+
+- **Each page has its own note**, a short part of "How this page works" (`#privacy`, exactly one per
+  page): these pages collect nothing and set no cookies; with scripts on they keep a few of your own
+  choices in this browser only, one key each, named with what it is for. build.py writes the note
+  from one table, `PRIVACY_KEYS` (key, the script that writes it, what it is for), listing the keys
+  that page's own scripts write: the home page `aboutcorwin.motion`, `aboutcorwin.customize` and,
+  when the tone pads are built, `aboutcorwin.tone` (inside the tone markers); the cast page the first
+  two.
+- **The request log**, in the words corwin.cloud's note uses (`PRIVACY_LOG`): the web server keeps its
+  usual request log (the address that asked, the time, and the page), on the server, not in your
+  browser, and forgetting here does not touch it.
+- **Forget my settings** (`site.js`) removes every key that begins `aboutcorwin.` and says so. It
+  shows only with scripts on, since nothing is kept without them.
+- **Each remembered feature links to its page's note**: the Motion button and the Customize panel.
+- **Checks.** `tests/py/test_privacy.py` reads the scripts each page loads and holds that page's note
+  to exactly the keys they write (a key it cannot read fails), wants one `#privacy` per page, refuses
+  cookies and other stores, and checks the request-log line and the links;
+  `tests/browser/privacy.test.mjs` sets all three keys, presses Forget my settings on both pages, and
+  follows the links. Each promise has a planted fault in `tests/run.sh --prove-red`.
 
 ## Dramatis personae: the second act
 

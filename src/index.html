@@ -31,7 +31,7 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
   <button type="button" id="custom-btn" class="custom-btn" aria-expanded="false" aria-controls="custom-panel">Customize</button>
   <form class="custom-panel" id="custom-panel" aria-labelledby="custom-h" hidden>
     <p id="custom-h" class="c-title">Customize: reading</p>
-    <p class="c-note">Changes the reading text and the colours, not the bars or buttons. Kept in this browser only; nothing is sent.</p>
+    <p class="c-note">Changes the reading text and the colours, not the bars or buttons. Kept in this browser only; nothing is sent. <a href="#privacy">What this site remembers</a>.</p>
     <fieldset><legend>Text size:</legend>
       <label><input type="radio" name="size" value="0"><span class="box"></span>100%</label>
       <label><input type="radio" name="size" value="1"><span class="box"></span>115%</label>
@@ -81,7 +81,7 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
       </ul>
     </nav>
     <p class="hint">The bar along the bottom is a mode-line, as in Emacs. <span class="js-only-inline">Click it, or press <kbd>Alt</kbd>+<kbd>x</kbd>, to ask the page for something.</span><span class="nojs-only">It takes you to the quick filters at the end.</span></p>
-    <p class="motion-control"><button type="button" id="motion" class="js-only" aria-pressed="true">Motion</button></p>
+    <p class="motion-control"><button type="button" id="motion" class="js-only" aria-pressed="true">Motion</button> <a class="js-only-inline mc-note" href="#privacy">What this site remembers</a></p>
   </div>
 </header>
 
@@ -138,7 +138,8 @@ public/index.html. The scripts are free software (GPL-3.0-or-later); see jslicen
 
   <section id="how" class="wrap prose reading" aria-labelledby="how-h">
     <h2 id="how-h">How this page works</h2>
-    <p>It is one page of HTML and CSS that reads well with scripts turned off. The scripts add the moving windows, the parallax, the cards that grow, and the prompt; GNU LibreJS can check their <a href="jslicense.html" rel="jslicense">licence labels</a>. Nothing is fetched after the page loads and nothing is sent about you. Your Customize settings and whether you turned motion off stay in your own browser. The blog posts and build list were saved when the page was built.</p>
+    <p>It is one page of HTML and CSS that reads well with scripts turned off. The scripts add the moving windows, the parallax, the cards that grow, and the prompt; GNU LibreJS can check their <a href="jslicense.html" rel="jslicense">licence labels</a>. Nothing is fetched after the page loads and nothing is sent about you. Your own choices stay in this browser; <a href="#privacy">what this site remembers</a> lists them. The blog posts and build list were saved when the page was built.</p>
+    {{PRIVACY}}
     <h3>Views of a card</h3>
     <dl class="legend">{{LEGEND_VIEWS}}</dl>
     <h3>Windows</h3>

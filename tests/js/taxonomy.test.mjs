@@ -176,6 +176,11 @@ test('words about how to see do not reorder what to see', () => {
   // emacs-windows and emacsconf score within 0.05 of each other on 'emacs'; a view word must not
   // pull in a third card or push either out of the first two.
   assert.deepEqual(top('emacs numbers', 2).sort(), plain.slice(0, 2).sort());
+  // The two emacs cards nearly tie, so a corpus change can hide a reordering there (2026-11-04: the
+  // picture book's card did, and the planted fault stayed green). Two subjects with room to move:
+  // a view word must not swap four-swords and dungeon, nor pull a third card in beside plain-files.
+  assert.deepEqual(top('typing games', 9), top('games', 9));
+  assert.deepEqual(top('typing plain files', 9), top('plain files', 9));
 });
 
 test('the hub card does not teach associations', () => {

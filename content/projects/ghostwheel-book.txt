@@ -1,0 +1,28 @@
+title: So You Want To Build A Ghostwheel?
+role: A picture book in seventeen spreads about how the shop's tools say things, keep them and prove them: for a child on one page and the curious adult on the facing one.
+order: 20
+window: ledger
+do: read
+bring: a-browser
+whose: corwin
+state: careful
+tags: inputloop, writing, education, outreach, prove-red, offline
+link: Read the book | https://ghostlights.theater/build-a-ghostwheel/
+link: Its sources, recipe and cited files (pubs) | https://github.com/inputloop/pubs/tree/main/books/build-a-ghostwheel
+stat: Whose | Corwin's; written and drawn by Mentat for Corwin
+stat: Holds | a picture book, its sources and checks, the site that shows it
+stat: State | readable today; the dedication is still to come, and Part Two is on trial
+score: Spreads | 17 | 2026-11-04
+score: Witness rows behind its facts | 159 | 2026-11-04
+
+== summary ==
+A picture book, made to be read like a paper one: on the left a picture page with a few easy words, on the right a fuller page for the grown-up who wants more. Two guides walk you through the shop. Spoke is a small ghost who sees things; Pin is a mouse with a pencil who writes down what Spoke saw, when, and where. Chad drops in three times.
+
+== function ==
+Part One is how we say things: one word with several meanings, a word you can do, a space that changes everything, nothing thrown away, every promise with its own test, two writers for every idea. Part Two is how a ghostwheel wakes up, floor by floor, and how its computers hold hands in rings. Every fact on a fuller page has a small mark; open it and Pin's note says what was said, when it was seen, by whom, from which file, and that file's hash, so you can go and check.
+
+== practice ==
+The book is one page that loads nothing from anywhere, with a floor plan of the shop for anyone who loses their place. Its sources, the tools that build it, its checks (each shown able to fail) and the files its notes cite are published together in our pubs repository, with a recipe so any project can pluck it and build it. The dedication is still to come, and Part Two is on trial: “we're running with it until we see what is broken about it.”
+
+== presentation ==
+The window is a ledger written one line at a time and never edited, the way Pin writes down each thing Spoke sees.

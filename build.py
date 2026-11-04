@@ -43,7 +43,8 @@ MAX_PROSE_WORDS = 500
 # A card may link to github.com/inputloop/<name> only for these; tests/py enforces it.
 PUBLIC_REPOS = {".github", "fourSwordsFromThePast", "NextTime-Dev", "quantum3d5",
                 "suit-crm-6-5-php-sec-backport", "vibrobeast", "vibrobeast-skills", "corwin.cloud",
-                "topology", "about-corwin", "gitcha", "ta", "three-phase-transcription", "journal"}
+                "topology", "about-corwin", "gitcha", "ta", "three-phase-transcription", "journal",
+                "pubs"}
 # The scripts each page loads; jslicense.html lists every script either page loads (JS_FILES).
 HOME_JS = ("chamber.model.js", "taxonomy.js", "windows.js", "site.js", "customize.js", "tone.model.js", "dpad.js")
 CAST_JS = ("chamber.model.js", "taxonomy.js", "site.js", "customize.js", "personae.js")
@@ -767,9 +768,46 @@ def render(data, template, tone=True):
         "COUNT_TAGS": str(len(data["vocab"])),
         "INDEX_JSON": json_for_html(index),
         "CREDITS": render_credits(data.get("links")),
+        "PRIVACY": render_privacy(HOME_JS, tone),
     }
     subs.update(render_tone(data, units, tone))
     return fill(template, subs), index, used
+
+
+# ---- what this site remembers ----------------------------------------------------------------------
+# Corwin, 2026-11-04: "Keep it, disclose it -- keep on-device remembering, and say so in each page's
+# privacy note with a one-press 'forget my settings'." One row per key the scripts write: the key, the
+# script that writes it, and what it is for. Each page's note lists the keys its own scripts write;
+# tests/py/test_privacy.py reads the scripts and holds every note to exactly those. The tone pads' key
+# sits inside the tone markers, since dpad.js is loaded only when the tone pads are built.
+PRIVACY_KEYS = (
+    ("aboutcorwin.motion", "site.js", 'whether you turned the <a href="#motion">Motion</a> button off or on.'),
+    ("aboutcorwin.customize", "customize.js", 'your <a href="#custom-btn">Customize</a> settings: text size, line '
+                                              'length and spacing, colours, and reduced motion.'),
+    ("aboutcorwin.tone", "dpad.js", "where you left the tone pads (warmth, reading level, and the two tone choices "
+                                    "in Customize)."),
+)
+# As corwin.cloud's note says it (privacy.html, fd53f0d).
+PRIVACY_LOG = ("The web server keeps its usual request log: the address that asked, the time, and the page. "
+               "That log is on the server, not in your browser, and forgetting here does not touch it.")
+
+
+def render_privacy(scripts, tone):
+    rows = []
+    for key, script, what in PRIVACY_KEYS:
+        row = "<dt><code>%s</code></dt><dd>%s</dd>" % (key, what)
+        if script == "dpad.js":
+            if tone:
+                rows.append("<!--tone-->" + row + "<!--/tone-->")
+        elif script in scripts:
+            rows.append(row)
+    return ('<h3 id="privacy" tabindex="-1">What this site remembers</h3>\n'
+            '    <p>These pages collect nothing and set no cookies. With scripts on, they remember a few of your own '
+            'choices, in this browser only; nothing is sent. Each is one key in your browser\'s local storage:</p>\n'
+            '    <dl class="legend privacy-keys">%s</dl>\n'
+            '    <p>%s</p>\n'
+            '    <p class="forget js-only-block"><button type="button" id="forget">Forget my settings</button> '
+            '<span id="forgot" role="status"></span></p>') % ("".join(rows), PRIVACY_LOG)
 
 
 def fill(template, subs):
@@ -890,7 +928,7 @@ def render_cast(data, template, index):
     site = data["site"]
     subs = {"TITLE": e(one(site, "title")), "STITCH": stitch_html(site),
             "FOOTER": "".join('<p class="colophon">%s</p>' % inline(p) for p in site["layers"]["footer"]),
-            "INDEX_JSON": json_for_html(index)}
+            "INDEX_JSON": json_for_html(index), "PRIVACY": render_privacy(CAST_JS, False)}
     subs.update(render_personae(data["personae"]))
     return fill(template, subs)
 

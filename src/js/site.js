@@ -16,7 +16,8 @@
 //   - the prompt asks taxonomy.js which cards fit what you typed.
 //
 // Nothing here talks to the network. The one thing it remembers is your Motion choice, in your own
-// browser's storage, and it copes when that storage is refused.
+// browser's storage, and it copes when that storage is refused. Its Forget my settings button (under
+// "What this site remembers") removes every key this site keeps, all of which begin "aboutcorwin.".
 (function () {
   'use strict';
   var doc = document, html = doc.documentElement, body = doc.body;
@@ -24,6 +25,21 @@
 
   var $ = function (s, el) { return (el || doc).querySelector(s); };
   var $$ = function (s, el) { return Array.prototype.slice.call((el || doc).querySelectorAll(s)); };
+
+  // ---- forget my settings: remove every key this site keeps (each begins "aboutcorwin.") ---------
+  var forgetBtn = $('#forget');
+  if (forgetBtn) forgetBtn.addEventListener('click', function () {
+    var gone = 0;
+    try {
+      for (var i = localStorage.length - 1; i >= 0; i--) {
+        var key = localStorage.key(i);
+        if (key && key.indexOf('aboutcorwin.') === 0) { localStorage.removeItem(key); gone++; }
+      }
+    } catch (e) { /* storage refused: nothing was kept */ }
+    var said = $('#forgot');
+    if (said) said.textContent = gone ? 'Forgotten. Nothing from this site is stored in this browser now; the page keeps its look until you reload it.'
+                                      : 'Nothing from this site was stored in this browser.';
+  });
 
   // ---- motion ---------------------------------------------------------------------------------
   var reduce = root().matchMedia ? root().matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };

@@ -183,6 +183,18 @@ class Content(unittest.TestCase):
         self.assertIn("corwin.cloud", build.PUBLIC_REPOS)
         self.assertIn("https://github.com/inputloop/corwin.cloud", read("index.html"))
 
+    def test_the_ghostwheel_book_links_the_live_book_and_its_public_pub(self):
+        # The picture book (2026-11-04): its card links the page ghostlights.theater serves and the
+        # book's folder in inputloop/pubs, which GitHub reported public that day.
+        card = {c["slug"]: c for c in DATA["cards"]}["ghostwheel-book"]
+        hrefs = [l["href"] for l in card["links"]]
+        for href in ("https://ghostlights.theater/build-a-ghostwheel/",
+                     "https://github.com/inputloop/pubs/tree/main/books/build-a-ghostwheel"):
+            self.assertIn(href, hrefs)
+            self.assertIn(href, read("index.html"))
+        self.assertIn("pubs", build.PUBLIC_REPOS)
+        self.assertEqual(card["facets"]["whose"], "corwin")
+
     def test_every_scoreboard_number_has_a_date(self):
         for c in DATA["cards"]:
             for s in c["scores"]:
@@ -627,9 +639,9 @@ class SecondReader(unittest.TestCase):
         out = {}
         for (a, b), c in co.items():
             pab, pa, pb = c / n, df[a] / n, df[b] / n
-            v = 1.0 if pab >= 1 else math.log(pab / (pa * pb)) / -math.log(pab)
+            v = round(1.0 if pab >= 1 else math.log(pab / (pa * pb)) / -math.log(pab), 6)
             if v > 0:
-                out[(a, b)] = round(v, 6)
+                out[(a, b)] = v
         return out
 
     def test_javascript_and_python_agree(self):
