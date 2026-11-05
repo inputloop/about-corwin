@@ -5,12 +5,16 @@ and say so in each page's privacy note with a one-press 'forget my settings'").
 
 Each page has one note (#privacy, under "How this page works") and it must name exactly the storage
 keys the scripts that page loads write: read from those scripts, so a new key with no line turns this
-red. No script may set a cookie or use another store. Each note names the web server's request log as
-corwin.cloud's note does. Each remembered feature (Motion, Customize) links to its own page's note.
+red. No script may set a cookie or use another store. Each note carries the request-log sentence from
+privacy-log.txt, this site's own, rendered from the logreq register; its stamp (the sentence's sha256) is
+checked here, and build.py may not carry a sentence of its own. Each remembered feature (Motion, Customize)
+links to its own page's note.
 tests/browser/privacy.test.mjs checks that Forget my settings clears the keys and that the links land.
 
 python3 -m unittest discover -s tests/py   (standard library only)
 """
+import hashlib
+import html
 import os
 import re
 import shutil
@@ -70,6 +74,15 @@ def keys_written(script_rel):
     return keys, unreadable
 
 
+def request_log():
+    """privacy-log.txt: (the sha256 its stamp names, the sentence)."""
+    with open(os.path.join(ROOT, "privacy-log.txt"), encoding="utf-8") as fh:
+        stamp, sentence = fh.read().split("\n")[:2]
+    m = re.search(r"sha256 ([0-9a-f]{64})\s*$", stamp)
+    assert m, "privacy-log.txt: the first line is not lo1re's stamp"
+    return m.group(1), sentence
+
+
 def note(page):
     m = re.search(r'<h3 id="privacy"[^>]*>.*?<p class="forget[^"]*">.*?</p>', page, re.S)
     assert m, "no privacy note (h3#privacy through the Forget my settings line) on the page"
@@ -109,13 +122,21 @@ class Privacy(unittest.TestCase):
             n = note(read(*page.split("/")))
             self.assertIn("These pages collect nothing and set no cookies", n, page)
             self.assertIn("in this browser only; nothing is sent", n, page)
-            # The words themselves, as corwin.cloud's note has them (not build.PRIVACY_LOG, which a
-            # changed build would change with them).
-            self.assertIn("The web server keeps its usual request log: the address that asked, the time, and the page. "
-                          "That log is on the server, not in your browser, and forgetting here does not touch it.", n,
-                          "%s: the request-log line, as corwin.cloud words it" % page)
+            # The request-log sentence, as privacy-log.txt holds it (rendered from the register for this
+            # site alone; not build.PRIVACY_LOG, which a changed build would change with it).
+            self.assertIn(html.escape(request_log()[1], quote=False), n,
+                          "%s: the request-log sentence is not privacy-log.txt's" % page)
             self.assertRegex(n, r'<button type="button" id="forget">Forget my settings</button>', page)
             self.assertIn('id="forgot" role="status"', n, page)
+
+    def test_the_request_log_sentence_is_the_registers_and_lives_in_one_place(self):
+        stamp, sentence = request_log()
+        self.assertEqual(hashlib.sha256(sentence.encode("utf-8")).hexdigest(), stamp,
+                         "privacy-log.txt: the sentence is not the one its stamp names; render it again from the "
+                         "register (lo1re render ... aboutcorwin.com notefile), never edit it by hand")
+        with open(os.path.join(ROOT, "build.py"), encoding="utf-8") as fh:
+            self.assertNotRegex(fh.read(), r"""["']The web server""",
+                                "build.py carries a request-log sentence of its own; the words live in privacy-log.txt")
 
     def test_each_remembered_feature_links_to_its_pages_note(self):
         for page in PAGES:

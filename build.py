@@ -787,9 +787,12 @@ PRIVACY_KEYS = (
     ("aboutcorwin.tone", "dpad.js", "where you left the tone pads (warmth, reading level, and the two tone choices "
                                     "in Customize)."),
 )
-# As corwin.cloud's note says it (privacy.html, fd53f0d).
-PRIVACY_LOG = ("The web server keeps its usual request log: the address that asked, the time, and the page. "
-               "That log is on the server, not in your browser, and forgetting here does not touch it.")
+# The request-log sentence is this site's own, never another site's: lo1re renders it from the logreq
+# register's aboutcorwin.com rows into privacy-log.txt (line 1: the rows it came from and the sentence's
+# sha256; line 2: the sentence). It is read here and typed nowhere else; to change it, change the register
+# and render it again. tests/py/test_privacy.py holds the page to it and it to its stamp.
+with open(os.path.join(ROOT, "privacy-log.txt"), encoding="utf-8") as _fh:
+    PRIVACY_LOG = _fh.read().split("\n")[1]
 
 
 def render_privacy(scripts, tone):
@@ -807,7 +810,7 @@ def render_privacy(scripts, tone):
             '    <dl class="legend privacy-keys">%s</dl>\n'
             '    <p>%s</p>\n'
             '    <p class="forget js-only-block"><button type="button" id="forget">Forget my settings</button> '
-            '<span id="forgot" role="status"></span></p>') % ("".join(rows), PRIVACY_LOG)
+            '<span id="forgot" role="status"></span></p>') % ("".join(rows), html.escape(PRIVACY_LOG, quote=False))
 
 
 def fill(template, subs):

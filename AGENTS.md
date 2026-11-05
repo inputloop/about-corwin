@@ -27,6 +27,9 @@ force-push.
 - Link only public repositories (`build.PUBLIC_REPOS`); a private project's name stays off the page.
 - Every script keeps its LibreJS labels and its row in `jslicense.html` (the build refuses otherwise).
 - No inline script, no `style=""`, nothing loaded from another host: the CSP forbids them.
+- The request-log sentence lives in `privacy-log.txt`, rendered from the logreq register
+  (`lo1re render REGISTER aboutcorwin.com notefile`). Never edit it by hand and never type it into
+  build.py; `tests/py/test_privacy.py` checks its stamp and that it has one home.
 - Numbers only with the date they were counted; credit as the shop's catalog gives it.
 
 ## Data

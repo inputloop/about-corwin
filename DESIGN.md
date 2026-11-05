@@ -380,16 +380,18 @@ settings'."
   that page's own scripts write: the home page `aboutcorwin.motion`, `aboutcorwin.customize` and,
   when the tone pads are built, `aboutcorwin.tone` (inside the tone markers); the cast page the first
   two.
-- **The request log**, in the words corwin.cloud's note uses (`PRIVACY_LOG`): the web server keeps its
-  usual request log (the address that asked, the time, and the page), on the server, not in your
-  browser, and forgetting here does not touch it.
+- **The request log**: one sentence, this site's own, in `privacy-log.txt`. lo1re renders it from the
+  logreq register's aboutcorwin.com rows (fork D, 2026-11-04): the site is on shared hosting it does
+  not configure, so the sentence names no fields, says the host chooses what is kept and for how long,
+  and that forgetting here does not touch it. build.py reads it as `PRIVACY_LOG` and types it nowhere;
+  `test_privacy.py` holds each page to it, and it to the sha256 on its first line.
 - **Forget my settings** (`site.js`) removes every key that begins `aboutcorwin.` and says so. It
   shows only with scripts on, since nothing is kept without them.
 - **Each remembered feature links to its page's note**: the Motion button and the Customize panel.
 - **Checks.** `tests/py/test_privacy.py` reads the scripts each page loads and holds that page's note
   to exactly the keys they write (a key it cannot read fails), wants one `#privacy` per page, refuses
-  cookies and other stores, and checks the request-log line and the links;
-  `tests/browser/privacy.test.mjs` sets all three keys, presses Forget my settings on both pages, and
+  cookies and other stores, holds the request-log sentence to privacy-log.txt and that file to its
+  stamp, and checks the links; `tests/browser/privacy.test.mjs` sets all three keys, presses Forget my settings on both pages, and
   follows the links. Each promise has a planted fault in `tests/run.sh --prove-red`.
 
 ## Dramatis personae: the second act

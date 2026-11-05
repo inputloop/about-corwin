@@ -1,0 +1,2 @@
+# lo1re 0.1: the request-log sentence for aboutcorwin.com, from register rows 0031 (access) 0032 (error) 0033 (note); sha256 be64ed953a057dac8802aad8f324572deb8dc620632f261cab19ef47f216cf00
+The web server this site runs on belongs to a shared host that this site does not configure: it may keep a log of requests, and what that log records and for how long is the host's choice, not this site's. That log is on the server, not in your browser, and forgetting here does not touch it.
