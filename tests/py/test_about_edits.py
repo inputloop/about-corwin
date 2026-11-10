@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Bryant Frankford (INPUTLOOP)
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Corwin's hand edits to the About (content/ABOUT-EDITS.md), one test per edit, so a rewrite of
 the About or of any tone version cannot quietly undo one. tests/js/tone.test.mjs reads the same

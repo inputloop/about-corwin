@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Bryant Frankford (INPUTLOOP)
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 # sh tests/deploy/run.sh   -- the access card reader and the stage / go-live / rollback scripts, run

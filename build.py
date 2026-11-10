@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Bryant Frankford (INPUTLOOP)
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Build aboutcorwin.com from content/ and src/ into public/.
 

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Bryant Frankford (INPUTLOOP)
 # SPDX-License-Identifier: GPL-3.0-or-later
 """python3 -m unittest discover -s tests/py   (standard library only)
 
@@ -512,7 +512,7 @@ class Wording(unittest.TestCase):
                         if not prose:
                             continue
                         t = re.sub("“[^”]*”", "", line)
-                        t = t.replace("I am Corwin Brust", "").replace("Corwin Brust and Contributors", "")
+                        t = t.replace("I am Corwin Brust", "").replace("Corwin Brust and Bryant Frankford", "")
                         self.assertIsNone(third.search(t), "%s:%d speaks of Corwin in the third person" % (path, i))
 
     def test_dotfiles_point_at_sourcehut_not_the_old_gitlab_copy(self):

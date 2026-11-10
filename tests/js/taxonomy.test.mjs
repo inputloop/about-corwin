@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+// SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Bryant Frankford (INPUTLOOP)
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
 // node --test tests/js   (Node 18 or later; no packages). Reads public/taxonomy.json, so run

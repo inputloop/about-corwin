@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Bryant Frankford (INPUTLOOP)
 # SPDX-License-Identifier: GPL-3.0-or-later
 # GNU make or BSD make. Every target is a one-liner over build.py and tests/run.sh, so a machine
 # without make loses nothing: run those directly (BUILDING.md has the table).

@@ -1,5 +1,5 @@
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-3.0-or-later
-// SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+// SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Bryant Frankford (INPUTLOOP)
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
 // tone.model.js: the tone d-pad's rules with no page in them, so the browser (dpad.js) and the

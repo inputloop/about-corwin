@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Bryant Frankford (INPUTLOOP)
 # SPDX-License-Identifier: GPL-3.0-or-later
 """What this site remembers (Corwin, 2026-11-04: "Keep it, disclose it -- keep on-device remembering,
 and say so in each page's privacy note with a one-press 'forget my settings'").

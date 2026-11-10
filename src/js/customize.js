@@ -1,5 +1,5 @@
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&dn=gpl-3.0.txt GPL-3.0-or-later
-// SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+// SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Bryant Frankford (INPUTLOOP)
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
 // customize.js: the small "Customize" control at the top of the page, modelled on Emacs' M-x

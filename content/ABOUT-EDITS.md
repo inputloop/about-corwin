@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Bryant Frankford (INPUTLOOP)
 SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 # Corwin's hand edits to the About, kept as rules

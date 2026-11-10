@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Bryant Frankford (INPUTLOOP)
 # SPDX-License-Identifier: GPL-3.0-or-later
 # For Apache on Dreamhost shared hosting (any Apache with mod_headers, mod_expires, mod_deflate).
 # Every module block is guarded, so a host without one still serves the site.

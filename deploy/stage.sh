@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Bryant Frankford (INPUTLOOP)
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 # stage -- runs ON the host. Unpacks about-corwin.tar.gz into a new dated release folder under

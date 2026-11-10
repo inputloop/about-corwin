@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+// SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Bryant Frankford (INPUTLOOP)
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
 // node --test tests/js   The tone d-pad's second reader, in another language than build_tone.py and

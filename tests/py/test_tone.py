@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+# SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Bryant Frankford (INPUTLOOP)
 # SPDX-License-Identifier: GPL-3.0-or-later
 """The tone d-pad's texts (tests/spec/TONE.txt): same facts in every version, reading level rising
 by Flesch-Kincaid, warmth falling, the voice rule, the fallback table, and the page showing the

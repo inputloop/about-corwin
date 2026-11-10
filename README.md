@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Bryant Frankford (INPUTLOOP)
 SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 # about-corwin
@@ -113,4 +113,5 @@ Words, content and logos: CC-BY-SA-4.0. Code (`build.py`, `src/js/`, `src/css/`,
 GPL-3.0-or-later. Full texts in `LICENSES/`. `src/js/chamber.model.js` comes from C4; see
 [PROVENANCE.md](PROVENANCE.md).
 
-Copyright 2026 INPUTLOOP; CC-BY-SA-4.0 <https://creativecommons.org/licenses/by-sa/4.0/>. With Corwin Brust <corwin@bru.st> and Contributors. Drafted with Mentat, Claude models working for inputloop.
+Drawn by INPUTLOOP, Bryant, and Corwin: Corwin Brust <corwin@bru.st> and Bryant Frankford. Drafted with Mentat, Claude models working for inputloop.
+Copyright 2026 INPUTLOOP; CC-BY-SA-4.0 <https://creativecommons.org/licenses/by-sa/4.0/>.

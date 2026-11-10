@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Contributors
+// SPDX-FileCopyrightText: 2026 Corwin Brust <corwin@bru.st> and Bryant Frankford (INPUTLOOP)
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
 // node --test tests/js   Second reader for links the Python checks also hold (a different language,
@@ -42,7 +42,7 @@ test('card and About prose speak as I or we; third person only in quoted visitor
     readFileSync(p, 'utf8').split('\n').forEach((line, i) => {
       if (line.startsWith('== ')) { prose = !line.includes('/ formal'); return; }  // formal tone versions may say Corwin Brust
       if (!prose) return;
-      const t = line.replace(/“[^”]*”/g, '').replace('I am Corwin Brust', '').replace('Corwin Brust and Contributors', '');
+      const t = line.replace(/“[^”]*”/g, '').replace('I am Corwin Brust', '').replace('Corwin Brust and Bryant Frankford', '');
       assert.ok(!third.test(t), `${p}:${i + 1} speaks of Corwin in the third person`);
     });
   }
