@@ -171,7 +171,8 @@ class Content(unittest.TestCase):
 
     def test_topology_and_gitcha_are_public_cards_that_link_their_public_repositories(self):
         cards = {c["slug"]: c for c in DATA["cards"]}
-        want = {"topology": "https://github.com/inputloop/topology/tree/corwin", "gitcha": "https://github.com/inputloop/gitcha"}
+        want = {"topology": "https://github.com/inputloop/draw/tree/corwin",   # the card keeps its slug (its page address) until the paths move; the repo is draw since 2026-11-11
+                "gitcha": "https://github.com/inputloop/gitcha"}
         for slug, href in want.items():
             self.assertIn(href, [l["href"] for l in cards[slug]["links"]], slug)
             self.assertIn(slug, build.PUBLIC_REPOS)

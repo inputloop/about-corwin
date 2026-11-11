@@ -43,7 +43,7 @@ MAX_PROSE_WORDS = 500
 # A card may link to github.com/inputloop/<name> only for these; tests/py enforces it.
 PUBLIC_REPOS = {".github", "fourSwordsFromThePast", "NextTime-Dev", "quantum3d5",
                 "suit-crm-6-5-php-sec-backport", "vibrobeast", "vibrobeast-skills", "corwin.cloud",
-                "topology", "about-corwin", "gitcha", "ta", "three-phase-transcription", "journal",
+                "draw", "topology", "about-corwin", "gitcha",   # draw: topology renamed 2026-11-11 (its card's slug keeps the old name for now) "ta", "three-phase-transcription", "journal",
                 "pubs"}
 # The scripts each page loads; jslicense.html lists every script either page loads (JS_FILES).
 HOME_JS = ("chamber.model.js", "taxonomy.js", "windows.js", "site.js", "customize.js", "tone.model.js", "dpad.js",

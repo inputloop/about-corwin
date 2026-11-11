@@ -2,4 +2,4 @@ title: Brigidt
 kind: person
 role: A lab partner in inputloop since 2026-10-25. NextTime is her work.
 credit: K. Smith as editor; definitelynotaspren for her repository work
-source: inputloop's topology | https://github.com/inputloop/topology/blob/corwin/examples/inputloop/people/definitelynotaspren/TOPOLOGY.md
+source: inputloop's draw | https://github.com/inputloop/draw/blob/corwin/examples/inputloop/people/definitelynotaspren/TOPOLOGY.md
