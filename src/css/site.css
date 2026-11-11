@@ -160,6 +160,11 @@ html[data-leading="looser"] { --read-lh: 2.1; }
 .side .when { color: var(--muted); font-size: 0.85em; white-space: nowrap; }
 .side .src { color: var(--muted); font-size: 0.85em; margin: 0.7rem 0 0; }
 .builds li, .posts li { display: flex; flex-wrap: wrap; gap: 0 0.5rem; align-items: baseline; }
+.side .up { font-size: 0.85em; }
+.side .chk { font-size: 0.85em; color: var(--muted); white-space: nowrap; }
+.side .chk[data-state="ok"] { color: var(--ok, var(--muted)); }
+.side .chk[data-state="new"] { font-weight: 600; }
+.side .ci-live { color: var(--muted); font-size: 0.85em; margin: 0.3rem 0 0; }
 @media (min-width: 62rem) {
   .about-grid { grid-template-columns: minmax(0, var(--measure)) minmax(17rem, 23rem); justify-content: space-between; }
   .side { margin-top: 4.3rem; position: sticky; top: 3.2rem; align-self: start; }

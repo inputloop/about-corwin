@@ -46,7 +46,8 @@ PUBLIC_REPOS = {".github", "fourSwordsFromThePast", "NextTime-Dev", "quantum3d5"
                 "topology", "about-corwin", "gitcha", "ta", "three-phase-transcription", "journal",
                 "pubs"}
 # The scripts each page loads; jslicense.html lists every script either page loads (JS_FILES).
-HOME_JS = ("chamber.model.js", "taxonomy.js", "windows.js", "site.js", "customize.js", "tone.model.js", "dpad.js")
+HOME_JS = ("chamber.model.js", "taxonomy.js", "windows.js", "site.js", "customize.js", "tone.model.js", "dpad.js",
+           "builds.js")
 CAST_JS = ("chamber.model.js", "taxonomy.js", "site.js", "customize.js", "personae.js")
 JS_FILES = HOME_JS + tuple(n for n in CAST_JS if n not in HOME_JS)
 # The second act: the cast (Corwin, 2026-11-01 18:06: "we want the cast page to be its own page").
@@ -122,7 +123,25 @@ def render_blog(snap):
             % (items, note, BLOG_URL))
 
 
-def render_ci(snap):
+# Each build's source, upstream: a build named emacs-<version>-<short commit> links to that commit.  The address
+# is a setting (ABOUT_UPSTREAM_COMMIT, with {rev} where the commit goes).  The default is the GitHub mirror, so
+# reading a commit spends GitHub's capacity and not Savannah's (Corwin's preference, 2026-11-11); someone who
+# would rather read it at the source sets
+#   ABOUT_UPSTREAM_COMMIT='https://git.savannah.gnu.org/cgit/emacs.git/commit/?id={rev}'
+UPSTREAM_COMMIT = os.environ.get("ABOUT_UPSTREAM_COMMIT", "https://github.com/emacs-mirror/emacs/commit/{rev}")
+if not (UPSTREAM_COMMIT.startswith("https://") and "{rev}" in UPSTREAM_COMMIT):
+    raise SystemExit("ABOUT_UPSTREAM_COMMIT must be an https:// address with {rev} in it")
+EMACS_REV = re.compile(r"^emacs-\d+(?:\.\d+)*-([0-9a-f]{6,40})$")
+
+
+def upstream_of(latest):
+    m = EMACS_REV.match(latest or "")
+    return UPSTREAM_COMMIT.replace("{rev}", m.group(1)) if m else ""
+
+
+def render_ci(snap, feed=""):
+    """The builds card.  Each row carries what it shows as data attributes, so js/builds.js can check it against
+    the live feed when FEED (a same-site address) is given; with no feed, or no scripts, the card is as built."""
     c = snap["ci"]
     if not c["rows"]:
         items = "<li>No builds saved yet. Run scripts/fetch-ci.</li>"
@@ -131,15 +150,19 @@ def render_ci(snap):
         for r in c["rows"][:6]:
             what = ("grammars: " + r["latest"].replace(",", ", ")) if r["branch"] == "emacs-tree-sitter" \
                 else (r["latest"] or "installer links")
-            out.append('<li><a href="%s%s/">%s</a> <span class="what">%s</span> '
-                       '<time class="when" datetime="%sT%s">%s %sh</time></li>'
-                       % (BLOG_URL, e(r["branch"]), e(r["branch"]), e(what), e(r["day"]), e(r["hour"]),
-                          e(r["day"]), e(r["hour"])))
+            up = upstream_of(r["latest"])
+            out.append('<li data-branch="%s" data-latest="%s" data-when="%sT%s"><a href="%s%s/">%s</a> '
+                       '<span class="what">%s</span> <time class="when" datetime="%sT%s">%s %sh</time>%s</li>'
+                       % (e(r["branch"]), e(r["latest"]), e(r["day"]), e(r["hour"]), BLOG_URL, e(r["branch"]),
+                          e(r["branch"]), e(what), e(r["day"]), e(r["hour"]), e(r["day"]), e(r["hour"]),
+                          (' <a class="up" href="%s" title="this build\'s source, upstream">source</a>' % e(up))
+                          if up else ""))
         items = "".join(out)
     return ('<section class="side-card" aria-labelledby="ci-h"><h3 id="ci-h">Recent Emacs builds</h3>'
-            '<ul class="builds">%s</ul><p class="src">Newest uploads from my Windows build machine, as '
-            'published by corwin.bru.st on %s. Hours are the server\'s clock.</p></section>'
-            % (items, e(c["fetched"])))
+            '<ul class="builds" data-feed="%s" data-upstream="%s" data-blog="%s">%s</ul><p class="src">Newest '
+            'uploads from my Windows build machine, as published by corwin.bru.st on %s. Hours are the server\'s '
+            'clock.</p><p class="ci-live" role="status" hidden></p></section>'
+            % (e(feed), e(UPSTREAM_COMMIT), e(BLOG_URL), items, e(c["fetched"])))
 
 
 # ---- reading ---------------------------------------------------------------------------------
