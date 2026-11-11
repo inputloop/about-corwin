@@ -542,13 +542,27 @@ class Snapshots(unittest.TestCase):
         self.assertTrue(ci["data"])
 
     def test_page_shows_the_builds_and_the_blog(self):
+        # What the page must show is read from the same snapshots it is built from, not written in here: the minter
+        # fetches the builds and the blog afresh on every run, and a build named here went red the day it scrolled
+        # off the feed (2026-11-11: emacs-32-3b92ea held df4f22f back from aboutcorwin.com for a day).
         page = read("index.html")
         self.assertIn("Recent Emacs builds", page)
         self.assertIn("From my Emacs blog", page)
-        self.assertIn('href="https://corwin.bru.st/emacs-32/"', page)
-        self.assertIn("emacs-32-3b92ea", page)
-        self.assertIn("Emacs 29.2 Windows Binaries", page)
-        self.assertIn("2026-10-30T21", page)
+        rows = []
+        for r in self.snap("content", "ci", "builds.json")["data"]:
+            m = build.CI_DATE.match(r["date"])
+            rows.append((m.group(1), m.group(2), r["branch"], r["latest"]))
+        rows.sort(key=lambda x: (x[0], x[1]), reverse=True)
+        self.assertTrue(rows, "the builds snapshot is empty")
+        for day, hour, branch, latest in rows[:6]:
+            self.assertIn('href="%s%s/"' % (build.BLOG_URL, branch), page)
+            self.assertIn('datetime="%sT%s"' % (day, hour), page)
+            if latest and branch != "emacs-tree-sitter":
+                self.assertIn(latest, page)
+        posts = self.snap("content", "feeds", "emacs-blog.json")["posts"]
+        self.assertTrue(posts, "the blog snapshot is empty")
+        for p in posts[:5]:
+            self.assertIn(build.e(p["title"]), page)
 
     def test_blog_links_stay_on_the_blog_over_https(self):
         for p in self.snap("content", "feeds", "emacs-blog.json")["posts"]:
