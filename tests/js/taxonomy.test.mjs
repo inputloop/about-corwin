@@ -219,11 +219,30 @@ test('describe names the matched tags and the view', () => {
   assert.match(s, /the scoreboard/);
 });
 
+test('while the page says nothing is fetched, the builds card names no feed', () => {
+  // src/index.html promises "Nothing is fetched after the page loads"; builds.js asks a feed only when the card
+  // names one (data-feed). Turning the live check on here means changing that sentence too.
+  const page = readFileSync(path.join(ROOT, 'src/index.html'), 'utf8');
+  if (!page.includes('Nothing is fetched after the page loads')) return;
+  const build = readFileSync(path.join(ROOT, 'build.py'), 'utf8');
+  const calls = build.match(/render_ci\([^)]*\)/g) || [];
+  assert.ok(calls.length > 0, 'build.py no longer calls render_ci');
+  for (const c of calls) assert.ok(!/feed\s*=\s*[^)\s"']/.test(c) && !/feed\s*=\s*["'][^"']/.test(c), 'render_ci is given a feed while the page says nothing is fetched: ' + c);
+});
+
 test('the browser code never reaches the network or stores more than Motion', () => {
   const dir = path.join(ROOT, 'src/js');
   for (const f of readdirSync(dir)) {
     const src = readFileSync(path.join(dir, f), 'utf8');
     for (const bad of ['fetch(', 'XMLHttpRequest', 'WebSocket', 'sendBeacon', 'EventSource', 'document.cookie', 'eval(', 'new Function']) {
+      // builds.js is the one exception, and only for fetch: one call, to a feed on this same site, without cookies
+      // (2026-11-11, the live check of the builds card); every other file asks nothing of the network.
+      if (f === 'builds.js' && bad === 'fetch(') {
+        assert.equal(src.split('fetch(').length - 1, 1, 'builds.js has more than one fetch');
+        assert.ok(src.includes("credentials: 'omit'"), 'builds.js sends cookies');
+        assert.ok(src.includes("feed.charAt(0) !== '/' || feed.charAt(1) === '/'"), 'builds.js lost its same-site guard');
+        continue;
+      }
       assert.ok(!src.includes(bad), `${f} uses ${bad}`);
     }
     const sets = src.match(/localStorage\.setItem\(([^,]+),/g) || [];

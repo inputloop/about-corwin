@@ -189,6 +189,8 @@ prove_red() {
     plant "the tone pads phone home"         src/js/dpad.js     's#^  var KEY = .aboutcorwin.tone.;#  var KEY = "aboutcorwin.tone"; fetch("/x");#' "$nodec"
     plant "the tone pads store under another key" src/js/dpad.js "s/var KEY = 'aboutcorwin.tone';/var KEY = 'x';/" "$nodec"
     plant "the personae tie-break turns around" build.py 's/score = (gaps, tuple(-ord(c)/score = (gaps, tuple(ord(c)/' "$nodec"
+    plant "builds.js asks the network twice" src/js/builds.js 's/^    fetch(feed, {/    fetch(feed); fetch(feed, {/' "$nodec"
+    plant "the builds card is given a feed while the page says nothing is fetched" build.py 's#"CI": render_ci(data\["snap"\]),#"CI": render_ci(data["snap"], feed="/feeds/emacs-latest.json"),#' "$nodec"
     if [ "${SKIP_BROWSER:-}" != 1 ]; then
       plant "Customize is out of the tab order" src/index.html   's/id="custom-btn" class="custom-btn"/id="custom-btn" tabindex="-1" class="custom-btn"/' "$brc"
       plant "Escape does not close Customize" src/js/customize.js "s/ev.key !== 'Escape' || panel.hidden/ev.key !== 'Esc_' || panel.hidden/" "$brc"
