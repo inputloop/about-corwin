@@ -178,6 +178,17 @@ class Content(unittest.TestCase):
             self.assertIn(slug, build.PUBLIC_REPOS)
             self.assertIn(href, read("index.html"))
 
+    def test_public_repos_literal_has_no_comment_inside(self):
+        """A comment inside the set's braces drops every name after it on that line (2026-11-11)."""
+        import inspect
+        src = inspect.getsource(build)
+        lit = src[src.index("PUBLIC_REPOS = {"):]
+        lit = lit[:lit.index("}") + 1]
+        self.assertNotIn("#", lit, "a comment inside PUBLIC_REPOS hides the names after it")
+        for name in ("ta", "three-phase-transcription", "journal", "obsmage"):
+            self.assertIn(name, build.PUBLIC_REPOS)
+        self.assertNotIn("avalon", build.PUBLIC_REPOS, "the workstation stays unnamed on these pages")
+
     def test_corwin_cloud_is_a_public_card_that_links_its_public_repository(self):
         card = {c["slug"]: c for c in DATA["cards"]}["corwin-cloud"]
         self.assertIn("https://github.com/inputloop/corwin.cloud", [l["href"] for l in card["links"]])

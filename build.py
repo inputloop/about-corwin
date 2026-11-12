@@ -37,14 +37,16 @@ LAYER_WEIGHT = {"title": 1.0, "role": 0.8, "summary": 0.8, "function": 0.6,
                 "practice": 0.5, "presentation": 0.4}
 CARD_KINDS = ("about", "involvements", "projects", "concepts")
 MAX_PROSE_WORDS = 500
-# Repositories known public: seven that GitHub reported on 2026-10-29 (inputloop/.github-private
-# catalog.tsv), corwin.cloud (public as of 2026-11-01), and six more public as of 2026-11-01:
-# topology (branch corwin), about-corwin, gitcha, ta, three-phase-transcription and journal.
-# A card may link to github.com/inputloop/<name> only for these; tests/py enforces it.
-PUBLIC_REPOS = {".github", "fourSwordsFromThePast", "NextTime-Dev", "quantum3d5",
-                "suit-crm-6-5-php-sec-backport", "vibrobeast", "vibrobeast-skills", "corwin.cloud",
-                "draw", "topology", "about-corwin", "gitcha",   # draw: topology renamed 2026-11-11 (its card's slug keeps the old name for now) "ta", "three-phase-transcription", "journal",
-                "pubs"}
+# Repositories known public: GitHub's own list for inputloop (gh api orgs/inputloop/repos?type=public), read
+# 2026-11-12, less one: `avalon` names Corwin's workstation, which these pages leave unnamed until he says otherwise.
+# topology stays because its card's slug keeps the old name (GitHub sends it on to draw, renamed 2026-11-11).
+# A card may link to github.com/inputloop/<name> only for these; tests/py enforces it, and also that no comment
+# sits inside the braces (on 2026-11-11 one did, and quietly dropped ta, three-phase-transcription and journal).
+PUBLIC_REPOS = {".github", "NextTime-Dev", "about-corwin", "bContain", "cell.el", "chadtab", "corwin.cloud",
+                "cowntable", "deckline", "draw", "egad", "fourSwordsFromThePast", "gameDroid", "garden",
+                "ghostlights-theatre", "gitcha", "hello-taxgnomes", "journal", "obsmage", "obsmage-corwin", "orgfs",
+                "pubs", "quantum3d5", "suit-crm-6-5-php-sec-backport", "ta", "three-phase-transcription",
+                "topology", "vibrobeast", "vibrobeast-skills"}
 # The scripts each page loads; jslicense.html lists every script either page loads (JS_FILES).
 HOME_JS = ("chamber.model.js", "taxonomy.js", "windows.js", "site.js", "customize.js", "tone.model.js", "dpad.js",
            "builds.js")
