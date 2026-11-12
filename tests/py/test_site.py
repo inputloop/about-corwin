@@ -187,7 +187,7 @@ class Content(unittest.TestCase):
         self.assertNotIn("#", lit, "a comment inside PUBLIC_REPOS hides the names after it")
         for name in ("ta", "three-phase-transcription", "journal", "obsmage"):
             self.assertIn(name, build.PUBLIC_REPOS)
-        self.assertNotIn("avalon", build.PUBLIC_REPOS, "the workstation stays unnamed on these pages")
+        self.assertIn("avalon", build.PUBLIC_REPOS, "public, at his word (2026-11-11 23:35)")
 
     def test_corwin_cloud_is_a_public_card_that_links_its_public_repository(self):
         card = {c["slug"]: c for c in DATA["cards"]}["corwin-cloud"]

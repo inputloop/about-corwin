@@ -38,11 +38,11 @@ LAYER_WEIGHT = {"title": 1.0, "role": 0.8, "summary": 0.8, "function": 0.6,
 CARD_KINDS = ("about", "involvements", "projects", "concepts")
 MAX_PROSE_WORDS = 500
 # Repositories known public: GitHub's own list for inputloop (gh api orgs/inputloop/repos?type=public), read
-# 2026-11-12, less one: `avalon` names Corwin's workstation, which these pages leave unnamed until he says otherwise.
+# 2026-11-12, all of them: Corwin said both his local systems' names are non-secret and inputloop/avalon is meant to be public.
 # topology stays because its card's slug keeps the old name (GitHub sends it on to draw, renamed 2026-11-11).
 # A card may link to github.com/inputloop/<name> only for these; tests/py enforces it, and also that no comment
 # sits inside the braces (on 2026-11-11 one did, and quietly dropped ta, three-phase-transcription and journal).
-PUBLIC_REPOS = {".github", "NextTime-Dev", "about-corwin", "bContain", "cell.el", "chadtab", "corwin.cloud",
+PUBLIC_REPOS = {".github", "NextTime-Dev", "about-corwin", "avalon", "bContain", "cell.el", "chadtab", "corwin.cloud",
                 "cowntable", "deckline", "draw", "egad", "fourSwordsFromThePast", "gameDroid", "garden",
                 "ghostlights-theatre", "gitcha", "hello-taxgnomes", "journal", "obsmage", "obsmage-corwin", "orgfs",
                 "pubs", "quantum3d5", "suit-crm-6-5-php-sec-backport", "ta", "three-phase-transcription",
