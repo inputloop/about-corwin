@@ -1068,6 +1068,15 @@ def build(out_dir, content_dir=CONTENT, src_dir=SRC, tone=True):
         f.write(versioned(labels, out_dir))
     with open(os.path.join(out_dir, "taxonomy.json"), "w", encoding="utf-8") as f:
         json.dump(index, f, ensure_ascii=False, indent=1, sort_keys=True)
+    # src/static/: pages that travel, copied last so none can overwrite a built page; as they are,
+    # outside the site's frame, until an ENHANCE wires them in
+    # (2026-11-13: seam-splitter/, the Seam Splitter comic, built in c4 writing/seam-splitter/).
+    static = os.path.join(src_dir, "static")
+    if os.path.isdir(static):
+        for sub in sorted(os.listdir(static)):
+            if os.path.exists(os.path.join(out_dir, sub)):
+                raise ContentError("src/static/%s: would overwrite a page the build makes" % sub)
+            shutil.copytree(os.path.join(static, sub), os.path.join(out_dir, sub))
     return data, index
 
 

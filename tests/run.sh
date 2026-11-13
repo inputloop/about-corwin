@@ -123,6 +123,8 @@ prove_red() {
   plant "the personae order ignores the relations" build.py 's/            steps = sorted(pl\[p\["person"\]\] - pr\[p\["persona"\]\] for p in pairs)/            steps = list(range(len(pairs)))/' "$pyc"
   plant "two related pairs may meet at once" build.py 's/            if len(set(steps)) != len(steps):/            if False:/' "$pyc"
   plant "a pairing drops out of the written list" build.py 's/for r in pp\["pairs"\])$/for r in pp["pairs"][1:])/' "$pyc"
+  plant "a static page dropped from the build"  build.py "s#            shutil.copytree(os.path.join(static, sub), os.path.join(out_dir, sub))#            pass#" "$pyc"
+  plant "the static folder read from elsewhere"  build.py "s#^    static = os.path.join(src_dir, \"static\")#    static = os.path.join(src_dir, \"logos\")#" "$pyc"
   plant "the cast comes back to the home page" src/index.html 's#^  <section id="how"#  <section id="personae" class="personae"></section>\n  <section id="how"#' "$pyc"
   plant "the cast page loses the top matter"  content/site.txt 's/^stitch: Copy anything here\./stitch: Copy most things here./' "$pyc"
   plant "T2 drifts down the cast page"       src/cast.html  's#^    <p class="stitch" id="stitch">{{STITCH}}</p>##;s#^  <section id="how"#  <p class="stitch" id="stitch">{{STITCH}}</p>\n  <section id="how"#' "$pyc"

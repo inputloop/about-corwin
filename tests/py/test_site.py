@@ -418,8 +418,15 @@ class Server(unittest.TestCase):
             self.assertRegex(read("logos", f), r'aria-label="[^"]+"', f)
 
     def test_page_weight(self):
+        # src/static/ pages are outside the site's frame and carry their own budget (tests/py/test_static.py,
+        # 2026-11-13): the 400 KB is the site proper, as before.
+        static = os.path.join(ROOT, "src", "static")
+        apart = set(os.listdir(static)) if os.path.isdir(static) else set()
         total = 0
-        for root, _, files in os.walk(os.path.join(OUT, "public")):
+        pub = os.path.join(OUT, "public")
+        for root, _, files in os.walk(pub):
+            if os.path.relpath(root, pub).split(os.sep)[0] in apart:
+                continue
             for f in files:
                 if f != "taxonomy.json":
                     total += os.path.getsize(os.path.join(root, f))
