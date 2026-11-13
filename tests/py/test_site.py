@@ -10,6 +10,7 @@ browser code computes, and the two must agree).
 import html.parser
 import json
 import math
+import gzip
 import os
 import re
 import shutil
@@ -418,8 +419,17 @@ class Server(unittest.TestCase):
             self.assertRegex(read("logos", f), r'aria-label="[^"]+"', f)
 
     def test_page_weight(self):
-        # src/static/ pages are outside the site's frame and carry their own budget (tests/py/test_static.py,
-        # 2026-11-13): the 400 KB is the site proper, as before.
+        # What a visitor's first load carries over the wire, not the bytes on disk: src/.htaccess has
+        # Apache compress the site (mod_deflate), so each file is measured gzipped at zlib's default
+        # level, the one mod_deflate uses. The budget is derived, not picked: Alex Russell's "Can You
+        # Afford It?" (2017, https://infrequently.org/2017/10/can-you-afford-it-real-world-web-performance-budgets)
+        # works back from a ~$200 Android phone on a 400 Kbps link with 400 ms round trips and a
+        # first load usable in 5 seconds to "~130-170KB of critical-path resources", 170 KB "for
+        # sites without much JS". This test counts the whole site proper against it, which is
+        # stricter than the critical path alone. (Until 2026-11-13 it was 400 KB raw, a first-cut
+        # number nobody chose; Corwin, 2026-11-13: "guess better or try fixing the more/most
+        # underlying actionable".) src/static/ pages carry their own budget (test_static.py), and
+        # taxonomy.json is the checks' copy of the index, which no page fetches, so neither counts here.
         static = os.path.join(ROOT, "src", "static")
         apart = set(os.listdir(static)) if os.path.isdir(static) else set()
         total = 0
@@ -429,8 +439,9 @@ class Server(unittest.TestCase):
                 continue
             for f in files:
                 if f != "taxonomy.json":
-                    total += os.path.getsize(os.path.join(root, f))
-        self.assertLess(total, 400 * 1024, "the whole site stays under 400 KB")
+                    with open(os.path.join(root, f), "rb") as fh:
+                        total += len(gzip.compress(fh.read(), 6))
+        self.assertLess(total, 170 * 1000, "a first load stays within ~170 KB compressed (Russell, 2017)")
 
 
 def luminance(hexcolor):
