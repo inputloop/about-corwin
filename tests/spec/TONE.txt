@@ -5,8 +5,10 @@ TONE: the rules the tone d-pad's checks share. build_tone.py (Python) and tests/
 (JavaScript) are written from these words, separately; each must reach the same answers.
 
 1. THE CELLS
-   Warmth has three steps: warm, plain, formal. Reading has four: grade 4, grade 8, grade 12,
-   college (written 16). A text's cell is a pair, such as "warm 4". The base cell is "plain 8":
+   Warmth has three steps: warm, plain, formal. Reading has six: ELI5 ("explain like I'm five",
+   written 2), grade 4, grade 8, grade 12, college (written 16), know-it-all (written 20). The two
+   ends were added on 2026-11-13 (Corwin: "see if you can make supported range a little wider,
+   like ELI5 -> Know-it-All"). A text's cell is a pair, such as "warm 4". The base cell is "plain 8":
    the words already on the page. (Measured 2026-11-01: the About read grade 6.4 by
    Flesch-Kincaid and 6.7 by Coleman-Liau, so today's text is the grade-8 step, not grade 12.)
 
@@ -24,10 +26,11 @@ TONE: the rules the tone d-pad's checks share. build_tone.py (Python) and tests/
    Python, Flesch-Kincaid grade: 0.39 x words/sentences + 11.8 x syllables/words - 15.59.
    JavaScript, Coleman-Liau index: 0.0588 x L - 0.296 x S - 15.8, where L is letters per 100 words
    and S is sentences per 100 words (letters are a-z inside words; apostrophes do not count).
-   The rule: within each text, at each warmth, the four steps rise on both meters
-   (grade 4 < grade 8 < grade 12 < college). For the About only, each step also sits in its band
-   on both meters: grade 4 below 5.5; grade 8 from 5 to 9.5; grade 12 from 9 to 13.5; college
-   12.5 or more. Short lead-ins (one or two sentences) are held to order only: a meter cannot
+   The rule: within each text, at each warmth, the six steps rise on both meters
+   (ELI5 < grade 4 < grade 8 < grade 12 < college < know-it-all). For the About only, each step
+   also sits in its band: grade 4 below 5.5; grade 8 from 5 to 9.5; grade 12 from 9 to 13.5;
+   college 12.5 or more, on both meters; ELI5 below 3 by Flesch-Kincaid and below 4.5 by
+   Coleman-Liau; know-it-all 16 or more by Flesch-Kincaid and 15 or more by Coleman-Liau. Short lead-ins (one or two sentences) are held to order only: a meter cannot
    place one sentence in a grade.
 
 4. THE WARMTH COUNT (direction only)
@@ -69,8 +72,8 @@ TONE: the rules the tone d-pad's checks share. build_tone.py (Python) and tests/
    only. Its language is the part before the first - or _, in lower case. If there is no first
    language, or its language is not two or three letters a-z, or it is "und" (undetermined),
    start as written. If it is "en", in any variety (en-US, en-GB, en-IN ...), start as written.
-   Otherwise start one reading step simpler at plain warmth: plain 4. There is no step below 4,
-   so "two steps" cannot happen. The page then says so in one quiet line, naming the language in
+   Otherwise start one reading step simpler at plain warmth: plain 4. Never ELI5: the start is
+   one step, and a reader moves on from there. The page then says so in one quiet line, naming the language in
    English. A saved choice always wins; moving a pad or a row makes the choice the reader's; the
    Customize row "Follow my browser's language" (on unless turned off, kept in this browser) stops
    it. Both readers check these cases, written "languages -> start":

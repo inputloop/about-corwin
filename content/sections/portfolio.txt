@@ -113,3 +113,57 @@ These are not products. They are the underlying working practices behind our pro
 
 == ideas / formal 16 ==
 These are not products. They constitute the operational principles underlying the organization's products, documented explicitly to enable systematic evaluation of institutional conduct against them.
+
+== portfolio / warm 2 ==
+Here's the last place I put my time. It's the one the rest of the page is on! It looks just like the rest.
+
+== portfolio / plain 2 ==
+This is the last place I put my time. The rest of the page is all on it. It looks like the rest.
+
+== portfolio / formal 2 ==
+This is the last place the time goes. The rest of the page is on it. It has the same form as the rest.
+
+== portfolio / warm 20 ==
+Here's, strictly speaking, the terminal entry among the involvements to which I dedicate my time, and, honestly, the organization the remainder of this page documents exhaustively; you'll notice it adheres to the identical abbreviated format established above, as consistency obviously demands.
+
+== portfolio / plain 20 ==
+This is, strictly speaking, the terminal entry among the involvements to which I dedicate my time, and the organization the remainder of this page documents exhaustively; it adheres to the identical abbreviated format established above, as methodological consistency necessarily demands.
+
+== portfolio / formal 20 ==
+This constitutes the terminal entry among the involvements to which professional time is dedicated, and the organization the remainder of this page documents exhaustively; its presentation adheres to the identical abbreviated format established above, as methodological consistency necessarily requires.
+
+== work / warm 2 ==
+It's all out in the open. Each card says who made it. Not all of it's mine!
+
+== work / plain 2 ==
+It is all out in the open. Each card says who made it. Not all of it is mine.
+
+== work / formal 2 ==
+All of it is out in the open. Each card says who made it. Not all of it is by one hand.
+
+== work / warm 20 ==
+Exclusively publicly available work appears in this collection, so you're unambiguously entitled to examine everything; each card explicitly attributes its authorship, since, honestly, considerably less of it originated with me than you'd presumably assume.
+
+== work / plain 20 ==
+Exclusively publicly available work appears in this collection; each card explicitly attributes its authorship, since considerably less of the material presented here originated with me than an uninformed observer would presumably assume.
+
+== work / formal 20 ==
+Exclusively publicly available work appears in this collection; each card explicitly attributes authorship, since a considerable proportion of the material presented originated with collaborators rather than with Corwin Brust, contrary to presumptions an uninformed observer might reasonably entertain.
+
+== ideas / warm 2 ==
+These aren't things to buy. They're the ways we work. We wrote them down so you can check on us!
+
+== ideas / plain 2 ==
+These are not things to buy. They are the ways we work. We wrote them down so you can check on us.
+
+== ideas / formal 2 ==
+These are not things to buy. They are the ways the work is done. They are set down so that all may check them.
+
+== ideas / warm 20 ==
+These aren't products, strictly speaking; they're the methodological commitments underlying everything we produce, deliberately documented so you're equipped to hold us accountable, which, honestly, I'd encourage you to do rigorously.
+
+== ideas / plain 20 ==
+These are not products; they are the methodological commitments underlying everything we produce, deliberately documented so that readers are equipped to hold us accountable to them, rigorously and continuously.
+
+== ideas / formal 20 ==
+These constitute not commercial deliverables but the methodological commitments underlying institutional production, systematically documented specifically to facilitate independent verification and organizational accountability.

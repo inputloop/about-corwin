@@ -6,7 +6,8 @@
 // checks (tests/js/tone.test.mjs) run the same code. tests/spec/TONE.txt says the rules in words;
 // build_tone.py is the Python reader written from the same words, and the two must agree.
 //
-//   - a cell is a warmth (warm, plain, formal) and a reading step (4, 8, 12, 16 = college);
+//   - a cell is a warmth (warm, plain, formal) and a reading step (2 = ELI5, 4, 8, 12, 16 = college,
+//     20 = know-it-all; the two ends added 2026-11-13);
 //   - the base, the words already on the page, is plain 8;
 //   - a missing cell falls back: one warmth step toward plain, then one reading step toward 8,
 //     then the base (resolve);
@@ -17,9 +18,9 @@
 (function (root) {
   'use strict';
   var WARMTH = ['warm', 'plain', 'formal'];
-  var STEPS = [4, 8, 12, 16];
+  var STEPS = [2, 4, 8, 12, 16, 20];
   var BASE = ['plain', 8];
-  var STEP_NAMES = { 4: 'grade 4', 8: 'grade 8', 12: 'grade 12', 16: 'college' };
+  var STEP_NAMES = { 2: 'ELI5', 4: 'grade 4', 8: 'grade 8', 12: 'grade 12', 16: 'college', 20: 'know-it-all' };
 
   function name(w, g) { return w + '-' + g; }
   function toward(seq, x, target) {
@@ -88,9 +89,12 @@
     var sub = tag.split(/[-_]/)[0].toLowerCase();
     if (!/^[a-z]{2,3}$/.test(sub) || sub === 'und') return null;   // unknown: as written
     if (sub === 'en') return null;
-    return { lang: sub, tag: tag, cell: [BASE[0], STEPS[STEPS.indexOf(BASE[1]) - 1]] };
+    return { lang: sub, tag: tag, cell: [BASE[0], 4] };   // grade 4, never ELI5
   }
-  function describe(cell) { return cell[0] + ', ' + (STEP_NAMES[cell[1]] === 'college' ? 'college level' : 'about ' + STEP_NAMES[cell[1]]); }
+  function describe(cell) {
+    var n = STEP_NAMES[cell[1]];
+    return cell[0] + ', ' + (n === 'college' ? 'college level' : n === 'ELI5' ? 'explained like you\'re five' : n === 'know-it-all' ? 'know-it-all' : 'about ' + n);
+  }
 
   var M = { WARMTH: WARMTH, STEPS: STEPS, BASE: BASE, STEP_NAMES: STEP_NAMES, name: name, toward: toward,
             resolve: resolve, table: table, move: move, same: same, valid: valid, describe: describe,

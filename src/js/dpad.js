@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
 // dpad.js: the tone d-pads. Corwin, 2026-11-01: a two-direction pad that moves the introductions
-// along two lines, warm to formal (left, right) and grade 4 to college (down, up: up is harder),
+// along two lines, warm to formal (left, right) and ELI5 to know-it-all (down, up: up is harder;
+// grade 4 to college until 2026-11-13, when the two ends were added),
 // for the whole page or one section at a time.
 //
 //   - Every introduction ships all its written versions in <template> elements beside the live text

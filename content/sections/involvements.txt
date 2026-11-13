@@ -37,3 +37,21 @@ Every card in this section functions as a business card, presenting a name, a si
 
 == involvements / formal 16 ==
 Each card adopts the conventions of professional business correspondence, presenting an identifying name, a single descriptive statement, and an illustrative window; the remainder of the card expands into a concise introductory presentation.
+
+== involvements / warm 2 ==
+Each card is like a card you'd hand a new friend. It's got a name, a line, and a window. You'll see a picture in the window. Tap it, and it'll tell you more!
+
+== involvements / plain 2 ==
+Each card is like a card you hand a new friend. It has a name, a line, and a window. The window has a picture. Open the card to read more.
+
+== involvements / formal 2 ==
+Each card is a small card of the kind one hands to a new contact. It has a name, a line, and a window. The window holds a picture. The card opens to say more.
+
+== involvements / warm 20 ==
+Each card, and you'll forgive the pedantry, is functionally a business card in the strictest typographical sense: a name, a single descriptive line, and an illustrated window, with the remainder of the card unfolding, should you honestly care to look, into a concise introduction I've deliberately constrained to essentials.
+
+== involvements / plain 20 ==
+Each card in this section functions, strictly speaking, as a business card in the typographical sense: a name, a single descriptive sentence, and an illustrated window, the remainder of each card unfolding into a deliberately constrained introduction documenting the particular work it represents.
+
+== involvements / formal 20 ==
+Each card in this section constitutes, in the strict typographical sense, a business card: a designation, a single descriptive sentence, and an illustrated window, the remainder of each card unfolding into a deliberately constrained introduction documenting the particular contribution it represents, consistent with established conventions of professional self-presentation.

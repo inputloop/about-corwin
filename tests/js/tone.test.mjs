@@ -18,8 +18,8 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(here, '..', '..');
 const OUT = process.env.SITE_OUT || path.join(ROOT, 'public');
 const M = require(path.join(ROOT, 'src', 'js', 'tone.model.js'));
-const W = ['warm', 'plain', 'formal'], G = [4, 8, 12, 16];
-const BANDS = { 4: [null, 5.5], 8: [5, 9.5], 12: [9, 13.5], 16: [12.5, null] };
+const W = ['warm', 'plain', 'formal'], G = [2, 4, 8, 12, 16, 20];
+const BANDS = { 2: [null, 4.5], 4: [null, 5.5], 8: [5, 9.5], 12: [9, 13.5], 16: [12.5, null], 20: [15, null] };
 
 // ---- reading the store (TONE.txt and build_tone.py's docstring describe the format) -------------
 function layersOf(text) {
@@ -55,7 +55,7 @@ function units() {
         const i = v.indexOf('|'); if (v.slice(0, i).trim() === name) rec[k + 's'].push(v.slice(i + 1).trim());
       }
       for (const [h, p] of Object.entries(layers)) {
-        const m = h.match(/^([\w-]+) \/ (warm|plain|formal) (4|8|12|16)$/);
+        const m = h.match(/^([\w-]+) \/ (warm|plain|formal) (2|4|8|12|16|20)$/);
         if (m && m[1] === name) rec.cells[m[2] + '-' + m[3]] = p;
       }
       out[name] = rec;
@@ -110,12 +110,12 @@ test('the Coleman-Liau meter knows its answer', () => {
   assert.equal(colemanLiau(['Dogs bark at cats.']), -2.62);
 });
 
-test('the coverage: five texts, twelve versions each', () => {
+test('the coverage: five texts, eighteen versions each (ELI5 and know-it-all since 2026-11-13)', () => {
   assert.deepEqual(Object.keys(U).sort(), ['about', 'ideas', 'involvements', 'portfolio', 'work']);
-  for (const u of Object.values(U)) assert.equal(Object.keys(u.cells).length, 12, u.name);
+  for (const u of Object.values(U)) assert.equal(Object.keys(u.cells).length, 18, u.name);
 });
 
-test('reading rises on Coleman-Liau across the four steps, at every warmth; the About sits in its bands', () => {
+test('reading rises on Coleman-Liau across the six steps, at every warmth; the About sits in its bands', () => {
   for (const u of Object.values(U)) {
     for (const w of W) {
       const g = G.map((s) => colemanLiau(u.cells[w + '-' + s]));
@@ -185,7 +185,10 @@ test('moves: left warmer, right formal, up harder unless inverted, and the ends 
   assert.deepEqual(M.move(['plain', 8], 'up', true), ['plain', 4]);
   assert.deepEqual(M.move(['plain', 8], 'left', false), ['warm', 8]);
   assert.equal(M.move(['formal', 16], 'right', false), null);
-  assert.equal(M.move(['warm', 4], 'down', false), null);
+  assert.deepEqual(M.move(['plain', 4], 'down', false), ['plain', 2]);
+  assert.deepEqual(M.move(['plain', 16], 'up', false), ['plain', 20]);
+  assert.equal(M.move(['warm', 2], 'down', false), null);
+  assert.equal(M.move(['plain', 20], 'up', false), null);
   assert.deepEqual(M.valid({ global: ['warm', 4], sections: { about: ['warm', 4], nope: ['plain', 4], involvements: ['x', 9] }, invert: 'yes' }, ['about', 'involvements']),
     { global: ['warm', 4], sections: {}, invert: false, lang: true, chosen: true });
   // A saved choice is flagged; an older save with a global and no flag was a choice too.

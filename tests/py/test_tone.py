@@ -41,13 +41,13 @@ class Texts(unittest.TestCase):
     def test_every_rule_in_the_spec_holds(self):
         self.assertEqual(T.problems(DATA["sections"]), [])
 
-    def test_coverage_the_about_and_four_lead_ins_each_have_all_twelve(self):
+    def test_coverage_the_about_and_four_lead_ins_each_have_all_eighteen(self):
         # Coverage chosen 2026-11-01 (Corwin: "leaving this to your artistic take"): the About and the
         # lead-ins of the three sections with pads; every cell written, so no reader meets a fallback.
         units = {n: u for s in DATA["sections"].values() for n, u in s["units"].items()}
         self.assertEqual(sorted(units), ["about", "ideas", "involvements", "portfolio", "work"])
         for n, u in units.items():
-            self.assertEqual(len(u["cells"]), 12, n)
+            self.assertEqual(len(u["cells"]), 18, n)
 
     def test_the_about_family_paragraph_is_written_in_every_version_from_his_own_words(self):
         # Until 2026-11-02 the family paragraph was kept word for word ([[keep]]) because it describes
@@ -75,7 +75,7 @@ class Texts(unittest.TestCase):
         spec = open(os.path.join(ROOT, "tests", "spec", "TONE.txt"), encoding="utf-8").read()
         self.assertIn('The base cell is "plain 8"', spec)
         self.assertEqual(T.BASE, ("plain", 8))
-        self.assertEqual(T.STEPS, (4, 8, 12, 16))
+        self.assertEqual(T.STEPS, (2, 4, 8, 12, 16, 20))
 
 
 class Page(unittest.TestCase):
@@ -132,7 +132,7 @@ class Page(unittest.TestCase):
         rows = re.search(r'<fieldset class="c-tone">.*?</fieldset>\s*<fieldset class="c-tone">.*?</fieldset>\s*<fieldset class="c-tone">.*?</fieldset>', text, re.S)
         self.assertIsNotNone(rows, "Warmth, Reading and the invert option sit in the Customize palette")
         self.assertEqual(len(re.findall(r'name="tone-w"', rows.group(0))), 3)
-        self.assertEqual(len(re.findall(r'name="tone-g"', rows.group(0))), 4)
+        self.assertEqual(len(re.findall(r'name="tone-g"', rows.group(0))), 6)
         self.assertIn('name="tone-invert"', rows.group(0))
         self.assertRegex(rows.group(0), r'<input type="checkbox" name="tone-lang" value="1" checked>',
                          "Follow my browser's language: a row, on unless the reader turns it off")

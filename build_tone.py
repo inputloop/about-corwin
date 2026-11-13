@@ -3,8 +3,9 @@
 """The tone d-pad's texts: their store, their meters and their checks (tests/spec/TONE.txt).
 
 Each introductory text ("unit") has a base, the words already on the page, which is the cell
-"plain 8", and up to eleven variants along two lines: warmth (warm, plain, formal) and reading
-(grade 4, grade 8, grade 12, college, written 16). The variants live in content/sections/<id>.txt
+"plain 8", and up to seventeen variants along two lines: warmth (warm, plain, formal) and reading
+(ELI5 written 2, grade 4, grade 8, grade 12, college written 16, know-it-all written 20; the two
+ends were added 2026-11-13 at Corwin's word, "a little wider, like ELI5 -> Know-it-All"). The variants live in content/sections/<id>.txt
 as `== UNIT / WARMTH STEP ==` layers beside the base. build.py renders the base as live HTML and
 every other cell into a <template>; src/js/dpad.js swaps them.
 
@@ -16,13 +17,13 @@ import os
 import re
 
 WARMTH = ("warm", "plain", "formal")
-STEPS = (4, 8, 12, 16)
+STEPS = (2, 4, 8, 12, 16, 20)
 BASE = ("plain", 8)
-STEP_NAMES = {4: "grade 4", 8: "grade 8", 12: "grade 12", 16: "college"}
+STEP_NAMES = {2: "ELI5", 4: "grade 4", 8: "grade 8", 12: "grade 12", 16: "college", 20: "know-it-all"}
 KEEP = "[[keep]]"
 # The About only: the band each step sits in on both meters (TONE.txt, 3).
-BANDS = {4: (None, 5.5), 8: (5.0, 9.5), 12: (9.0, 13.5), 16: (12.5, None)}
-CELL_HEAD = re.compile(r"^([\w-]+)(?:\s*/\s*(warm|plain|formal)\s+(4|8|12|16))?$")
+BANDS = {2: (None, 3.0), 4: (None, 5.5), 8: (5.0, 9.5), 12: (9.0, 13.5), 16: (12.5, None), 20: (16.0, None)}
+CELL_HEAD = re.compile(r"^([\w-]+)(?:\s*/\s*(warm|plain|formal)\s+(2|4|8|12|16|20))?$")
 
 
 class ToneError(Exception):
@@ -182,7 +183,7 @@ def lang_start(langs):
     head = first.strip().replace("_", "-").split("-", 1)[0].lower()
     if not (2 <= len(head) <= 3 and all("a" <= ch <= "z" for ch in head)) or head in ("und", "en"):
         return None
-    return STEPS[STEPS.index(BASE[1]) - 1]
+    return 4   # grade 4, one step simpler than the base; never ELI5 (TONE.txt, 8)
 
 
 # ---- the meters (TONE.txt, 2 to 4) --------------------------------------------------------------

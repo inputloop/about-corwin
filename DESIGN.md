@@ -159,8 +159,16 @@ grade 8, grade 12, college). The words already on the page are "plain, grade 8":
 the plan guessed, so the pad goes one step simpler and two harder from what is written. His own
 writing sits at grade 5 to 9 (the voice palace's REGISTERS.md), so this is his voice's middle.
 
+**The two ends (2026-11-13).** His word: "see if you can make supported range a little wider, like
+ELI5 -> Know-it-All". So reading now has six steps: ELI5 (written 2) below grade 4, and know-it-all
+(written 20) above college. They are not just more of the same. ELI5 explains as it goes (what
+Emacs is, what a site reliability engineer does, what time-banking means), in short sentences
+and short words. Know-it-all is the expert who can't help correcting you: precise, long-winded,
+fond of "strictly speaking", and it still holds every fact and adds none. The browser-language
+start stays one step simpler (grade 4), never ELI5.
+
 **Coverage, and why.** The About and the four lead-ins of the sections with a pad (Where I put my
-time; inputloop, What you can pick up today, Ideas): five texts, twelve versions each, all written,
+time; inputloop, What you can pick up today, Ideas): five texts, eighteen versions each (twelve before 2026-11-13), all written,
 so no reader ever meets a fallback. Chosen (Corwin: "leaving this to your artistic take") because
 these are the texts that introduce; the cards already have their own short form, and 25 cards times
 eleven versions would be hard to keep true. The About's family paragraph stays word for word in
@@ -183,7 +191,7 @@ JavaScript each follow it, separately):
 - Same facts: every version holds every `fact:` exactly, and adds no link, number or name the base
   and its `extra:` lines do not already have.
 - Reading rises: Flesch-Kincaid in Python (syllables, copied from the voice palace's fk.py) and
-  Coleman-Liau in JavaScript (letters; no method shared). At each warmth the four steps must rise on
+  Coleman-Liau in JavaScript (letters; no method shared). At each warmth the six steps must rise on
   both; the About must also sit in each step's band on both. A lead-in of one or two sentences is
   held to order only.
 - Warmth falls: a count of contractions, "you", "I/we", a few feeling words and question marks,
