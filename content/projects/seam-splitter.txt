@@ -1,0 +1,28 @@
+title: The Seam Splitter
+role: A choose-your-path comic about one small word I let slip, a placeholder licence file, and how we traced where it came from.
+order: 22
+window: planes
+do: read
+bring: a-browser
+whose: shared
+state: careful
+tags: inputloop, writing, honesty, credit, transparency, lens
+link: Read it | https://aboutcorwin.com/seam-splitter/
+stat: Whose | the shop's: written and drawn by Mentat for Corwin
+stat: Holds | 13 panels told straight, 12 roads off them, 6 endings
+stat: Every bubble | quotes its source, checked word for word
+stat: State | readable today; new on 2026-11-13
+score: Roads | 12 | 2026-11-13
+score: Endings | 6 | 2026-11-13
+
+== summary ==
+I asked a simple question: why did a file on our shelf say no licence was granted yet, when I had already said everything we publish carries our terms? The comic follows the trace back through the shop's own notes, and at each turn you can take another road: a misreading, a guess about what we would want later, a fork we could have taken.
+
+== function ==
+The straight story runs 13 panels. Off it run 12 roads, and they end in 6 endings; roads that would have led to the same work in the end share an ending, but each keeps its own voice. The last panel gives the short version for anyone who wants it spoiled.
+
+== practice ==
+Every speech bubble quotes something that was really said or written, with where it came from beside it, and a check holds each quote to its source word for word, along with every road reaching an ending and no road cut off. The question it traces is now settled: our terms go on a work when it lands, and a placeholder only stays when it says why.
+
+== presentation ==
+The window is planes in depth swinging open like doors, the way each road in the comic opens off the straight story, one behind another.

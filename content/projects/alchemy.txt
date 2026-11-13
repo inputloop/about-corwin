@@ -1,0 +1,29 @@
+title: Alchemy
+role: A small discovery game in the browser: start with earth, air, water and fire, put two together to find something new, or split one to see what made it.
+order: 21
+window: field
+do: play
+bring: a-browser
+whose: shared
+state: careful
+tags: inputloop, game, education, two-readers, prove-red, offline
+link: Play it | https://corwin.cloud/alchemy
+link: Its recipe, decks and checks (pubs) | https://github.com/inputloop/pubs/tree/main/software/alchemy
+stat: Whose | the shop's: Bryant's and mine; made by Mentat for Corwin
+stat: Decks | the classic one, and one made of the shop's own words
+stat: Moves | combine two, or split one
+stat: State | playable today; new on 2026-11-12, not yet reviewed outside the shop
+score: Elements in the classic deck | 63 | 2026-11-12
+score: Reactions in the classic deck | 64 | 2026-11-12
+
+== summary ==
+Dee and I both like the phone game where you start from four elements and find the rest by mixing them. This is our take. You begin with earth, air, water and fire. Drag two together and, if they make something, it joins your shelf. Pick one you have found and split it, and the game shows you the two things it came from.
+
+== function ==
+Splitting is the part we added. Most games of this kind only let you build up; here you can also take a thing apart, which turns the game into a way of finding out how something is put together. There are two decks: the classic one, with 63 elements and 64 reactions, and a second made of the shop's own words, where putting two habits together finds the tool that does both.
+
+== practice ==
+Each deck is a folder of small files, one reaction to a file, so anyone can add one. A shell tool checks every deck against seven promises (every element can be reached from the start, nothing makes itself, and so on), each shown able to fail, and a second reader written in another language checks the same promises its own way. The recipe in our pubs repository says how to build your own deck.
+
+== presentation ==
+The window is a field of words held in tension, pulling and pushing until they settle, the way two elements pulled together settle into a third.

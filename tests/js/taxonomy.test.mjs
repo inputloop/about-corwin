@@ -165,7 +165,7 @@ test('a prefix names a card only when it is most of the name', () => {
 test('spreading ranks but never admits: every card shown says a word of the prompt itself', () => {
   // the glance card says EmacsConf and Dungeon itself, so it is admitted for those words
   assert.deepEqual(top('conference', 9), ['emacsconf', 'emacs-windows', 'glance']);
-  assert.deepEqual(top('show me games', 9).sort(), ['dungeon', 'four-swords', 'glance', 'inputloop']);
+  assert.deepEqual(top('show me games', 9).sort(), ['alchemy', 'dungeon', 'four-swords', 'glance', 'inputloop']);
   assert.ok(!top('memory', 9).includes('doors'));
 });
 
